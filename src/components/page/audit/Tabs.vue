@@ -4,6 +4,7 @@
       <span slot="label">新问政待审<span class="amount">428</span></span>
       <Operation :filterOptions="filterOptions1"/>
       <Table :tableList="auditList" :tableLabel="auditLabel"/>
+      <Footer />
     </el-tab-pane>
     <el-tab-pane>
       <span slot="label">追问待审<span class="amount">323</span></span>
@@ -22,10 +23,11 @@
 <script>
 import Operation from './Operation'
 import Table from './Table'
+import Footer from './Footer'
 
 export default {
   name:'Tabs',
-  components: { Operation,Table },
+  components: { Operation,Table, Footer },
   data(){
     return {
       filterOptions1 : [{
