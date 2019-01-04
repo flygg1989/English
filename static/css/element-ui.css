@@ -1,0 +1,103 @@
+
+
+/* Tabs组件样式 */
+.el-tabs{
+  height:100%;
+  border:0;
+  box-shadow:none;
+  border-radius:8px;
+  display: flex;
+  flex-direction:column;
+}
+.el-tabs .el-tabs__header{
+  height:56px;
+  border-bottom:none;
+  border-radius:8px 8px 0 0;
+}
+.el-tabs--border-card .el-tabs__header .el-tabs__item{
+  width:192px;
+  height:56px;
+  line-height:56px;
+  font-size:18px;
+  color:#2D3557;
+  border:none;
+  padding:0 24px;
+}
+.el-tabs--border-card .el-tabs__header .el-tabs__item:not(.is-disabled):hover{
+  color:#2D3557;
+}
+.el-tabs--border-card .el-tabs__header .el-tabs__item.is-active{
+  color:#2D3557;
+  border-radius:8px 8px 0 0;
+}
+.el-tabs--border-card .el-tabs__header .el-tabs__item .amount{
+  height:56px;
+  font-size:20px;
+  color:#4D84FF;
+  font-weight:600;
+  line-height:56px;
+  padding-left:16px;
+}
+#tab-0.is-active:after,#tab-1.is-active:after,#tab-2.is-active:after{
+  content:".";
+  position: absolute;
+  right:-8px;
+  bottom:0;
+  width: 8px;
+  height:8px;
+  background: radial-gradient(circle at top right, transparent 8px, #fff 0) top left;
+}
+#tab-1.is-active::before,#tab-2.is-active::before,#tab-3.is-active::before{
+  content:".";
+  position: absolute;
+  left:-8px;
+  bottom:0;
+  width: 8px;
+  height:8px;
+  background: radial-gradient(circle at top left, transparent 8px, #fff 0) top left;
+}
+
+.el-tabs--border-card .el-tabs__content{
+  padding:9px 16px 0;
+  flex:1;
+  box-sizing: border-box;
+}
+.el-tabs--border-card .el-tabs__content .el-tab-pane{
+  height:100%;
+  display: flex;
+  flex-direction: column;
+}
+/* Operation组件样式 */
+.el-tabs--border-card .el-tabs__content .ipt-label{
+  padding-left:10px;
+  padding-right:8px;
+  color:rgba(45,53,87,.6);
+  font-size:14px;
+}
+.operation .el-select{
+  width:152px;
+}
+.operation .el-input__inner{
+  height:40px;
+}
+.operation .search-ipt{
+  width:240px;
+}
+.operation .search-ipt .el-input__inner{
+  border-radius:5px 0 0 5px;
+}
+.operation .search-btn{
+  border-radius:0 5px 5px 0;
+}
+.operation .el-button{
+  height:40px;
+}
+/* Operation组件el-button按钮统一颜色 */
+.operation .el-button{
+  background: #4D84FF;
+}
+
+/* Table组件样式 */
+.el-tabs--border-card .el-table{
+  flex: 1;
+}
