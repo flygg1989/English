@@ -3,7 +3,7 @@
     <el-tab-pane>
       <span slot="label">新问政待审<span class="amount">428</span></span>
       <Operation :filterOptions="filterOptions1"/>
-      <Table :tableList="auditList" :tableLabel="auditLabel"/>
+      <Tableone :tableList="auditList"/>
       <Footer />
     </el-tab-pane>
     <el-tab-pane>
@@ -22,12 +22,12 @@
 </template>
 <script>
 import Operation from './Operation'
-import Table from './Table'
+import Tableone from './TableOne'
 import Footer from './Footer'
 
 export default {
   name:'Tabs',
-  components: { Operation,Table, Footer },
+  components: { Operation,Tableone,Footer },
   data(){
     return {
       filterOptions1 : [{
@@ -44,16 +44,16 @@ export default {
         value: '选项2',
         label: '追问'
       }],
-      auditLabel:[
-        {prop:"title",label:"标题",width:320},
-        {prop:"countdown",label:"剩余时间",width:104},
-        {prop:"genre",label:"类型",width:72},
-        {prop:"region",label:"地域",width:72},
-        {prop:"branch",label:"部门",width:72},
-        {prop:"questiontime",label:"提问时间",width:144},
-        {prop:"questioner",label:"提问人",width:72}
-      ],
-      auditList:[]
+      // auditLabel:[
+      //   {prop:"title",label:"标题",width:320},
+      //   {prop:"countdown",label:"剩余时间",width:104},
+      //   {prop:"genre",label:"类型",width:72},
+      //   {prop:"region",label:"地域",width:72},
+      //   {prop:"branch",label:"部门",width:72},
+      //   {prop:"questiontime",label:"提问时间",width:144},
+      //   {prop:"questioner",label:"提问人",width:72}
+      // ],
+       auditList:[]
     }
   },
   mounted(){
@@ -69,7 +69,7 @@ export default {
       title:"交通局办事效率可以提高吗",
       countdown:"6小时",
       genre:"建议",
-      region:"长沙",
+      region:"武汉",
       branch:"交通局",
       questiontime:"2018-03-11 15:30",
       questioner:"崔没有"
@@ -77,7 +77,7 @@ export default {
       title:"情报局办事效率可以提高吗",
       countdown:"4小时",
       genre:"投诉",
-      region:"深圳",
+      region:"荆州",
       branch:"情报局",
       questiontime:"2018-02-9 15:30",
       questioner:"崔没没"
@@ -85,49 +85,49 @@ export default {
       title:"房产局办事效率可以提高吗",
       countdown:"2小时",
       genre:"咨询",
-      region:"武汉",
+      region:"荆州",
       branch:"房产局",
-      questiontime:"2018-03-10 15:30",
+      questiontime:"2018-03-10 15:31",
       questioner:"崔有有"
     },{
       title:"交通局办事效率可以提高吗",
       countdown:"6小时",
       genre:"建议",
-      region:"长沙",
+      region:"宜昌",
       branch:"交通局",
-      questiontime:"2018-03-11 15:30",
+      questiontime:"2018-03-11 15:33",
       questioner:"崔没有"
     },{
       title:"情报局办事效率可以提高吗",
       countdown:"4小时",
       genre:"投诉",
-      region:"深圳",
+      region:"襄阳",
       branch:"情报局",
-      questiontime:"2018-02-9 15:30",
+      questiontime:"2018-02-9 15:40",
       questioner:"崔没没"
     },{
       title:"房产局办事效率可以提高吗",
       countdown:"2小时",
       genre:"咨询",
-      region:"武汉",
+      region:"襄阳",
       branch:"房产局",
-      questiontime:"2018-03-10 15:30",
+      questiontime:"2018-03-10 15:20",
       questioner:"崔有有"
     },{
       title:"交通局办事效率可以提高吗",
       countdown:"6小时",
       genre:"建议",
-      region:"长沙",
+      region:"孝感",
       branch:"交通局",
-      questiontime:"2018-03-11 15:30",
+      questiontime:"2018-03-11 15:10",
       questioner:"崔没有"
     },{
       title:"情报局办事效率可以提高吗",
       countdown:"4小时",
       genre:"投诉",
-      region:"深圳",
+      region:"孝感",
       branch:"情报局",
-      questiontime:"2018-02-9 15:30",
+      questiontime:"2018-02-9 15:50",
       questioner:"崔没没"
     }]
   }

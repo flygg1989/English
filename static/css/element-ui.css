@@ -22,6 +22,7 @@
   color:#2D3557;
   border:none;
   padding:0 24px;
+  margin:0;
 }
 .el-tabs--border-card .el-tabs__header .el-tabs__item:not(.is-disabled):hover{
   color:#2D3557;
@@ -101,3 +102,23 @@
 .el-tabs--border-card .el-table{
   flex: 1;
 }
+.el-tabs--border-card .el-table .el-table__header-wrapper{
+  width:100%;
+  background:#f9f9f9;
+}
+.el-tabs--border-card .el-table .table-header{
+  height:56px;
+}
+.el-tabs--border-card .el-table .el-table__row{
+  height:80px;
+}
+.el-tabs--border-card .el-table th{
+  background:#f9f9f9;
+  font-size:16px;
+  color:#2D3557;
+}
+.el-tabs--border-card .el-table td{
+  font-size:14px;
+  color:#2D3557;
+}
+
