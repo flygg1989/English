@@ -36,30 +36,26 @@
       width="72">
     </el-table-column>
     <el-table-column
-      prop="branch"
-      label="部门"
-      :filters="[{text:'房产局',value:'房产局'},{text:'交通局',value:'交通局'},{text:'情报局',value:'情报局'},{text:'警察局',value:'警察局'},{text:'城管局',value:'城管局'},{text:'消防局',value:'消防局'}]"
-      :filter-method="filterHandler"
-      width="72">
-    </el-table-column>
-    <el-table-column
-      prop="questiontime"
-      label="提问时间"
+      prop="recoverytime"
+      label="回复时间"
       sortable
       width="144">
     </el-table-column>
     <el-table-column
-      prop="questioner"
-      label="提问人"
-      width="72">
+      prop="branch"
+      label="回复部门"
+      :filters="[{text:'房产局',value:'房产局'},{text:'交通局',value:'交通局'},{text:'情报局',value:'情报局'},{text:'警察局',value:'警察局'},{text:'城管局',value:'城管局'},{text:'消防局',value:'消防局'}]"
+      :filter-method="filterHandler"
+      width="104">
     </el-table-column>
     <el-table-column
       fixed="right"
       label="操作"
-      width="184">
+      width="216">
       <template slot-scope="scope">
-        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">转办</el-button>
-        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">不予处理</el-button>
+        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">通过</el-button>
+        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">修改</el-button>
+        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">驳回</el-button>
         <el-dropdown trigger="click">
           <span class="el-dropdown-link">
             <i @click="handleClick(scope.row)" class="el-icon-more"></i>
@@ -74,7 +70,7 @@
 </template>
 <script>
 export default {
-  name:"TableOne",
+  name:"TableThree",
   props:{
     tableList:{
       type: Array,

@@ -121,4 +121,57 @@
   font-size:14px;
   color:#2D3557;
 }
-
+/* Table组件操作栏按钮样式 */
+.el-tabs--border-card .el-table .el-button--mini{
+  color:#4D84FF;
+  border-color:#4D84FF;
+  background:rgba(255,255,255,0);
+  font-size:14px;
+  padding:5px 10px;
+  margin:0;
+  margin-right:5px;
+}
+.el-tabs--border-card .el-table .el-button--mini:hover,.el-tabs--border-card .el-table .el-button--mini:focus{
+  color:#fff;
+  background:#4D84FF;
+}
+.el-tabs--border-card .el-table .el-button--mini:active{
+  color:#fff;
+  background:rgba(77,132,255,0.8);
+}
+.el-tabs--border-card .el-table .el-icon-more{
+  color:#D4D7DE;
+}
+/* table-footer组件样式 */
+.table-footer{
+  height:56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.table-footer .footer-right{
+  display: flex;
+}
+.table-footer .el-button{
+  color:#4D84FF;
+  border-color:#4D84FF;
+  background:rgba(255,255,255,0);
+}
+.table-footer .el-button:hover,.table-footer .el-button:focus{
+  color:#fff;
+  background:#4D84FF;
+}
+.table-footer .el-button:active{
+  color:#fff;
+  background:rgba(77,132,255,0.8);
+}
+.table-footer .el-pagination__sizes .el-input .el-input__inner:hover,.table-footer .el-pagination__sizes .el-input .el-input__inner:focus{
+  border-color:#4D84FF;
+}
+.table-footer .el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev, .el-pagination.is-background .el-pager li{
+  margin:0px 2px;
+}
+.table-footer .el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #4D84FF;
+  color: #fff;
+}

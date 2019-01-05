@@ -44,13 +44,13 @@
     </el-table-column>
     <el-table-column
       prop="questiontime"
-      label="提问时间"
+      label="追问时间"
       sortable
       width="144">
     </el-table-column>
     <el-table-column
       prop="questioner"
-      label="提问人"
+      label="追问人"
       width="72">
     </el-table-column>
     <el-table-column
@@ -74,7 +74,7 @@
 </template>
 <script>
 export default {
-  name:"TableOne",
+  name:"TableTwo",
   props:{
     tableList:{
       type: Array,

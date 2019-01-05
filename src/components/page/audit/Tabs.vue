@@ -3,16 +3,20 @@
     <el-tab-pane>
       <span slot="label">新问政待审<span class="amount">428</span></span>
       <Operation :filterOptions="filterOptions1"/>
-      <Tableone :tableList="auditList"/>
-      <Footer />
+      <TableOne :tableList="auditList"/>
+      <FooterOne/>
     </el-tab-pane>
     <el-tab-pane>
       <span slot="label">追问待审<span class="amount">323</span></span>
       <Operation :filterOptions="filterOptions2" />
+      <TableTwo :tableList="auditList"/>
+      <FooterTwo/>
     </el-tab-pane>
     <el-tab-pane>
       <span slot="label">回复待审<span class="amount">34</span></span>
       <Operation :filterOptions="filterOptions2" />
+      <TableThree :tableList="ListThree"/>
+      <FooterThree/>
     </el-tab-pane>
     <el-tab-pane>
       <span slot="label">部门退回待审<span class="amount">21</span></span>
@@ -22,12 +26,24 @@
 </template>
 <script>
 import Operation from './Operation'
-import Tableone from './TableOne'
-import Footer from './Footer'
+import TableOne from './TableOne'
+import FooterOne from './FooterOne'
+import TableTwo from './TableTwo'
+import FooterTwo from './FooterTwo'
+import TableThree from './TableThree'
+import FooterThree from './FooterThree'
 
 export default {
   name:'Tabs',
-  components: { Operation,Tableone,Footer },
+  components: { 
+    Operation,
+    TableOne,
+    FooterOne,
+    TableTwo,
+    FooterTwo,
+    TableThree,
+    FooterThree,
+  },
   data(){
     return {
       filterOptions1 : [{
@@ -53,7 +69,15 @@ export default {
       //   {prop:"questiontime",label:"提问时间",width:144},
       //   {prop:"questioner",label:"提问人",width:72}
       // ],
-       auditList:[]
+      auditList:[],
+      ListThree:[{
+        title:"房产局办事效率可以提高吗",
+        countdown:"2小时",
+        genre:"咨询",
+        region:"武汉",
+        recoverytime:"2018-03-10 15:30",
+        branch:"房产局"
+      }]
     }
   },
   mounted(){
