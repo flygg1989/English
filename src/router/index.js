@@ -97,6 +97,12 @@ export default new Router({
                     component: resolve => require(['../components/page/audit'], resolve),
                     meta: { title: '待审核' }
                 },
+                {
+                    //平台已审核
+                    path: '/audited',
+                    component: resolve => require(['../components/page/audited'], resolve),
+                    meta: { title: '已审核' }
+                }
             ]
         },
         {

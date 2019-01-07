@@ -141,6 +141,26 @@
 .el-tabs--border-card .el-table .font-red{
   color:#FF5161;
 }
+/* 问政>已审核>已回复Table组件操作栏样式 */
+.el-tabs--border-card .el-table .el-switch{
+  height:40px;
+}
+.el-tabs--border-card .el-table .el-switch__label{
+  width:24px;
+  height:40px;
+  margin-right:4px;
+}
+.el-tabs--border-card .el-table .el-switch__label span{
+  width:24px;
+  height:40px;
+  font-size:12px;
+  color:rgba(45,53,87,.4);
+  line-height:20px;
+}
+.el-tabs--border-card .el-table .table2-2 .el-button,.el-tabs--border-card .el-table .table2-2 .el-switch{
+  margin-right:10px;
+}
+
 /* Table组件操作栏按钮样式 */
 .el-tabs--border-card .el-table .el-button--mini{
   color:#4D84FF;
