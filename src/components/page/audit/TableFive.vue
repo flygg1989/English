@@ -16,15 +16,6 @@
       width="320">
     </el-table-column>
     <el-table-column
-      prop="countdown"
-      label="剩余时间"
-      sortable
-      width="120">
-      <template slot-scope="scope">
-        <span :class="scope.row.countdown <= 2?'font-red':''">{{ scope.row.countdown }}小时</span>
-      </template>
-    </el-table-column>
-    <el-table-column
       prop="genre"
       label="类型"
       :filters="[{text:'咨询',value:'咨询'},{text:'建议',value:'建议'},{text:'投诉',value:'投诉'}]"
@@ -46,38 +37,42 @@
       width="72">
     </el-table-column>
     <el-table-column
-      prop="questiontime"
-      label="提问时间"
+      prop="recoverytime"
+      label="审核时间"
       sortable
       width="144">
     </el-table-column>
     <el-table-column
-      prop="questioner"
-      label="提问人"
-      width="72">
+      prop="rejectReason"
+      label="退回原因"
+      width="104">
+    </el-table-column>
+    <el-table-column
+      prop="approvalResult"
+      label="审批结果"
+      :filters="[{text:'审核通过',value:'审核通过'},{text:'审核不通过',value:'审核不通过'}]"
+      :filter-method="filterHandler"
+      width="144">
+      <template slot-scope="scope">
+        <span :class="scope.row.approvalResult == '审核不通过'?'font-red':''">{{ scope.row.approvalResult }}</span>
+      </template>
     </el-table-column>
     <el-table-column
       fixed="right"
-      label="操作"
+      label="驳回原因"
       width="184">
       <template slot-scope="scope">
-        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">转办</el-button>
-        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">不予处理</el-button>
-        <el-dropdown trigger="click">
-          <span class="el-dropdown-link">
-            <i @click="handleClick(scope.row)" class="el-icon-more"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>隐藏</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <el-tooltip class="table-tooltip" visible-arrow="" effect="light" v-if="scope.row.rebutReason">
+        <div slot="content">{{scope.row.rebutReason}}</div>
+        <el-button type="text">驳回原因</el-button>
+        </el-tooltip>
       </template>
     </el-table-column>
   </el-table>
 </template>
 <script>
 export default {
-  name:"TableOne",
+  name:"TableFive",
   props:{
     tableList:{
       type: Array,

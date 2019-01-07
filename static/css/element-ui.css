@@ -93,6 +93,20 @@
 .operation .el-button{
   height:40px;
 }
+.operation .el-radio{
+  margin-left:8px;
+  color:rgba(45,53,87,.6);
+}
+.operation .el-radio__label{
+  padding-left:8px;
+}
+.operation .el-radio__input.is-checked .el-radio__inner{
+  border-color: #4D84FF;
+  background: #4D84FF;
+}
+.operation .el-radio.is-checked .el-radio__label{
+  color:#4D84FF;
+}
 /* Operation组件el-button按钮统一颜色 */
 .operation .el-button{
   background: #4D84FF;
@@ -117,9 +131,15 @@
   font-size:16px;
   color:#2D3557;
 }
+.el-tabs--border-card .el-table th .el-table__column-filter-trigger{
+  margin-left:4px;
+}
 .el-tabs--border-card .el-table td{
   font-size:14px;
   color:#2D3557;
+}
+.el-tabs--border-card .el-table .font-red{
+  color:#FF5161;
 }
 /* Table组件操作栏按钮样式 */
 .el-tabs--border-card .el-table .el-button--mini{
@@ -139,8 +159,20 @@
   color:#fff;
   background:rgba(77,132,255,0.8);
 }
+.el-tabs--border-card .el-table .el-button--text{
+  color:#4D84FF;
+  font-size:14px;
+}
 .el-tabs--border-card .el-table .el-icon-more{
   color:#D4D7DE;
+}
+.el-tooltip__popper.is-light{
+  border:none;
+  box-shadow:0px 0px 8px 0px rgba(45,53,87,0.15);
+}
+.el-tooltip__popper div{
+  max-width:280px;
+  color:rgba(45,53,87,1);
 }
 /* table-footer组件样式 */
 .table-footer{

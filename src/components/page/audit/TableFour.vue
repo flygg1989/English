@@ -46,23 +46,23 @@
       width="72">
     </el-table-column>
     <el-table-column
-      prop="questiontime"
-      label="提问时间"
+      prop="recoverytime"
+      label="退回时间"
       sortable
       width="144">
     </el-table-column>
     <el-table-column
-      prop="questioner"
-      label="提问人"
-      width="72">
+      prop="rejectReason"
+      label="退回原因"
+      width="104">
     </el-table-column>
     <el-table-column
       fixed="right"
       label="操作"
       width="184">
       <template slot-scope="scope">
-        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">转办</el-button>
-        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">不予处理</el-button>
+        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">通过</el-button>
+        <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">驳回</el-button>
         <el-dropdown trigger="click">
           <span class="el-dropdown-link">
             <i @click="handleClick(scope.row)" class="el-icon-more"></i>
@@ -77,7 +77,7 @@
 </template>
 <script>
 export default {
-  name:"TableOne",
+  name:"TableFour",
   props:{
     tableList:{
       type: Array,

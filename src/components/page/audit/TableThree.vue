@@ -20,6 +20,9 @@
       label="剩余时间"
       sortable
       width="120">
+      <template slot-scope="scope">
+        <span :class="scope.row.countdown <= 2?'font-red':''">{{ scope.row.countdown }}小时</span>
+      </template>
     </el-table-column>
     <el-table-column
       prop="genre"
