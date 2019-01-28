@@ -2,7 +2,7 @@
     <div class="wrapper">
         <v-head></v-head>
         <v-sidebar></v-sidebar>
-        <div class="content-box" :class="{'content-collapse':collapse}">
+        <div class="content-box" :class="{'content-collapse':collapse,'content-right':!collapseb}">
             <v-tags></v-tags>
             <div class="content">
                 <transition name="move" mode="out-in">
@@ -15,7 +15,7 @@
     </div>
 </template>
 
-<script>
+<script>     
     import vHead from './Header.vue';
     import vSidebar from './Sidebar.vue';
     import vTags from './Tags.vue';
@@ -24,7 +24,8 @@
         data(){
             return {
                 tagsList: [],
-                collapse: false
+                collapse: false,
+                collapseb:true
             }
         },
         components:{
@@ -34,6 +35,12 @@
             bus.$on('collapse', msg => {
                 this.collapse = msg;
             })
+            bus.$on('collapseb', msg => {
+                this.collapseb = msg;
+                //console.log(this.collapseb)
+            })
+            
+
 
             // 只有在标签页列表里的页面才使用keep-alive，即关闭标签之后就不保存到内存中了。
             bus.$on('tags', msg => {

@@ -1,0 +1,480 @@
+<template>
+    <div class="mask maskone">
+         <el-dialog :title="formdata.title" :visible.sync="editVisible" :close-on-click-modal="false" width="864px">
+            <el-form ref="formdata" :model="formdata" label-width="50px">
+                <div class="mask_tip mask_tip_color_one" v-if="formdata.plat_status == 7">{{this.formdata.status_name}}</div>
+                
+                <div class="mask_tip_p">
+                    <span>{{formdata.truename}}</span>
+                    <span>{{formdata.telphone}}</span>
+
+                    <!--投诉-->
+                    <el-dropdown trigger="click" >
+                        <span class="el-dropdown-link" >
+                            {{formdata.sug_type.type_name}}<i class="el-icon-caret-bottom el-icon-edit"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item class="clearfix" v-for="(item,index) in ComplaintList" :key="index" @click.native="Complaintclick(item,index)">
+                            {{item.type_name}}
+                            <el-badge class="mark" />
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>  
+                    
+                    <span>时间：{{formdata.created_at}}</span>
+                </div>
+                
+                <ul class="imgstyleone" v-if="formdata.attachments.length <= 3">
+                    <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
+                </ul>
+
+                <el-carousel :interval="4000" type="card" height="200px" v-if="formdata.attachments.length > 3">
+                    <el-carousel-item v-for="(item,index) in formdata.attachments" :key="index">
+                        <img :src="item.url" alt="">
+                    </el-carousel-item>
+                </el-carousel>
+            
+                <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.content" placeholder=""></el-input>
+                <div class="modify" v-if="buttonstate == 1">
+                    <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
+                </div>
+                <div class="el-dialog__footer quill-editor-footer" v-if="buttonstate == 2">
+                    <span slot="footer" class="dialog-footer">
+                        <!-- <el-button type="" @click="quillcancel()">取消</el-button> -->
+                        <el-button type="primary" @click="quillconfirm()">确定</el-button>
+                    </span>
+                </div>
+
+                <div class="hr-top"></div>
+
+                 <!--返回的回复 内容-->
+                <div class="bg_color_f7">
+                    <div v-if="formdata.chase_list != null">
+                    <div v-for="(item,index) in formdata.chase_list.reply_list" :key="index">
+                        <div class="bg_color_tip">
+                            <h1>原回复</h1>
+                            <div>
+                                <span>{{formdata.dept_name}}</span>
+                                <span>{{formdata.uname}}</span>
+                                <span>{{item.created_at}}</span>
+                            </div>
+                        </div>
+                        
+                        <!--回复图片展示-->
+                        <ul class="ReplyImg">
+                            <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
+                        </ul>
+                        <el-input type="textarea" rows="3" readonly v-model="item.reply" placeholder=""></el-input>
+                    </div>
+
+                        <div class="bg_color_tip">
+                            <h1>原问题</h1>
+                            <div>
+                                <span>{{formdata.chase_list.type_name}}</span>
+                                <span>提问时间：{{formdata.chase_list.created_at}}</span>
+                            </div>
+                        </div> 
+                        <ul class="ReplyImg">
+                            <li v-for="(item,index) in formdata.chase_list.attachments" :key="index"><img :src="item.url" alt=""></li>
+                        </ul>                  
+                        <el-input type="textarea" rows="3" readonly v-model="formdata.chase_list.content" placeholder=""></el-input>
+                    </div>
+                </div>
+                
+                <div v-for="(item,index) in formdata.log" :key="index">
+                    <!--申请退回原因-->
+                    <div v-if="item.op_status == 7">
+                        <div class="bg_color_tip">
+                            <h1>申请退回原因</h1>
+                            <div>
+                                <span>{{formdata.dept_name}}</span>
+                                <!-- <span>{{formdata.uname}}</span> -->
+                                <span>{{item.created_at}}</span> 
+                            </div>
+                        </div>
+                        <el-input type="textarea" readonly rows="3" v-model="item.reason" placeholder=""></el-input>
+                        <div class="hr-top"></div>
+                    </div>
+
+                    <!--驳回原因-->
+                    <div v-if="item.op_status == 9">
+                        <div class="bg_color_tip">
+                            <h1>驳回原因</h1>
+                            <div>
+                                <span>{{formdata.dept_name}}</span>
+                                <!-- <span>{{formdata.uname}}</span> -->
+                                <span>{{item.created_at}}</span> 
+                            </div>
+                        </div>
+                        <el-input type="textarea" readonly rows="3" v-model="item.reason" placeholder=""></el-input>
+                        <div class="hr-top"></div>
+                    </div>
+
+                    <!--不予处理原因-->
+                    <div v-if="item.op_status == 11">
+                        <div class="bg_color_tip">
+                            <h1>不予处理原因</h1>
+                            <div>
+                                <span>{{formdata.chase_list.dept_name}}</span>
+                                <!-- <span>{{formdata.uname}}</span> -->
+                                <span>{{item.created_at}}</span> 
+                            </div>
+                        </div>
+                        <el-input type="textarea" readonly rows="3" v-model="item.reason" placeholder=""></el-input>
+                        <div class="hr-top"></div>
+                    </div>
+                </div>
+
+                <div class="handle-box">
+                    <el-checkbox-group v-model="type">
+                        <el-checkbox label="置顶" name="type"></el-checkbox>
+                        <el-checkbox label="隐藏" name="type"></el-checkbox>
+                    </el-checkbox-group>
+                </div>
+
+            </el-form>
+
+            
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="adoptsubmit()">审核通过</el-button>
+                <el-button type="primary" @click="saveEdit">驳 回</el-button>
+            </span>
+        </el-dialog>
+
+        <!--驳回原因 -->
+        <el-dialog title="驳回原因" :visible.sync="denyVisible" width="704px">
+            <el-input type="textarea" rows="10" v-model="desc" :maxlength="200"  @input="removeActive($event)" placeholder="请输入原因，200个字符以内"></el-input>
+            <i class="num">{{textlength}}/200</i>
+            <span slot="footer" class="dialog-footer">
+                <!-- <el-button @click="denyVisible = false">取 消</el-button> -->
+                <el-button type="primary" @click="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提   交 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </el-button>
+            </span>
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+import api from "@/utils/api";
+import Bus from "@/components/common/bus.js";
+export default {
+    data() {
+        return {
+            id:'', //问政id
+            editVisible: false,
+            
+            formdata:{
+                plat_status:'',
+                status_name:'',
+                title:'',
+                truename:'',
+                telphone:'',
+                sug_type:{  //投诉
+                    id:'',
+                    type_name:'',
+                },
+                content:'',
+                created_at:'',
+                attachments:[],
+                dept_id:'',
+                is_top:'',
+                is_show:'',
+                log:[],//申请退回原因
+                reply_list:[],   //回复的详情
+                chase_list:{
+                    id:'',  //追问id
+                    reply_list:[], //追问回复
+                },
+            },
+
+            ComplaintList:[], //投诉类型列表
+            departmentList:[],  //部门分类
+            area:[],        //省市区
+            dept_id:'',      //部门选择id
+            provinceId:'',  //省id
+            provinceList:[],//省列表
+            cityId:'',     //市id
+            cityList:[],    //市列表
+            areaId:'',      //区id
+            areaList:[],    //区列表
+            provincename:'',
+            cityname:'',
+            areaname:'',
+            deptname:'',
+            area:'',  //省市区拼接
+            
+            isReadOnly:true,  //控制textarea是否可以编辑
+            buttonstate:1,    //问题修改 显示隐藏
+            type: [],
+
+            //不予处理
+            denyVisible:false,
+            desc:'',
+            textlength:'0',
+                  
+        }
+    },
+    watch:{
+        //判断置顶隐藏
+        type(odd,active){
+            //console.log(odd,active)
+            if(this.type.length == 2){
+                this.type.splice(odd,1);
+                this.type.concat(active);
+            }else{
+                this.type.concat(active);
+            };
+            if(odd == ""){
+                this.formdata.is_show =1;
+                this.formdata.is_top=1;
+            }else if(odd == "置顶"){
+                this.formdata.is_show =1;
+                this.formdata.is_top=2;
+            }else if(odd == "隐藏"){
+                this.formdata.is_show =2;
+                this.formdata.is_top=1;
+            }
+        },      
+    },
+    created(){
+        Bus.$on('sendID',(data)=>{
+            //console.log(data)
+            if(data.plat_status == 7){
+                this.editVisible = true;
+                this.id = data.id;
+                this.buttonstate = 1,
+                this.desc='',
+                this.textlength= 0,
+                //console.log(data)
+                //获取  弹窗数据
+                api.request({
+                    url: "suggest/detail",
+                    method: "GET",
+                    data:{
+                        id:this.id,
+                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,sugType,member',
+                    }
+                }).then(res=>{
+                   //console.log(res.data.data.common)
+                    if(res.status == 200){
+                        this.formdata={
+                            plat_status: res.data.data.common.plat_status,
+                            status_name: res.data.data.common.status_name,
+                            title: res.data.data.common.title,
+                            content: res.data.data.common.content,
+                            truename: res.data.data.common.truename,
+                            telphone: res.data.data.common.telphone,
+                            sug_type: res.data.data.common.sug_type,
+                            created_at: res.data.data.common.created_at,
+                            attachments: res.data.data.common.attachments,
+                            is_top: res.data.data.common.is_top,
+                            is_show: res.data.data.common.is_show,
+                            address:res.data.data.common.address,
+                            area: res.data.data.common.area,
+                            dept_id: res.data.data.common.dept_id,
+                            dept_name: res.data.data.common.dept_name,
+                            log:res.data.data.common.log,   //申请退回原因
+                            reply_list:res.data.data.common.reply_list,   //回复列表
+                            chase_list:res.data.data.common.chase_list,  //追问列表
+                        }
+                        
+                        if(res.data.data.common.is_top == 2){
+                            this.type =['置顶'];
+                        }else if(res.data.data.common.is_show == 2){
+                            this.type = ['隐藏'];
+                        }else{
+                            this.type = [];
+                        }
+                        
+                    }
+                },res => {
+                    this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                    });
+                });
+
+            }
+        });
+
+        this.getProvince();   //获取省市区 /获取省
+    },
+    methods: {
+        //获取省市区  获取省
+        getProvince(){
+            //获取省
+            api.request({
+                url: 'province',
+                method: "GET",
+                data:{
+                    pid:0,
+                    all:1,
+                    type:1,
+                },
+            })
+            .then(
+            res => {
+                //console.log(res)
+                if (res.status == 200) {
+                    this.provinceList =res.data.data.common;
+                }
+            },
+            res => {
+                this.$notify.error({
+                    title: "错误",
+                    message: "数据请求失败"
+                });
+            });
+        },
+        //投诉下拉菜单选择事件
+        Complaintclick(item,index) {
+            //console.log(item)
+
+            this.formdata.sug_type.type_id =item.id
+            this.formdata.sug_type.type_name =item.type_name
+        },
+       
+        
+        //通过审核 已转办
+        adoptsubmit(){
+            //先提交修改
+            api.request({
+                url: 'suggest/save',
+                method: "post",
+                data:{
+                    id: this.id,
+                    content:this.formdata.content,
+                    type_id:this.formdata.sug_type.type_id,
+                    is_top:this.formdata.is_top,
+                    is_show:this.formdata.is_show,
+                }
+            })
+            .then(
+            res => {
+                //console.log(res)
+                if (res.status == 200) {
+                    if(res.data.state == false){
+                        this.$notify.error({
+                            title: "错误",
+                            message: res.data.message
+                        });
+                    }else{
+                        //审核通过
+                        api.request({
+                            url: 'return/verify',
+                            method: "GET",
+                            data:{
+                                id:this.id
+                            },
+                        })
+                        .then(
+                        res => {
+                            //console.log(res)
+                            if (res.status == 200) {
+                                if(res.data.state = true){
+                                    Bus.$emit('detailChange',true);
+                                    this.$notify({
+                                        title: '审核通过',
+                                        message: '3秒后自动关闭',
+                                        type: 'success'
+                                    });
+                                    this.editVisible = false; 
+                                }
+                            }
+                        },
+                        res => {
+                            this.$notify.error({
+                                title: "错误",
+                                message: "数据请求失败"
+                            });
+                        });
+                    }
+                }
+            },
+            res => {
+                this.$notify.error({
+                    title: "错误",
+                    message: "数据请求失败"
+                });
+            });
+            
+
+        },
+
+        //问题修改  控制readonlystate 和按钮显示隐藏
+        readonlystate(){
+            this.isReadOnly = false;
+            this.buttonstate = 2;
+        },
+        //问题修改  取消
+        // quillcancel(){
+        //     this.isReadOnly = true;
+        //     this.buttonstate = 1;
+        // },
+
+        //问题修改 确定
+        quillconfirm(){
+            this.isReadOnly = true;
+            this.buttonstate = 1;
+        },
+        //saveEdit 不予处理
+        saveEdit(){
+            this.denyVisible = true;
+        },
+
+        //不予处理原因  文本框输入获取字数
+        removeActive(e){
+            this.textlength =this.desc.length
+        },
+
+        //驳回 提交
+        submit(){
+            if(this.desc.length == 0){
+                this.$notify.error({
+                title: '错误',
+                message: '原因不能为空！'
+                });
+            }else{
+                api.request({
+                    url: 'suggest/reject',
+                    method: "POST",
+                    data:{
+                        id:this.id,
+                        content:this.desc,
+                    }
+                })
+                .then(
+                res => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        if(res.data.state = true){
+                            Bus.$emit('detailChange',true);
+                            this.$notify({
+                                title: '成功',
+                                message: '提交成功',
+                                type: 'success'
+                            });
+                            this.denyVisible =false;
+                            this.editVisible =false;
+                        }
+                    }
+                },
+                res => {
+                    this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                    });
+                });
+                
+            }
+        },
+    },
+}
+</script>
+
+<style>
+    .maskone .selsct_city{
+        width: 96px;
+    }
+</style>
+

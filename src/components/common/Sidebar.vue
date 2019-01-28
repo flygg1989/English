@@ -3,7 +3,7 @@
          <el-menu class="sidebar-el-menu" :default-active="onRoutes" unique-opened router>
             <v-SidebarL></v-SidebarL>
             <v-SidebarR></v-SidebarR>
-            <div class="btn_return" @click="collapseChage"><i class="el-icon-lx-back"></i></div>
+            <!-- <div class="btn_return" @click="collapseChage"><i class="el-icon-lx-back"></i></div> -->
         </el-menu>
        
     </div>
@@ -30,6 +30,7 @@
         methods:{
             // 侧边栏折叠
             collapseChage(){
+                //console.log( this.collapse )
                 this.collapse = !this.collapse;
                 bus.$emit('collapse', this.collapse);
             },
@@ -46,7 +47,7 @@
         left: 0;
         top: 64px;
         bottom:0;
-        overflow-y: scroll;
+       overflow: visible;
     }
     .sidebar::-webkit-scrollbar{
         width: 0;
@@ -60,16 +61,5 @@
     .sidebar > ul {
         height:100%;
     }
-    .btn_return{
-        width: 16px;
-        height: 64px;
-        line-height:64px;
-        text-align: center;
-        background:#dedede;
-        z-index: 998;
-        position: absolute;
-        top: 50%;
-        right: -2px;
-        border-radius: 0 8px 8px 0;
-    }
+    
 </style>

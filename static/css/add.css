@@ -1,0 +1,412 @@
+/* 郭超宇.sidebar_right样式 */
+.sidebar_right .el-submenu__title{
+    padding:0;
+  }
+
+.maskone .selsct_city{
+    width: 96px;
+}
+.maskone .selsct_cityone{
+    width: 140px;
+}
+/*****新增  菜单******/
+.content-right{
+    left: 250px;
+}
+
+/*****新增  修改密码******/
+.ChangePassword .el-dialog__header{
+    text-align: center ;
+    
+}
+.ChangePassword .el-dialog__title{
+    color: #4D84FF !important;
+    font-size: 24px !important;
+}
+
+.ChangePassword .ms-content{
+    padding: 0px 60px 0 30px;
+}
+.ChangePassword .login-btn{
+    text-align: right;
+}
+.ChangePassword .login-btn button{
+    margin-bottom: 10px;
+    width: 104px;
+    height: 40px;
+    font-size: 14px;
+}
+.ChangePassword .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
+    display: none;
+}
+.ChangePassword .el-form-item__error{
+    position: absolute;
+    top: 25%;
+    right:10px;
+    left: 85%;
+}
+.ChangePassword .el-input__suffix{
+    right: -40px;
+    font-size: 24px;
+}
+/**线**/
+.ChangePassword .line-top{
+    border-top: 1px solid #ddd;
+    margin-bottom: 24px;
+    width: 352px;
+    margin-left: 78px;
+}
+
+/*****新增  创建部门******/
+.CreateDepartment .el-dialog__header{
+    text-align: center ;
+    
+}
+.CreateDepartment .el-dialog__title{
+    color: #4D84FF !important;
+    font-size: 24px !important;
+    font-weight: bold;
+}
+
+.CreateDepartment .ms-content{
+    padding: 0px 80px 0 30px;
+}
+.CreateDepartment .ms-content .el-input__inner{
+    height: 40px;
+    line-height: 40px;
+}
+.CreateDepartment .login-btn{
+    text-align: right;
+}
+.CreateDepartment .login-btn button{
+    margin-bottom: 10px;
+    width: 104px;
+    height: 40px;
+    font-size: 14px;
+    background:#4D84FF;
+}
+.CreateDepartment .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
+    display: none;
+}
+.CreateDepartment .el-form-item__label{
+    line-height: 40px;
+}
+.CreateDepartment .el-form-item__error{
+    position: absolute;
+    top: 25%;
+    right:10px;
+    left: 85%;
+}
+.CreateDepartment .el-input__suffix{
+    right: -40px;
+    font-size: 24px;
+}
+
+/**线**/
+.CreateDepartment .line-top{
+    border-top: 1px solid #ddd;
+    margin-bottom: 24px;
+    width: 352px;
+    margin-left: 58px;
+}
+/*******上传图片********/
+.CreateDepartment .upload-box .el-upload{
+    width:310px;
+    height:104px;
+    background:rgba(77,132,255,0.03);
+    border-radius:3px;
+    border:1px dashed rgba(77,132,255,0.7);
+}
+.CreateDepartment .upload-box .el-upload .box-inline{
+    height:104px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+}
+.CreateDepartment .upload-box .el-upload .el-upload__text{
+    font-size:14px;
+    color:#4D84FF;
+}
+.CreateDepartment .select_department{
+    width: 310px;
+}
+.CreateDepartment .select_department i{
+    position:relative;
+    left: -50px;
+}
+.CreateDepartment .selsct_city{
+    width: 32%;
+}
+.CreateDepartment .selsct_city i{
+    position:relative;
+    left: -50px;
+}
+.CreateDepartment .upload-img{
+    width: 100%;
+    height: auto;;
+}
+
+.btn_style_one{
+    border-color: #4D84FF;
+    color: #4D84FF;
+}
+
+.mask .el-dialog__title{
+    font-size: 20px;
+    color: #2D3557;
+    font-weight: bold;
+    width: 450px;
+    display: inline-block;
+}
+.mask .el-dialog__footer{
+    padding: 10px 30px 20px;
+}
+.mask textarea{
+        font-family: 'MicrosoftYaHei';
+        line-height: 32px;
+        font-size: 16px;
+        color:rgba(45,53,87,1);
+    }
+    .mask .el-dialog__header{
+        text-align: center ;
+        color: #2D3557 !important;
+        font-size: 20px !important;
+    }
+
+    /********状态**********/
+    .mask_tip{
+        position: absolute;
+        top: 0;
+        left: 32px;
+        padding: 14px 33px;
+        border-radius: 0  0  8px 8px;
+        font-size: 18px;
+        color: #fff;
+    }
+    /****状态底色****/
+    .mask_tip_color_one{
+        background: #FF6D4A;
+    }
+    .mask_tip_color_two{
+        background: #FF5161;
+    }
+    .mask_tip_color_three{
+         background: #2CD696;
+    }
+    .mask_tip_color_four{
+         background: #4D84FF;
+    }
+ 
+    /********/
+    .mask .el-dialog__body{
+        padding: 10px 30px;
+    }
+    /***** 第二行文字******/
+    .mask_tip_p{
+        padding: 15px 0;
+        font-size: 16px;
+        color: #2D3557;
+    }
+    .mask_tip_p span{
+        margin-right: 24px;
+    }
+    .mask_tip_p span i{
+        color: #4D84FF
+    }
+    .mask_tip_p span:last-child{
+        margin-right: 0;
+        float: right;
+    }
+    .mask_tip_p .el-dropdown span{
+        float: inherit;
+    }
+    /***** 图片展示 ******/
+    .mask .imgstyleone{
+        overflow: hidden;
+        padding: 10px 0;
+    }
+    .mask .imgstyleone li{
+        list-style: none;
+        float: left;
+        width: 256px;
+        height: 192px;
+        margin-right: 15px;
+    }
+    .mask .imgstyleone li:last-child{
+        margin-right: 0;
+    }
+    .mask .imgstyleone li img{
+        width: 100%;
+        max-height: 192px;
+    }
+
+    /***** 轮播版 图片展示 ******/
+    .mask .el-carousel__indicators{
+        display: none;
+    }
+    .mask .el-carousel__item img{
+        width:100%;
+        max-height: 300px;
+    }
+    .mask .el-carousel__container{
+        margin: 15px 0;
+    }
+
+    /***** 文本框 ******/
+    .mask .el-textarea__inner{
+        font-size: 16px;
+        color: #2D3557;
+    }
+
+    /***** 部门 人员 事件  文字******/
+    .mask .modify{
+        overflow: hidden;
+    }
+    .mask .handle-modify{
+        float: right;
+        margin-top: 16px;
+        border-color: #4D84FF;
+        color: #4D84FF;
+    }
+
+    .mask .handle-box {
+        margin: 20px 0;
+        overflow: hidden;
+    }
+
+    /***** 选择 城市******/
+    .mask .handle-select {
+        width: 120px;
+        margin-right: 10px;
+        font-size: 14px;
+        color: #2D3557;
+    }
+    .mask .el-checkbox-group{
+        float: right;
+        font-size: 14px;
+        
+    }
+    .mask .el-checkbox__label{
+        color: #2D3557;
+        line-height: 32px;
+    }
+    .mask .num{
+        color: #2D3557;
+        font-size: 12px;
+        position: absolute;
+        bottom:75px;
+        right: 40px;
+        font-style: normal;
+    }
+
+
+    .mask .bg_color_tip{
+        line-height: 56px;
+        overflow: hidden;
+    }
+    .mask .bg_color_tip h1{
+        font-size: 20px;
+        color: #2D3557;
+        font-weight: bold;
+        float: left;
+    }
+    .mask .bg_color_tip div{
+        float: right;
+    }
+    .mask .bg_color_tip div span{
+        margin-left:24px; 
+    }
+    .mask .bg_color_f7 .el-textarea__inner{
+        background: none;
+       margin-bottom: 20px;
+    }
+    /*****  富文本 ******/
+    .mask .ql-container{
+        min-height: 110px;
+        font-size: 16px;
+    }
+    .mask .el-input {
+        margin-bottom:16px; 
+    }
+
+    .mask .quill-editor-footer{
+        padding: 16px 0 0px 0;
+    }
+
+    .mask .hr-top{
+        margin: 20px 0;
+        border-top: 1px solid #DFE5EB;
+    }
+
+    /**图片上传**/
+    .mask .el-upload{
+        width: 112px;
+        height: 112px;
+        line-height: 112px;
+        margin-bottom: 20px;
+    }
+    .mask .el-upload p{
+        position: relative;
+        top: -80px;
+    }
+    .mask .el-upload-list__item{
+        width: 112px;
+        height: 112px;
+    }
+
+    .bg_color_f7{
+        width:752px;
+        padding: 0 24px;
+        margin: 20px 0;
+        background:rgba(247,247,248,1);
+        overflow: hidden;
+        border-bottom: 1p solid#DFE5EB;
+    }
+
+    /**回复 图片**/
+    .ReplyImg{
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+    .ReplyImg li{
+        list-style: none;
+        float: left;
+        margin-right: 16px;
+        width: 112px;
+        height: 112px;
+        border-radius: 5px;
+        border-top: 1px solid #DFE5EB;
+    }
+    .ReplyImg li img{
+        width: 100%;
+        height: 100%;
+    }
+    .ReplyImg li:last-child{
+        margin-right: 0;
+    }
+    
+    /***评分 开关***/
+    .mask .el-switch{
+        position: relative;
+        top: 20px;
+    }
+    /***评分***/
+    .mask .el-rate{
+        position: relative;
+        top:8px;
+    }
+
+    .rate_label .el-form-item__label{
+        width: 100px;
+    }
+
+    .uploadImg_nolist .el-upload-list {
+        display: none;
+    }
+    /**默认评价**/
+    .bg_color_tip_sp{
+        font-size: 16px;
+        color: #2D3557;
+        line-height: 21px;
+    }

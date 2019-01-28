@@ -70,7 +70,7 @@
         padding-left: 20px;
     }
 
-    .tags el-breadcrumb {
+    .tags .el-breadcrumb {
         box-sizing: border-box;
         width: 100%;
         height: 100%;
@@ -78,7 +78,7 @@
     .el-breadcrumb{
       line-height: 64px; 
     }
-    .tags el-breadcrumb-item {
+    .tags .el-breadcrumb-item {
         float: left;
         margin: 3px 5px 2px 3px;
         border-radius: 3px;

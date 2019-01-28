@@ -4,102 +4,186 @@
         <div class="collapse-btn">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">CmsTop网络问政云平台</div>
+        <div class="logo">荆楚问政</div>
         <div class="header-right">
             <div class="header-user-con">
-                <!-- 全屏显示 -->
-                <!-- <div class="btn-fullscreen" @click="handleFullScreen">
-                    <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
-                        <i class="el-icon-rank"></i>
-                    </el-tooltip>
-                </div> -->
-                <!-- 消息中心 -->
-                <!-- <div class="btn-bell">
-                    <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
-                        <router-link to="/tabs">
-                            <i class="el-icon-bell"></i>
-                        </router-link>
-                    </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
-                </div> -->
                 <!-- 用户头像 -->
-                <div class="user-avator"><img src="static/img/img.jpg"></div>
+                <div class="user-avator">
+                    <img src="static/img/headimg.png" v-if="utype == 1">
+                    <img :src="headimg" v-if="utype == 2">
+                </div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
                         {{username}}<!--  <i class="el-icon-caret-bottom"></i> -->
                     </span>
                     <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item divided v-if="utype == 1" command="ChangePassword">修改密码</el-dropdown-item>
+                        <router-link to="/personalcenter" v-if="utype == 2"><el-dropdown-item>个人中心</el-dropdown-item></router-link>
                         <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
+
+        <div class="ChangePassword">
+            <el-dialog title="修改密码" :visible.sync="editVisible" :close-on-click-modal="false" width="560px">
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="100px" class="ms-content">
+                    <el-form-item label="原密码" prop="Oldpassword" >
+                        <el-input v-model="ruleForm.Oldpassword" type="password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="新密码"  prop="Newpassword" >
+                        <el-input v-model="ruleForm.Newpassword" type="password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="重复新密码"  prop="Repeatpassword">
+                        <el-input v-model="ruleForm.Repeatpassword" type="password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                    </el-form-item>
+                    <div class="line-top"></div>
+                    <div class="login-btn">
+                        <el-button type="primary" @click="submitForm('ruleForm')">确 认</el-button>
+                    </div>
+                </el-form>
+
+            </el-dialog>  
+        </div>
     </div>
 </template>
 <script>
+    import axios from 'axios';
     import bus from '../common/bus';
+    import Bus from "@/components/common/bus.js";
     export default {
         data() {
             return {
+                API:domain.testUrl,   //全局接口
+                editVisible: false,  //控制弹框显示隐藏
                 collapse: false,
                 fullscreen: false,
-                name: 'linxin',
-                message: 2
+                username: '',
+                headimg:'static/img/headimg.png',  //头像
+                utype:'',    //判断 平台还是部门
+
+                ruleForm: {
+                    Oldpassword: '',
+                    Newpassword: '',
+                    Repeatpassword:'',
+                },
+                rules: {
+                    Oldpassword: [
+                        { required: true, message: '未填写', trigger: 'blur' }
+                    ],
+                    Newpassword: [
+                        { required: true, message: '未填写', trigger: 'blur' }
+                    ],
+                    Repeatpassword: [
+                        { required: true, message: '未填写', trigger: 'blur' }
+                    ]
+                }
             }
         },
+        
+        
         computed:{
-            username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
-            }
+            
+        },
+        created(){
+            Bus.$on('senduserinfo',(data)=>{
+                if(data == true){
+                  this.getuserinfo()  
+                }
+            });
+            this.getuserinfo() //判断用户信息
         },
         methods:{
+            //判断用户信息
+            getuserinfo(){
+                let headimg = localStorage.getItem('headimg'); //判断用户头像
+                if(localStorage.getItem('headimg') != null){
+                    this.headimg =headimg
+                };
+                let utype = localStorage.getItem('utype');  //判断是平台还是部门
+                if(utype == 1){
+                    this.utype = 1
+                }else{
+                    this.utype = 2
+                };
+                this.username =localStorage.getItem('uname');  //判断用户名称
+            },
+
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
+                    localStorage.clear();
                     this.$router.push('/login');
+                }else if(command == 'ChangePassword'){
+                    console.log('修改密码')
+                    this.editVisible = true;
                 }
             },
+
             // 侧边栏折叠
             collapseChage(){
                 this.collapse = !this.collapse;
                 bus.$emit('collapse', this.collapse);
             },
-            // 全屏事件
-            handleFullScreen(){
-                let element = document.documentElement;
-                if (this.fullscreen) {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitCancelFullScreen) {
-                        document.webkitCancelFullScreen();
-                    } else if (document.mozCancelFullScreen) {
-                        document.mozCancelFullScreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
+
+            //修改密码
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        if(this.ruleForm.Newpassword == this.ruleForm.Repeatpassword){
+                            var self =this;
+                            axios({
+                                url:this.API+ 'dept/edit?token='+localStorage.getItem('sk'),
+                                method: 'POST',
+                                data: {
+                                    "old_pwd":this.ruleForm.Oldpassword,
+                                    "new_pwd":this.ruleForm.Newpassword,
+                                    "new_pwd2":this.ruleForm.Repeatpassword,
+                                },
+                            }).then(function (res) {
+                                //console.log(res);
+                                if (res.status == 200) {
+                                    if(res.data.state == false){
+                                        self.$notify.error({
+                                            title: "错误",
+                                            message: res.data.message
+                                        });  
+                                    }else{
+                                        self.$notify({
+                                            title: '成功',
+                                            message: '修改成功',
+                                            type: 'success'
+                                        });
+                                        self.editVisible = false;
+                                    }
+                                }
+                            })
+                            .catch(function (err) {
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: "数据请求失败"
+                                });
+                            })
+                        }else{
+                            this.$notify.error({
+                                title: '错误',
+                                message: '密码输入不一致'
+                            });  
+                        }
+                    
+                    } else {
+                        //console.log('error submit!!');
+                        this.$notify.error({
+                            title: '错误',
+                            message: '修改失败'
+                        });
+                        return false;
                     }
-                } else {
-                    if (element.requestFullscreen) {
-                        element.requestFullscreen();
-                    } else if (element.webkitRequestFullScreen) {
-                        element.webkitRequestFullScreen();
-                    } else if (element.mozRequestFullScreen) {
-                        element.mozRequestFullScreen();
-                    } else if (element.msRequestFullscreen) {
-                        // IE11
-                        element.msRequestFullscreen();
-                    }
-                }
-                this.fullscreen = !this.fullscreen;
+                });
             }
         },
-        mounted(){
-            if(document.body.clientWidth < 1500){
-                this.collapseChage();
-            }
-        }
+        
     }
 </script>
 <style scoped>
@@ -122,6 +206,8 @@
         float: left;
         width:250px;
         line-height: 64px;
+        font-size: 16px;
+        font-weight: bold;
     }
     .header-right{
         float: right;
@@ -166,8 +252,8 @@
     }
     .user-avator img{
         display: block;
-        width:40px;
-        height:40px;
+        width:32px;
+        height:32px;
         border-radius: 50%;
     }
     .el-dropdown-link{

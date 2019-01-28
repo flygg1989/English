@@ -1,5 +1,4 @@
 
-
 /* Tabs组件样式 */
 .el-tabs{
   height:100%;
@@ -39,7 +38,7 @@
   line-height:56px;
   padding-left:16px;
 }
-#tab-0.is-active:after,#tab-1.is-active:after,#tab-2.is-active:after{
+.el-tabs__item.is-active:after{
   content:".";
   position: absolute;
   right:-8px;
@@ -48,7 +47,7 @@
   height:8px;
   background: radial-gradient(circle at top right, transparent 8px, #fff 0) top left;
 }
-#tab-1.is-active::before,#tab-2.is-active::before,#tab-3.is-active::before{
+.el-tabs__item.is-active::before{
   content:".";
   position: absolute;
   left:-8px;
@@ -57,9 +56,12 @@
   height:8px;
   background: radial-gradient(circle at top left, transparent 8px, #fff 0) top left;
 }
+.el-tabs__item.is-active:last-child:after,.el-tabs__item.is-active:first-child::before{
+  display:none;
+}
 
 .el-tabs--border-card .el-tabs__content{
-  padding:9px 16px 0;
+  padding:8px 16px 0;
   flex:1;
   box-sizing: border-box;
 }
@@ -68,12 +70,33 @@
   display: flex;
   flex-direction: column;
 }
+.tabs-content{
+  flex:1;
+  display: flex;
+  flex-direction: column;
+}
+.notabs-content{
+  height:100%;
+  display: flex;
+  flex-direction: column;
+}
 /* Operation组件样式 */
-.el-tabs--border-card .el-tabs__content .ipt-label{
+.operation{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height:40px;
+  padding:8px 0 16px 0;
+}
+.operation .ipt-label{
   padding-left:10px;
   padding-right:8px;
   color:rgba(45,53,87,.6);
   font-size:14px;
+}
+.operation-right{
+  display: flex;
+  align-items: center;
 }
 .operation .el-select{
   width:152px;
@@ -88,7 +111,11 @@
   border-radius:5px 0 0 5px;
 }
 .operation .search-btn{
+  width:80px;
   border-radius:0 5px 5px 0;
+}
+.operation .export-table-btn{
+  width:104px;
 }
 .operation .el-button{
   height:40px;
@@ -110,59 +137,82 @@
 /* Operation组件el-button按钮统一颜色 */
 .operation .el-button{
   background: #4D84FF;
+  font-size:14px;
 }
-
+.operation .creat-branch-btn{
+  width:160px;
+  height:40px;
+}
+/* Operation组件日期选择器样式 */
+.operation .el-range-editor--small .el-range-separator{
+  line-height:32px;
+}
+/* Operation组件排行榜切换按钮样式 */
+.operation .el-radio-button__inner{
+  width:120px;
+  height:40px;
+  font-size:14px;
+  color: #4D84FF;
+  border-color:#4D84FF;
+  line-height:20px;
+}
+.operation .el-radio-button:first-child .el-radio-button__inner{
+  border-color:#4D84FF;
+}
 /* Table组件样式 */
-.el-tabs--border-card .el-table{
+.el-table{
   flex: 1;
 }
-.el-tabs--border-card .el-table .el-table__header-wrapper{
+.el-table .el-table__header-wrapper{
   width:100%;
   background:#f9f9f9;
 }
-.el-tabs--border-card .el-table .table-header{
+.el-table .table-header{
   height:56px;
 }
-.el-tabs--border-card .el-table .el-table__row{
+.el-table .el-table__row{
   height:80px;
 }
-.el-tabs--border-card .el-table th{
+.el-table th{
   background:#f9f9f9;
   font-size:16px;
   color:#2D3557;
 }
-.el-tabs--border-card .el-table th .el-table__column-filter-trigger{
+.el-table th .el-table__column-filter-trigger{
   margin-left:4px;
 }
-.el-tabs--border-card .el-table td{
+.el-table td{
   font-size:14px;
   color:#2D3557;
 }
-.el-tabs--border-card .el-table .font-red{
+.el-table .font-red{
   color:#FF5161;
 }
-/* 问政>已审核>已回复Table组件操作栏样式 */
-.el-tabs--border-card .el-table .el-switch{
+.el-table .font-green{
+  color:#3CD970;
+}
+/* 问政>已审核>已回复Table组件操作栏--开关--样式 */
+.el-table .el-switch{
   height:40px;
 }
-.el-tabs--border-card .el-table .el-switch__label{
+.el-table .el-switch__label{
   width:24px;
   height:40px;
   margin-right:4px;
 }
-.el-tabs--border-card .el-table .el-switch__label span{
+.el-table .el-switch__label span{
   width:24px;
   height:40px;
   font-size:12px;
   color:rgba(45,53,87,.4);
   line-height:20px;
 }
-.el-tabs--border-card .el-table .table2-2 .el-button,.el-tabs--border-card .el-table .table2-2 .el-switch{
+.el-table .table2-2 .el-button,.el-table .table2-2 .el-switch{
   margin-right:10px;
 }
 
 /* Table组件操作栏按钮样式 */
-.el-tabs--border-card .el-table .el-button--mini{
+.el-table .el-button--mini{
   color:#4D84FF;
   border-color:#4D84FF;
   background:rgba(255,255,255,0);
@@ -171,19 +221,19 @@
   margin:0;
   margin-right:5px;
 }
-.el-tabs--border-card .el-table .el-button--mini:hover,.el-tabs--border-card .el-table .el-button--mini:focus{
+.el-table .el-button--mini:hover,.el-table .el-button--mini:focus{
   color:#fff;
   background:#4D84FF;
 }
-.el-tabs--border-card .el-table .el-button--mini:active{
+.el-table .el-button--mini:active{
   color:#fff;
   background:rgba(77,132,255,0.8);
 }
-.el-tabs--border-card .el-table .el-button--text{
+.el-table .hover-btn{
   color:#4D84FF;
   font-size:14px;
 }
-.el-tabs--border-card .el-table .el-icon-more{
+.el-table .el-icon-more{
   color:#D4D7DE;
 }
 .el-tooltip__popper.is-light{
@@ -194,9 +244,69 @@
   max-width:280px;
   color:rgba(45,53,87,1);
 }
+
+/* table组件标题栏布局样式 */
+.el-table .title-box{
+  height:64px;
+  display:flex;
+  justify-content:space-between;
+}
+.el-table .title-box .title-left,.el-table .title-box .title-right{
+  height:64px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.el-table .title-box .title-left{
+  flex:1;
+}
+.title-box .title-name{
+  height:20px;
+  width:220px;
+  line-height:20px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+.title-box .title-right{
+  width:24px;
+}
+
+.el-table .title-box .title-tab{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding-top:6px;
+}
+.el-table .title-box .is-top,.el-table .title-box .is-chase{
+  display:inline-block;
+  width:30px;
+  height:16px;
+  border-radius:2px;
+  font-size:10px;
+  text-align:center;
+  line-height:16px;
+  margin-right:8px;
+}
+.el-table .title-box .is-top{
+  color:rgba(255,81,97,1);
+  background:rgba(255,81,97,.1);
+}
+.el-table .title-box .is-chase{
+  color:rgba(77,132,255,1);
+  background:rgba(77,132,255,.1);
+}
+
+.el-table-filter {
+  max-height: 400px;
+  overflow: auto;
+}
+
+
 /* table-footer组件样式 */
 .table-footer{
   height:56px;
+  padding-left:42px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -205,6 +315,7 @@
   display: flex;
 }
 .table-footer .el-button{
+  width:80px;
   color:#4D84FF;
   border-color:#4D84FF;
   background:rgba(255,255,255,0);
@@ -226,4 +337,92 @@
 .table-footer .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #4D84FF;
   color: #fff;
+}
+/* 数据统计页面样式 */
+.statistics .el-table .branch-name{
+  display:flex;
+  align-items: center;
+  justify-content:flex-start;
+}
+.statistics .el-table .table-header .el-table_1_column_1{
+  padding-left:46px;
+}
+.statistics .el-table .branch-name div{
+  width:20px;
+  height:20px;
+  margin-left:8px;
+  margin-right:18px;
+  border-radius:10px;
+  font-size:13px;
+  color:#fff;
+  background:#DFE5EB;
+  text-align: center;
+  line-height:20px;
+}
+.statistics .el-table .branch-name .bg-1{
+  background: rgba(255,81,97,1);
+}
+.statistics .el-table .branch-name .bg-2{
+  background: rgba(255,109,74,1);
+}
+.statistics .el-table .branch-name .bg-3{
+  background: rgba(255,208,18,1);
+}
+/* 个人中心页面样式 */
+.personal-center .upload-box .el-upload{
+  width:320px;
+  height:104px;
+  background:rgba(77,132,255,0.03);
+  border-radius:3px;
+  border:1px dashed rgba(77,132,255,0.7);
+}
+.personal-center .upload-box .el-upload .box-inline{
+  height:104px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:center;
+}
+.personal-center .upload-box .el-upload .el-upload__text{
+  font-size:14px;
+  color:#4D84FF;
+}
+.personal-center .el-form .el-form-item{
+  height:40px;
+  margin-bottom:16px;
+}
+.personal-center .el-form .el-form-item .el-form-item__label{
+  font-size:14px;
+  color:rgba(45,53,87,.6);
+  line-height:40px;
+}
+.personal-center .el-form .el-form-item .el-input__inner{
+  font-size:16px;
+  color:#2D3557;
+  height:40px;
+}
+.el-input.is-disabled .el-input__inner{
+  background:rgba(247,247,247,1);
+  border:1px solid rgba(240,240,240,1);
+}
+.personal-center .el-form-item--small .el-form-item__content{
+  line-height:40px;
+}
+.personal-center .el-form .el-input__suffix-inner{
+  padding-right:11px;
+  font-size:14px;
+  color:rgba(45,53,87,0.25);
+}
+.personal-center .form-footer{
+  display: flex;
+  align-items: center;
+  justify-content:flex-end;
+}
+.personal-center .form-footer .el-button{
+  font-size:16px;
+  color:#4D84FF;
+  text-decoration:underline;
+}
+.personal-center .form-footer .el-button:hover{
+  color:rgba(77,132,255,.8);
 }
