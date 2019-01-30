@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar sidebar-left"   @click="handleClick">
+    <div class="sidebar sidebar-left" >
         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#2E313E"
             text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router >
             <template v-for="item in items" >
@@ -19,7 +19,7 @@
     export default {
         data() {
             return {
-                collapse: false,
+                collapse: true,
                 items: [
                     {
                         icon: 'el-icon-lx-home',
@@ -55,7 +55,7 @@
                 if(utype == 1){
                     this.items[0].index ='audit'
                 }else{
-                    this.items[0].index ='audited'
+                    this.items[0].index ='politicshandle'
                 }
             },
         }

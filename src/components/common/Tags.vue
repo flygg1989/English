@@ -74,9 +74,7 @@
         box-sizing: border-box;
         width: 100%;
         height: 100%;
-    }
-    .el-breadcrumb{
-      line-height: 64px; 
+        line-height: 64px; 
     }
     .tags .el-breadcrumb-item {
         float: left;

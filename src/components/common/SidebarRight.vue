@@ -52,7 +52,7 @@
                 </template>
             </template>
         </el-menu>
-        <div class="btn_return" @click="collapseChage"><i :class="icon"></i></div>
+        <!-- <div class="btn_return" @click="collapseChage"><i :class="icon"></i></div> -->
     </div>
 </template>
 
@@ -62,7 +62,7 @@
     export default {
         data() {
             return {
-                collapseb: true,
+                collapseb: false,
                 icon:'el-icon-caret-right',
                 utype:'',
                 //平台
@@ -143,7 +143,10 @@
                             {
                                 index: 'politicshandle',
                                 title: '问政处理',
-                                num:'',
+                            },
+                            {
+                                index: 'personalcenter',
+                                title: '个人中心',
                             }
                         ]
                     },

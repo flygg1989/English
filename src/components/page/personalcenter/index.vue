@@ -435,6 +435,9 @@ export default {
   height:104px;
   margin:0 auto;
 }
+.box-left .el-upload{
+    line-height: auto;
+}
   /* 右部表单区 */
 .box-right{
   width:560px;

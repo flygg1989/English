@@ -114,6 +114,9 @@
   width:80px;
   border-radius:0 5px 5px 0;
 }
+.operation .el-input{
+  margin-bottom: 0;
+}
 .operation .export-table-btn{
   width:104px;
 }

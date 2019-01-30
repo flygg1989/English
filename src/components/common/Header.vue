@@ -19,7 +19,7 @@
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item divided v-if="utype == 1" command="ChangePassword">修改密码</el-dropdown-item>
-                        <router-link to="/personalcenter" v-if="utype == 2"><el-dropdown-item>个人中心</el-dropdown-item></router-link>
+                        <!-- <router-link to="/personalcenter" v-if="utype == 2"><el-dropdown-item>个人中心</el-dropdown-item></router-link> -->
                         <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
