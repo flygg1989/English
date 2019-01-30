@@ -1,6 +1,6 @@
 <template>
     <div class="CreateDepartment">
-        <el-dialog title="创建部门" :visible.sync="editVisible" :close-on-click-modal="false" width="560px">
+        <el-dialog :title="title=='新建部门'?title='新建部门':title='修改部门'" :visible.sync="editVisible" :close-on-click-modal="false" width="560px">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="100px" class="ms-content">
                 <el-form-item label="部门名称" prop="department">
                     <el-input v-model="ruleForm.department"></el-input>
@@ -25,7 +25,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="行政级别" >
-                    <el-select v-model="provinceId" placeholder="请选择" class="selsct_city">
+                    <el-select v-model="provinceId" clearable  placeholder="请选择" class="selsct_city">
                         <el-option
                         v-for="item in provinceList"
                         :key="item.id"
@@ -33,7 +33,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="cityId" placeholder="请选择"  class="selsct_city">
+                    <el-select v-model="cityId" clearable  placeholder="请选择"  class="selsct_city">
                         <el-option
                         v-for="item in cityList"
                         :key="item.id"
@@ -41,7 +41,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="areaId" placeholder="请选择"  class="selsct_city">
+                    <el-select v-model="areaId" clearable  placeholder="请选择"  class="selsct_city">
                         <el-option
                         v-for="item in areaList"
                         :key="item.id"
@@ -50,7 +50,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                 <el-form-item label="默认密码" prop="Defaultpassword" >
+                 <el-form-item label="默认密码" prop="Defaultpassword" v-if="pagestate == 1">
                     <el-input v-model="ruleForm.Defaultpassword" placeholder="请输入密码"></el-input>
                 </el-form-item>
                 <el-form-item label="上传部门头像" >
@@ -67,7 +67,8 @@
                 </el-form-item>
                 <div class="line-top"></div>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm('ruleForm')">提 交</el-button>
+                    <el-button type="primary" v-if="pagestate==1" @click="submitForm('ruleForm')">提 交</el-button>
+                    <el-button type="primary" v-if="pagestate == 2" @click="reviseForm('ruleForm')">修 改</el-button>
                 </div>
             </el-form>
 
@@ -84,6 +85,9 @@ export default {
         return {
             API:domain.testUrl,   //全局接口
             editVisible: false,  //控制弹框显示隐藏
+            pagestate:'',  //1创建 2修改
+            user_id:'',
+            title:'',
             ruleForm: {
                 department: '',
                 Personliable: '',
@@ -126,7 +130,24 @@ export default {
     created(){
         //接受上级页面传过来的信息
         Bus.$on('sendstate',(data)=>{
-            this.editVisible =data
+            console.log(data)
+            this.editVisible =data.state;
+            this.title =data.value;
+            this.ruleForm={
+                department: data.value.dept_name,
+                Personliable: data.value.uname,
+                phone:data.value.mobile,
+                email: data.value.email,
+            }
+            this.user_id =data.value.user_id;
+            this.imageUrl =data.value.headimg;
+            if(data.value.dept_name){
+               this.pagestate = 2 
+            }else{
+                this.pagestate = 1
+            }
+            
+            
         });
         this.getcategory();   //获取部门分类
         this.getProvince();   //获取省市区 /获取省
@@ -274,6 +295,14 @@ export default {
         //提交
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
+                  if(this.cityid == '' || this.cityid == null){
+                      this.cityid = 0;
+                      console.log(this.cityid +'city')
+                  };
+                  if(this.areaId == '' || this.areaId == null){
+                      this.areaId =0;
+                      console.log(this.areaId +'area')
+                  };
                 //console.log(valid)
                 var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");  // 邮箱正则表达式
                 if (valid) {
@@ -287,21 +316,22 @@ export default {
                         title: '错误',
                         message: '邮箱格式错误'
                     });
-                  }else if(
-                      this.ruleForm.branch == '' || this.ruleForm.branch == null &&
-                      this.provinceId == '' || this.provinceId == null &&
-                      this.cityid == '' || this.cityid == null &&
-                      this.areaId == '' || this.areaId == null 
-                      ){
-                    this.$notify.error({
+                  }else if(this.ruleForm.branch == '' || this.ruleForm.branch == null){
+                     this.$notify.error({
                         title: '错误',
-                        message: '选择项有误'
+                        message: '部门分类未选择'
+                    }); 
+                  }else if(this.provinceId == '' || this.provinceId == null){
+                      this.$notify.error({
+                        title: '错误',
+                        message: '省份未选择'
                     });
                   }else if(this.imageUrl ==null || this.imageUrl ==''){
+                      console.log(777)
                       this.$notify.error({
                         title: '错误',
                         message: '请上传头像'
-                    });
+                      });
                   }else{
                     var self =this;
                     axios({
@@ -320,14 +350,23 @@ export default {
                             "headimg":this.imageUrl,
                         },
                     }).then(function (res) {
-                        console.log(res);
+                        // console.log(res);
                         if (res.status == 200) {
-                            self.$notify({
-                                title: '成功',
-                                message: '创建成功',
-                                type: 'success'
-                            }); 
-                            self.editVisible =false
+                            if(res.data.state ==false){
+                                self.$notify.error({
+                                    title: '错误',
+                                    message: res.data.message
+                                });
+                            }else{
+                                self.$notify({
+                                    title: '成功',
+                                    message: '创建成功',
+                                    type: 'success'
+                                }); 
+                                self.editVisible =false;
+                                Bus.$emit('detailChange',true);
+                            }
+                            
                         }
                     })
                     .catch(function (err) {
@@ -341,6 +380,101 @@ export default {
                     this.$notify.error({
                         title: '错误',
                         message: '创建部门失败'
+                    });
+                    return false;
+                }
+            });
+        },
+
+        //修改
+        reviseForm(formName){
+             this.$refs[formName].validate((valid) => {
+                  if(this.cityid == '' || this.cityid == null){
+                      this.cityid = 0;
+                      console.log(this.cityid +'city')
+                  };
+                  if(this.areaId == '' || this.areaId == null){
+                      this.areaId =0;
+                      console.log(this.areaId +'area')
+                  };
+                //console.log(valid)
+                var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");  // 邮箱正则表达式
+                if (valid) {
+                  if(!(/^1[34578]\d{9}$/.test(this.ruleForm.phone))){
+                    this.$notify.error({
+                        title: '错误',
+                        message: '手机号码有误'
+                    });
+                  }else if(!reg.test(this.ruleForm.email)){
+                    this.$notify.error({
+                        title: '错误',
+                        message: '邮箱格式错误'
+                    });
+                  }else if(this.ruleForm.branch == '' || this.ruleForm.branch == null){
+                     this.$notify.error({
+                        title: '错误',
+                        message: '部门分类未选择'
+                    }); 
+                  }else if(this.provinceId == '' || this.provinceId == null){
+                      this.$notify.error({
+                        title: '错误',
+                        message: '省份未选择'
+                    });
+                  }else if(this.imageUrl ==null || this.imageUrl ==''){
+                      console.log(777)
+                      this.$notify.error({
+                        title: '错误',
+                        message: '请上传头像'
+                      });
+                  }else{
+                    var self =this;
+                    axios({
+                        url:this.API+ 'dept/save?token='+localStorage.getItem('sk'),
+                        method: 'POST',
+                        data:{
+                            "id":this.user_id,
+                            "dept_name":this.ruleForm.department,
+                            "mobile":this.ruleForm.phone,
+                            "email":this.ruleForm.email,
+                            "pass":this.ruleForm.Defaultpassword,
+                            "uname":this.ruleForm.Personliable,
+                            "dtypeid":this.ruleForm.branch,
+                            "province":this.provinceId,
+                            "city":this.cityId,
+                            "region":this.areaId,
+                            "headimg":this.imageUrl,
+                        },
+                    }).then(function (res) {
+                        //console.log(res);
+                        if (res.status == 200) {
+                            if(res.data.state ==false){
+                                self.$notify.error({
+                                    title: '错误',
+                                    message: res.data.message
+                                });
+                            }else{
+                                self.$notify({
+                                    title: '成功',
+                                    message: '修改成功',
+                                    type: 'success'
+                                }); 
+                                self.editVisible =false;
+                                Bus.$emit('detailChange',true);
+                            }
+                            
+                        }
+                    })
+                    .catch(function (err) {
+                        self.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    })
+                  } 
+                } else {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '修改部门失败'
                     });
                     return false;
                 }

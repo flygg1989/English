@@ -1,4 +1,4 @@
-<template>
+<template> 
   <el-tabs type="border-card" @tab-click="refreshTab">
     <el-tab-pane>
       <span slot="label">待处理<span v-if="amount1 !== 0" class="amount">{{amount1}}</span></span>

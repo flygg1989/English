@@ -227,7 +227,7 @@
                         },
                         headers: {'Content-Type': 'application/json;charset=UTF-8'}
                     }).then(function (res) {
-                        //console.log(res.data);
+                        console.log(res);
                         if(res.status == 200){
                             if(res.data.state == false){
                                 self.$notify.error({

@@ -41,7 +41,7 @@
           <!--:props="props"-->
         <!--&gt;</el-cascader>-->
         <!--<el-button type="primary">确认添加</el-button>-->
-          <el-select  v-model="provinceId" placeholder="省" class="selsct_city">
+          <el-select  v-model="provinceId" clearable placeholder="省" @change="handleProvince" class="selsct_city">
               <el-option
                   v-for="item in provinceList"
                   :key="item.id"
@@ -49,7 +49,7 @@
                   :value="item.id">
               </el-option>
           </el-select>
-          <el-select v-model="cityId" placeholder="市"  class="selsct_city">
+          <el-select v-model="cityId"  clearable placeholder="市"  class="selsct_city" @change="handleCity">
               <el-option
                   v-for="item in cityList"
                   :key="item.id"
@@ -57,7 +57,7 @@
                   :value="item.id">
               </el-option>
           </el-select>
-          <el-select  v-model="areaId" placeholder="区"  class="selsct_city" @change="handlearea">
+          <el-select  v-model="areaId" clearable placeholder="区"  class="selsct_city" @change="handlearea">
               <el-option
                   v-for="item in areaList"
                   :key="item.id"
@@ -65,23 +65,37 @@
                   :value="item.id">
               </el-option>
           </el-select>
-          <el-button type="primary" style="height: 32px" @click="addLimitCity">确认添加</el-button>
+          <el-button type="primary" style="height: 32px" :class="{isdisable:submitBtn}" :disabled="submitBtn" @click="addLimitCity">确认添加</el-button>
       </div>
     </div>
     <ul class="cities-ul">
       <li v-for="(item,index) in citiesList" :key="index">
-        <h5 >{{item.province_name+' / '+item.city_name+' / '+item.region_name}}</h5>
+          <!--<p>{{item}}</p>-->
+          <div v-if="item.region_name">
+              <h5 >{{item.province_name+' / '+item.city_name+' / '+item.region_name}}</h5>
+          </div>
+          <div v-else-if="item.city_name">
+              <h5 >{{item.province_name+' / '+item.city_name}}</h5>
+          </div>
+          <div v-else="item.province_name">
+              <h5 >{{item.province_name}}</h5>
+          </div>
+          <!--<div v-else="item.province_name&&item.city_name">-->
+              <!--<h5 >{{item.province_name+' / '+item.city_name}}</h5>-->
+          <!--</div>-->
+        <!--<h5 >{{item.province_name+' / '+item.city_name+' / '+item.region_name}}</h5>-->
         <!--<h5 >{{item.province_name+' / '+item.city_name}}</h5>-->
         <!--<h5 >{{item.province_name}}</h5>-->
         <div>
         <el-button type="text" @click='delActiveCity(item.id)'>删除</el-button>
         </div>
-        </li>
+      </li>
     </ul>
   </div>
 </template>
 <script>
 import api from '@/utils/api';
+
 
 const settingUrl = 'setting';
 const settingSaveUrl = 'setting/save';
@@ -95,6 +109,7 @@ export default {
   name : "SwitchSettings",
   data(){
     return {
+        submitBtn:false,
         value1:null,
         value2:null,
         post1:1,
@@ -146,6 +161,8 @@ export default {
       },
       //添加限制城市
       addLimitCity(){
+          console.log('addLimitCity')
+          console.log(this.postLimitCode.province_id)
           if(this.postLimitCode.province_id&&this.postLimitCode.city_id&&this.postLimitCode.region_id){
               api.request({
                   url: postLimitCity,
@@ -156,6 +173,7 @@ export default {
                       region_id:this.postLimitCode.region_id
                   }
               }).then(res=>{
+                  console.log(res.data)
                   if(res.data.state===true){
                       this.$notify({
                           title: "成功",
@@ -175,15 +193,90 @@ export default {
                       message: err
                   });
               })
+          }else if(this.postLimitCode.province_id&&this.postLimitCode.city_id){
+              api.request({
+                  url: postLimitCity,
+                  method: "post",
+                  data:{
+                      province_id:this.postLimitCode.province_id,
+                      city_id:this.postLimitCode.city_id,
+                  }
+              }).then(res=>{
+                  console.log(res.data)
+                  if(res.data.state===true){
+                      this.$notify({
+                          title: "成功",
+                          message: "地区范围限制成功",
+                          type: 'success'
+                      });
+                      this.getDefaultSetting()
+                  }else {
+
+                      this.$notify.error({
+                          title: "错误",
+                          message: res.data.message
+                      });
+                  }
+              }).catch(err=>{
+                  this.$notify.error({
+                      title: "错误",
+                      message: err
+                  });
+              })
+          }else if(this.postLimitCode.province_id){
+              api.request({
+                  url: postLimitCity,
+                  method: "post",
+                  data:{
+                      province_id:this.postLimitCode.province_id,
+                  }
+              }).then(res=>{
+                  console.log(res.data)
+                  if(res.data.state===true){
+                      this.$notify({
+                          title: "成功",
+                          message: "地区范围限制成功",
+                          type: 'success'
+                      });
+                      this.getDefaultSetting()
+                  }else {
+
+                      this.$notify.error({
+                          title: "错误",
+                          message: res.data.message
+                      });
+                  }
+              }).catch(err=>{
+                  this.$notify.error({
+                      title: "错误",
+                      message: err
+                  });
+              })
           }else {
-              this.$notify.error({
-                  title: "错误",
-                  message: '请先选择省市区'
-              });
+              return
           }
+
+
+
+
 
       },
 
+      //省选择后传值
+      handleProvince(areaId){
+          this.areaId=areaId
+          this.postLimitCode={
+              province_id:this.provinceId
+          };
+      },
+      //市选择后传值
+      handleCity(areaId){
+          this.areaId=areaId
+          this.postLimitCode={
+              province_id:this.provinceId,
+              city_id:this.cityId,
+          };
+      },
       //区选择后传值
       handlearea(areaId){
           this.areaId=areaId
@@ -195,7 +288,6 @@ export default {
       },
       //设置
     getDefaultSetting(){
-
           //开关
       api.request({
            url: settingUrl,
@@ -220,6 +312,11 @@ export default {
             if(res.status == 200){
                this.citiesList=res.data.data.common
                 console.log(this.citiesList)
+                if(this.citiesList.length==1){
+                    this.submitBtn=true
+                }else {
+                    this.submitBtn=false
+                }
             }
         }).catch(err=>{
             this.$notify.error({
@@ -315,7 +412,6 @@ export default {
                     //获取市
                     api.request({
                         url: getCityList,
-                         //   'province?token='+localStorage.getItem('sk')+'&pid='+this.provinceId+'&type=2',
                         method: "GET",
                         data:{
                             pid:this.provinceId,
@@ -362,7 +458,7 @@ export default {
                                         this.areaId = ''
                                     }else{
                                         this.areaList =res.data.data.common
-                                        console.log(this.cityId)
+                                        console.log(this.areaList)
                                     }
                                 }
                             },
@@ -378,6 +474,9 @@ export default {
 }
 </script>
 <style>
+    .isdisable{
+        background-color: #6f7180!important;
+    }
     .selsct_city{
         width: 100px;
     }
@@ -446,6 +545,7 @@ export default {
   justify-content: space-between;
 }
 .switch-settings .cities-ul li h5{
+    display: block;
   font-weight:500;
   font-size:16px;
   color:#2D3557;

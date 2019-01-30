@@ -219,10 +219,10 @@
 </script>
 
 <style scoped>
-    .sidebar{
+    .sidebar_right{
         display: block;
         position: absolute;
-        left: 64px;
+        left: 0;
         top: 0px;
         bottom:0;
         overflow: visible;
@@ -234,8 +234,8 @@
     .sidebar::-webkit-scrollbar{
         width: 0;
     }
-    .sidebar-el-menu:not(.el-menu--collapse){
-        width: 192px;
+    .sidebar_right .sidebar-el-menu:not(.el-menu--collapse){
+        width: 250px;
     }
     .sidebar > ul {
         height:100%;

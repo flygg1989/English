@@ -3,7 +3,7 @@
     <div class="notabs-content">
       <div class="operation">
         <div class="operation-left">
-          <el-button type="primary" class="creat-branch-btn" @click="handleClick">新建部门</el-button>
+          <el-button type="primary" class="creat-branch-btn" @click="handleClick('新建部门')">新建部门</el-button>
         </div>
         <div class="operation-right">
           <el-input
@@ -248,9 +248,6 @@ export default {
       const property = column['property'];
       return row[property] === value;
     },
-    handleClick(row) {
-      console.log(row);
-    },
       //每页数量
       async handleSizeChange(val) {
           this.pageSize=val
@@ -264,13 +261,21 @@ export default {
       },
 
       //创建部门
-      handleClick(){
+      handleClick(value){
           var state =true;
-          Bus.$emit('sendstate', state)//-------发送信息到弹窗组件
+          Bus.$emit('sendstate', {state,value})//-------发送信息到弹窗组件
       },
   },
   mounted(){
       this.initList(this.currentPage,this.pageSize)
+      //监听弹窗成功操作单条数据事件
+    Bus.$on('detailChange',(data) => {
+      console.log(data);
+      if(data == true){
+        
+        this.initList(this.currentPage,this.pageSize)
+      }
+    })
   }
 }
 </script>

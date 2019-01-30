@@ -79,6 +79,9 @@
     .sidebar-el-menu:not(.el-menu--collapse){
         width: 236px;
     }
+     .sidebar-left {
+         display: none;
+     }
     .sidebar-left > ul {
         height:100%;
     }

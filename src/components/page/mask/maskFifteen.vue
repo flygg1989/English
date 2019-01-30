@@ -61,69 +61,71 @@
                     </div>
                 </div>
 
-                <!-- 回复 -->
-                <div class="bg_color_tip">
-                    <h1>回复内容</h1>
-                    <div>
-                        <span>{{formdata.dept_name}}</span>
-                        <span>{{formdata.uname}}</span>
-                        <span>{{formdata.reply_list.created_at}}</span>
+                 <!-- 回复 -->
+                <div v-for="(item,index) in formdata.reply_list" :key="index">
+                    <div class="bg_color_tip">
+                        <h1>回复内容</h1>
+                        <div>
+                            <span>{{formdata.dept_name}}</span>
+                            <span>{{item.created_at}}</span>
+                        </div>
                     </div>
-                </div>
-                
-                <!--图片上传-->
-                <el-upload
-                    :action="uploadImg"
-                    accept="image/jpeg,image/png"
-                    list-type="picture-card"
-                    :limit ='6'
-                    :on-success="uploadsuccess"
-                    v-if="buttononestate == 2 && formdata.reply_list.attachments.length < 6" class="uploadImg_nolist"> 
-                    <i class="el-icon-plus"></i>
-                    <p>只可上传6张</p>
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
-                <!--图片展示-->
-                <ul class="el-upload-list el-upload-list--picture-card">
-                    <li tabindex="0" class="el-upload-list__item is-success" v-for="(item,index) in formdata.reply_list.attachments" :key="index">
-                        <img :src="item.url" alt="" class="el-upload-list__item-thumbnail">
-                        <a class="el-upload-list__item-name">
-                            <i class="el-icon-document"></i>
-                        </a>
-                        <label class="el-upload-list__item-status-label"  v-if="buttononestate == 2">
-                            <i class="el-icon-upload-success el-icon-check"></i>
-                        </label>
-                        <i class="el-icon-close"></i>
-                        <i class="el-icon-close-tip">按 delete 键可删除</i>
-                        <!---->
-                        <span class="el-upload-list__item-actions">
-                            <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(item,index)">
-                                <i class="el-icon-zoom-in"></i>
-                            </span><span class="el-upload-list__item-delete" @click="handleRemove(item,index)"  v-if="buttononestate == 2">
-                                <i class="el-icon-delete"></i>
-                        </span></span>
-                    </li>
-                </ul>
-                <el-input type="textarea" :readonly="isReadOnlyOne" rows="3" v-model="formdata.reply_list.reply" placeholder=""></el-input>
+                    
+                    <!--图片上传-->
+                    <el-upload
+                        :action="uploadImg"
+                        accept="image/jpeg,image/png"
+                        list-type="picture-card"
+                        :limit ='6'
+                        :on-success="uploadsuccess"
+                        v-if="buttononestate == 2 && item.attachments.length < 6" class="uploadImg_nolist"> 
+                        <i class="el-icon-plus"></i>
+                        <p>只可上传6张</p>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                    </el-dialog>
+                    <!--图片展示-->
+                    <ul class="el-upload-list el-upload-list--picture-card">
+                        <li tabindex="0" class="el-upload-list__item is-success" v-for="(item,index) in item.attachments" :key="index">
+                            <img :src="item.url" alt="" class="el-upload-list__item-thumbnail">
+                            <a class="el-upload-list__item-name">
+                                <i class="el-icon-document"></i>
+                            </a>
+                            <label class="el-upload-list__item-status-label"  v-if="buttononestate == 2">
+                                <i class="el-icon-upload-success el-icon-check"></i>
+                            </label>
+                            <i class="el-icon-close"></i>
+                            <i class="el-icon-close-tip">按 delete 键可删除</i>
+                            <!---->
+                            <span class="el-upload-list__item-actions">
+                                <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(item,index)">
+                                    <i class="el-icon-zoom-in"></i>
+                                </span><span class="el-upload-list__item-delete" @click="handleRemove(item,index)"  v-if="buttononestate == 2">
+                                    <i class="el-icon-delete"></i>
+                            </span></span>
+                        </li>
+                    </ul>
+                    <el-input type="textarea" :readonly="isReadOnlyOne" rows="3" v-model="item.reply" placeholder=""></el-input>
+                   
+                   <div  v-if="formdata.plat_status == 10">
+                        <div class="modify" v-if="buttononestate == 1">
+                            <el-button plain class="handle-modify mr10" @click="readonlyonestate(index)" >修 改</el-button>
+                        </div>
+                        <div class="el-dialog__footer quill-editor-footer" v-if="buttononestate == 2">
+                            <span slot="footer" class="dialog-footer">
+                                <!-- <el-button type="" @click="quillcancel()">取消</el-button> -->
+                                <el-button type="primary" @click="quillconfirmReply()">确定</el-button>
+                            </span>
+                        </div>
+                    </div>
 
-                <div  v-if="formdata.plat_status == 10">
-                    <div class="modify" v-if="buttononestate == 1">
-                        <el-button plain class="handle-modify mr10" @click="readonlyonestate" >修 改</el-button>
+                    <!--备注-->
+                    <div class="bg_color_tip">
+                        <h1>备注</h1>
                     </div>
-                    <div class="el-dialog__footer quill-editor-footer" v-if="buttononestate == 2">
-                        <span slot="footer" class="dialog-footer">
-                            <!-- <el-button type="" @click="quillcancel()">取消</el-button> -->
-                            <el-button type="primary" @click="quillconfirmReply()">确定</el-button>
-                        </span>
-                    </div>
+                    <el-input type="textarea"  rows="3" v-model="item.remark" placeholder="建议将该问题对外隐藏！"></el-input>
                 </div>
-                <!--备注-->
-                <div class="bg_color_tip">
-                    <h1>备注</h1>
-                </div>
-                <el-input type="textarea"  rows="3" v-model="formdata.reply_list.remark" placeholder="建议将该问题对外隐藏！"></el-input>
                 
                 <div class="hr-top" v-if="formdata.plat_status == 10"></div>
             </el-form>
@@ -170,15 +172,7 @@ export default {
                     id:'',  //追问id
                     reply_list:[], //追问回复
                 },
-                //回复内容
-                reply_list:{
-                    attachments:[],     //回复图片列表
-                    created_at:'',      //回复时间
-                    id:'',
-                    remark:'',
-                    reply:'',
-                    sug_id:'',
-                },  
+                reply_list:[],   //回复的详情 
                 remark:'',  //备注
                 scope_time:'',
             },
@@ -221,6 +215,7 @@ export default {
 
             //评分 文字
             texts:['非常不满意 ', '不满意', '一般', '比较满意', '非常满意'],
+            BtnNum:'0', //第几个修改
                   
         }
     },
@@ -276,19 +271,7 @@ export default {
                             chase_list:res.data.data.common.chase_list,  //追问列表
                         }
                        
-                        this.area =res.data.data.common.area.split("|");
-                        this.provincename =res.data.data.common.address[0];
-                        this.cityname =res.data.data.common.address[1];
-                        this.areaname =res.data.data.common.address[2];
-                        this.deptname =res.data.data.common.dept_name;
-                        
-                        if(res.data.data.common.is_top == 2){
-                            this.type =['置顶'];
-                        }else if(res.data.data.common.is_show == 2){
-                            this.type = ['隐藏'];
-                        }else{
-                            this.type = [];
-                        };
+                      
                         //switch 开关
                         if(res.data.data.common.scope_type == 1){
                             this.switchvalue =true
@@ -378,10 +361,10 @@ export default {
                 url: 'suggest/reply/save',
                 method: "post",
                 data:{
-                    replyId: this.formdata.reply_list.id,
                     id:this.id,
-                    content:this.formdata.reply_list.content,
-                    remark:this.formdata.reply_list.remark,
+                    replyId:this.formdata.reply_list[this.BtnNum].id,
+                    content:this.formdata.reply_list[this.BtnNum].reply,
+                    remark:this.formdata.reply_list[this.BtnNum].remark,
                     files:this.uploadImgList,
                 }
             })
@@ -422,24 +405,60 @@ export default {
                     message: '上传成功',
                     type: 'success'
                 });
-                this.formdata.reply_list.attachments = this.formdata.reply_list.attachments.concat({url:res.data.common.src}) ;
+                this.formdata.reply_list[this.BtnNum].attachments = this.formdata.reply_list[this.BtnNum].attachments.concat({url:res.data.common.src}) ;
                 this.uploadImgList = this.uploadImgList.concat(res.data.common.src);
                 //console.log(this.uploadImgList)
             }    
         },
 
-        //图片 放大
+         //图片 放大
         handlePictureCardPreview(item,index) {
-            console.log(item,index)
-            this.dialogImageUrl =this.formdata.reply_list.attachments[index].url;
+            //console.log(item,index)
+            this.dialogImageUrl =item.url;
             this.dialogVisible = true;
             
         },
 
-        //图片 删除
+         //图片 删除
         handleRemove(item,index) {
-            console.log(index);
-            this.formdata.reply_list.attachments.splice(index,1)
+            console.log(item);
+            if(item.id){
+                api.request({
+                    url: 'attachment/delete',
+                    method: "GET",
+                    data:{
+                        id:item.id,
+                    },
+                })
+                .then(
+                res => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        if(res.data.state = true){
+                            this.$notify({
+                                title: '成功',
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                        }else{
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });
+                        }
+                    }
+                },
+                res => {
+                    this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                    });
+                });
+            }else{
+                this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                this.uploadImgList =this.uploadImgList.splice(index,1) 
+            }
         },
 
     },

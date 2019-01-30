@@ -269,7 +269,7 @@ export default {
     methods: {
         //提交
         adoptsubmit(){
-            //回复 修改
+            //回复 
             api.request({
                 url: 'suggest/reply',
                 method: "POST",
@@ -280,6 +280,7 @@ export default {
                     remark:this.replylist.remark,
                     files:this.replylist.attachments,
                 },
+                
             })
             .then(
             res => {
