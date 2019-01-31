@@ -46,15 +46,19 @@
           min-width="144">
         </el-table-column>
         <el-table-column
-          prop="suggest_count"
+          prop="day_suggest_count"
           label="已提问数"
-
           min-width="144">
         </el-table-column>
         <el-table-column
           prop="todayleft"
           label="今日提问剩余次数"
           min-width="160">
+          <template slot-scope="scope">
+          <div>
+            {{scope.row.suggest_count-scope.row.day_suggest_count}}
+          </div>
+        </template>
         </el-table-column>
         <el-table-column
         fixed="right"
@@ -181,6 +185,7 @@ export default {
               let arr=get.data.data.common.data
               this.tableList=arr
               this.total=get.data.data.common.total;
+              console.log(  this.tableList)
           }catch (e) {
               this.$notify.error({
                   title: "错误",

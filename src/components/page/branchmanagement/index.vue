@@ -3,7 +3,8 @@
     <div class="notabs-content">
       <div class="operation">
         <div class="operation-left">
-          <el-button type="primary" class="creat-branch-btn" @click="handleClick('新建部门')">新建部门</el-button>
+          <el-button type="primary" class="creat-branch-btn"
+                     @click="handleClick('新建部门')">新建部门</el-button>
         </div>
         <div class="operation-right">
           <el-input
@@ -20,6 +21,7 @@
         height="100%"
         empty-text="没有更多数据了"
         header-row-class-name="table-header"
+        @sort-change="sortChange"
         style="width:100%;">
 
         <el-table-column
@@ -37,9 +39,6 @@
           prop="uname"
           label="责任人"
           min-width="7.25%">
-          <!--<template slot-scope="scope">-->
-            <!--&lt;!&ndash;{{scope.row.personliable.charAt(0)+'**'}}&ndash;&gt;-->
-          <!--</template>-->
         </el-table-column>
         <el-table-column
           prop="email"
@@ -61,6 +60,9 @@
           label="创建时间"
           sortable
           min-width="14.49%">
+            <template slot-scope="scope">
+                <div>{{scope.row.created_at.substring(0,scope.row.created_at.length-3)}}</div>
+            </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -81,9 +83,6 @@
       </el-table>
       <div class="table-footer">
         <div class="footer-left">
-          <!--<el-button plain type="primary">刷新</el-button>-->
-          <!--<el-button plain type="primary">启用</el-button>-->
-          <!--<el-button plain type="primary">停用</el-button>-->
         </div>
         <div class="footer-right">
           <el-pagination
@@ -102,48 +101,7 @@
     </div>
 
         <CreateDepartment/>
-      <!--<el-dialog title="收货地址" :visible.sync="dialogFormVisible">-->
-          <!--<el-form :model="form" label-width="100px">-->
-              <!--<el-form-item label="部门名称">-->
-                  <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="责任人">-->
-                  <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="手机号">-->
-                  <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="邮箱">-->
-                  <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="选部分分类">-->
-                  <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="选行政级别">-->
-                  <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="默认密码">-->
-                  <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-              <!--</el-form-item>-->
-                  <!--<el-upload-->
-                      <!--width="80%"-->
-                      <!--class="upload-box"-->
-                      <!--:action='url'-->
-                      <!--:show-file-list="false"-->
-                      <!--:on-success="handleAvatarSuccess"-->
-                      <!--:before-upload="beforeAvatarUpload">-->
-                      <!--<div class="box-inline">-->
-                          <!--<img src="static/img/icon-photo.png">-->
-                          <!--<div class="el-upload__text">点击上传部门头像</div>-->
-                      <!--</div>-->
-                  <!--</el-upload>-->
 
-          <!--</el-form>-->
-          <!--<div slot="footer" class="dialog-footer">-->
-              <!--<el-button @click="dialogFormVisible = false">取 消</el-button>-->
-              <!--<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-          <!--</div>-->
-      <!--</el-dialog>-->
   </div>
 
 </template>
@@ -174,6 +132,37 @@ export default {
     CreateDepartment
   },
   methods: {
+      async sortChange(val){
+          console.log(val.order)
+          let order=''
+          if(val.prop == "created_at"){{
+              if(val.order == 'ascending'){
+                  order = 'user_id asc'
+              }else if(val.order == 'descending'){
+                  order = 'user_id desc'
+              }
+          }}
+          console.log(order)
+          try{
+              let postTime = await api.request({
+                  url:deptList,
+                  method:'GET',
+                  data:{
+                      order:order,
+                      limit:this.pageSize
+                  }
+              })
+              let arr=postTime.data.data.common.data
+              this.tableList=arr
+              this.total=postTime.data.data.common.total;
+          }catch (e) {
+              console.log(e)
+              this.$notify.error({
+                  title: "错误",
+                  message: "数据请求失败"
+              })
+          }
+      },
      async getSreach(){
          try{
            let res =  await api.request({
@@ -270,9 +259,7 @@ export default {
       this.initList(this.currentPage,this.pageSize)
       //监听弹窗成功操作单条数据事件
     Bus.$on('detailChange',(data) => {
-      console.log(data);
       if(data == true){
-        
         this.initList(this.currentPage,this.pageSize)
       }
     })
@@ -280,7 +267,7 @@ export default {
 }
 </script>
 <style>
-    
+
 .branchmanagement{
   height:100%;
   background:#fff;
@@ -289,3 +276,4 @@ export default {
   padding:8px 16px 0 16px;
 }
 </style>
+
