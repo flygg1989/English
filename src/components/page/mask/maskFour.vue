@@ -27,94 +27,140 @@
                     <span>时间：{{formdata.created_at}}</span>
                 </div>
                 
-                <ul class="imgstyleone" v-if="formdata.attachments.length <= 3">
-                    <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
-                </ul>
+                <!--当chase_list 追问有值时-->
+                <div v-if="formdata.chase_list ==null">
+                    <!--图片 少于三张-->
+                    <ul class="imgstyleone" v-if="formdata.attachments.length <= 3">
+                        <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
+                    </ul>
+                    <!--图片 多于三张-->
+                    <el-carousel :interval="4000" type="card" height="200px" v-if="formdata.attachments.length > 3">
+                        <el-carousel-item v-for="(item,index) in formdata.attachments" :key="index">
+                            <img :src="item.url" alt="">
+                        </el-carousel-item>
+                    </el-carousel>
+                
+                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.content" placeholder=""></el-input>
 
-                <el-carousel :interval="4000" type="card" height="200px" v-if="formdata.attachments.length > 3">
-                    <el-carousel-item v-for="(item,index) in formdata.attachments" :key="index">
-                        <img :src="item.url" alt="">
-                    </el-carousel-item>
-                </el-carousel>
-            
-                <el-input type="textarea" readonly rows="3" v-model="formdata.content" placeholder=""></el-input>
-               
-                <div class="hr-top" style="margin-top:40px;"></div>
+                </div>
+                
+                <!--当chase_list 追问没有值时-->
+                <div v-else>
+                    <!--图片 少于三张-->
+                    <ul class="imgstyleone" v-if="formdata.chase_list.attachments && formdata.chase_list.attachments.length <= 3">
+                        <li v-for="(item,index) in formdata.chase_list.attachments" :key="index"><img :src="item.url" alt=""></li>
+                    </ul>
+                    <!--图片 多于三张-->
+                    <el-carousel :interval="4000" type="card" height="200px" v-if="formdata.chase_list.attachments && formdata.chase_list.attachments.length > 3">
+                        <el-carousel-item v-for="(item,index) in formdata.chase_list.attachments" :key="index">
+                            <img :src="item.url" alt="">
+                        </el-carousel-item>
+                    </el-carousel>
+                
+                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.chase_list.content" placeholder=""></el-input>
+                    
+                </div>
+
+                <div class="hr-top"></div>
 
                 <!--返回的回复 内容-->
-                <div class="bg_color_f7">
+                <div class="bg_color_f7" v-if="formdata.chase_list !=null ">
+                    
+                        <div v-for="(item,index) in formdata.reply_list" :key="index">
+                            <div class="bg_color_tip">
+                                <h1>原回复</h1>
+                                <div>
+                                    <span>{{formdata.dept_name}}</span>
+                                    <span>{{formdata.uname}}</span>
+                                    <span>{{item.created_at}}</span>
+                                </div>
+                            </div>
+                            
+                            <!--回复图片展示-->
+                            <ul class="ReplyImg">
+                                <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
+                            </ul>
+                            <el-input type="textarea" rows="3" readonly v-model="item.reply" placeholder=""></el-input>
+                        </div>
+                        
                     <div v-if="formdata.chase_list != null">
-                    <div v-for="(item,index) in formdata.chase_list.reply_list" :key="index">
                         <div class="bg_color_tip">
-                            <h1>原回复</h1>
+                            <h1>原问题</h1>
                             <div>
-                                <span>{{formdata.chase_list.dept_name}}</span>
-                                <span>{{formdata.uname}}</span>
+                                <span>{{formdata.type_name}}</span>
+                                <span>提问时间：{{formdata.created_at}}</span>
+                            </div>
+                        </div> 
+                        <ul class="ReplyImg">
+                            <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
+                        </ul>                  
+                        <el-input type="textarea" rows="3" readonly v-model="formdata.content" placeholder=""></el-input>
+                    </div>
+                </div>
+
+                 <!-- 回复 -->
+                <div v-if="formdata.chase_list && formdata.chase_list !=null">
+                    <div v-for="(item,index) in formdata.chase_list.reply_list" :key="index" >
+                        <div class="bg_color_tip">
+                            <h1>回复内容</h1>
+                            <div>
+                                <span>{{formdata.dept_name}}</span>
+                                <span>{{item.created_at}}</span>
+                            </div>
+                        </div>
+                        <el-input type="textarea" :readonly="isReadOnlyOne" rows="3" v-model="item.reply" placeholder=""></el-input>
+                        
+                        <!--备注-->
+                        <div class="bg_color_tip">
+                            <h1>备注</h1>
+                        </div>
+                        <el-input type="textarea"  rows="3" v-model="item.remark" placeholder="建议将该问题对外隐藏！"></el-input>
+                    </div>
+                </div>
+
+                <div v-if="formdata.chase_list == null">
+                    <div v-for="(item,index) in formdata.reply_list" :key="index" >
+                        <div class="bg_color_tip">
+                            <h1>回复内容</h1>
+                            <div>
+                                <span>{{formdata.dept_name}}</span>
                                 <span>{{item.created_at}}</span>
                             </div>
                         </div>
                         
-                        <!--回复图片展示-->
-                        <ul class="ReplyImg">
-                            <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
+                       
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
+                        <!--图片展示-->
+                        <ul class="el-upload-list el-upload-list--picture-card">
+                            <li tabindex="0" class="el-upload-list__item is-success" v-for="(item,index) in item.attachments" :key="index">
+                                <img :src="item.url" alt="" class="el-upload-list__item-thumbnail">
+                                <a class="el-upload-list__item-name">
+                                    <i class="el-icon-document"></i>
+                                </a>
+                                <label class="el-upload-list__item-status-label"  v-if="buttononestate == 2">
+                                    <i class="el-icon-upload-success el-icon-check"></i>
+                                </label>
+                                <i class="el-icon-close"></i>
+                                <i class="el-icon-close-tip">按 delete 键可删除</i>
+                                <!---->
+                                <span class="el-upload-list__item-actions">
+                                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(item,index)">
+                                        <i class="el-icon-zoom-in"></i>
+                                    </span><span class="el-upload-list__item-delete" @click="handleRemove(item,index)"  v-if="buttononestate == 2">
+                                        <i class="el-icon-delete"></i>
+                                </span></span>
+                            </li>
                         </ul>
-                        <el-input type="textarea" rows="3" readonly v-model="item.reply" placeholder=""></el-input>
-                    </div>
-
+                        <el-input type="textarea" :readonly="isReadOnlyOne" rows="3" v-model="item.reply" placeholder=""></el-input>
+                        
+                        <!--备注-->
                         <div class="bg_color_tip">
-                            <h1>原问题</h1>
-                            <div>
-                                <span>{{formdata.chase_list.type_name}}</span>
-                                <span>提问时间：{{formdata.chase_list.created_at}}</span>
-                            </div>
-                        </div> 
-                        <ul class="ReplyImg">
-                            <li v-for="(item,index) in formdata.chase_list.attachments" :key="index"><img :src="item.url" alt=""></li>
-                        </ul>                  
-                        <el-input type="textarea" rows="3" readonly v-model="formdata.chase_list.content" placeholder=""></el-input>
-                    </div>
-                </div>
-
-                <!-- 回复 -->
-                <div v-for="(item,index) in formdata.reply_list" :key="index">
-                    <div class="bg_color_tip">
-                        <h1>回复内容</h1>
-                        <div>
-                            <span>{{formdata.dept_name}}</span>
-                            <span>{{formdata.uname}}</span>
-                            <span>{{item.created_at}}</span>
+                            <h1>备注</h1>
                         </div>
+                        <el-input type="textarea"  rows="3" v-model="item.remark" placeholder="建议将该问题对外隐藏！"></el-input>
                     </div>
-               
-                    <!--图片展示-->
-                    <ul class="el-upload-list el-upload-list--picture-card">
-                        <li tabindex="0" class="el-upload-list__item is-success" v-for="(item,index) in item.attachments" :key="index">
-                            <img :src="item.url" alt="" class="el-upload-list__item-thumbnail">
-                            <a class="el-upload-list__item-name">
-                                <i class="el-icon-document"></i>
-                            </a>
-                            <label class="el-upload-list__item-status-label"  v-if="buttononestate == 2">
-                                <i class="el-icon-upload-success el-icon-check"></i>
-                            </label>
-                            <i class="el-icon-close"></i>
-                            <i class="el-icon-close-tip">按 delete 键可删除</i>
-                            <!---->
-                            <span class="el-upload-list__item-actions">
-                                <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(item,index)">
-                                    <i class="el-icon-zoom-in"></i>
-                                </span><span class="el-upload-list__item-delete" @click="handleRemove(item,index)"  v-if="buttononestate == 2">
-                                    <i class="el-icon-delete"></i>
-                            </span></span>
-                        </li>
-                    </ul>
-                    <el-input type="textarea" :readonly="isReadOnlyOne" rows="3" v-model="item.reply" placeholder=""></el-input>
-                
-                <!--备注-->
-                    <div class="bg_color_tip">
-                        <h1>备注</h1>
-                    </div>
-                    <el-input type="textarea" readonly rows="3" v-model="item.remark" placeholder=""></el-input>
-                    <div class="hr-top"></div>
                 </div>
                 
                 <!-- 评分 -->
@@ -216,6 +262,7 @@ export default {
 
             //评分
             texts:['非常不满意 ', '不满意', '一般', '比较满意', '非常满意'],
+            BtnNum:'0', //第几个修改
            
                   
         }
@@ -244,7 +291,7 @@ export default {
     },
     created(){
         Bus.$on('sendID',(data)=>{
-            //console.log(data)
+            console.log(data)
             if(data.op_status == 6 || data.op_status == 10 || data.op_status == 8 || data.op_status == 9){
                 this.editVisible = true;
                 this.formdata.plat_status= data.op_status,

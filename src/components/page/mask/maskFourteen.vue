@@ -32,7 +32,7 @@
                     <!--追问的回复 内容-->
                     <div class="bg_color_f7">
                         <div v-if="formdata.chase_list != null">
-                        <div v-for="(item,index) in formdata.chase_list.reply_list" :key="index">
+                        <div v-for="(item,index) in formdata.reply_list" :key="index">
                             <div class="bg_color_tip">
                                 <h1>原回复</h1>
                                 <div>
@@ -210,7 +210,7 @@ export default {
     },
     created(){
         Bus.$on('sendID',(data)=>{
-            //console.log(data)
+            console.log(data)
             if(data.op_status == 7 || data.op_status == 8 || data.op_status == 9 ){
                 this.editVisible = true;
                 this.id = data.sugid;

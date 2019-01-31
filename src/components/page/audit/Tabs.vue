@@ -99,7 +99,7 @@ export default {
       tabsFourTable:"1"
     }
   },
-  created(){
+  mounted(){
     this.getAmount()
   },
   methods:{

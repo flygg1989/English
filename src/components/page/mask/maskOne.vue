@@ -399,7 +399,7 @@ export default {
     },
     created(){
         Bus.$on('sendID',(data)=>{
-           // console.log(data)
+           console.log(data)
             if(data.plat_status == 1 || data.plat_status == 8 || data.plat_status == 13){
                 this.editVisible = true;
                 this.id = data.id;

@@ -99,7 +99,7 @@ export default {
       }]
     }
   },
-  created(){
+  mounted(){
     this.getAmount()
   },
   methods:{

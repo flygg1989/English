@@ -264,12 +264,12 @@
   flex:1;
 }
 .title-box .title-name{
-  height:20px;
   width:220px;
   line-height:20px;
-  overflow: hidden;
-  text-overflow:ellipsis;
-  white-space: nowrap;
+  display:-webkit-box;
+	-webkit-box-orient:vertical;
+	-webkit-line-clamp:2;     /**3是要在第几行之后省略**/
+	overflow:hidden;
 }
 .title-box .title-right{
   width:24px;

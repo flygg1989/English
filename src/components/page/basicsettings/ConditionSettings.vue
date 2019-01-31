@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="settings-item settings-item-three" >
-        <h2>自动处理</h2>
+        <h2>自动办结</h2>
         <div class="input-box">
           <el-input v-model.trim="value3" maxlength="2" :disabled="showModifyBtn">
             <span slot="prepend">自动办结时间 :</span>

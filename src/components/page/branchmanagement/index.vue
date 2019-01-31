@@ -183,10 +183,7 @@ export default {
          }
       },
     handleSreach(){
-        this.searchValue? this.getSreach():this.$notify.error({
-            title: "错误",
-            message: "请输入关键字"
-        })
+        this.getSreach()
       },
       async switchList(item){
           item.status==1?item.status=2:item.status=1

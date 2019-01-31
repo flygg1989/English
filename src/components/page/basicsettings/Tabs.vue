@@ -13,7 +13,7 @@
       <QuestionType />
     </el-tab-pane>
     <el-tab-pane>
-      <span class="basic-tabs-label" slot="label">部门分级</span>
+      <span class="basic-tabs-label" slot="label">部门分类</span>
       <BranchType />
     </el-tab-pane>
     <el-tab-pane>

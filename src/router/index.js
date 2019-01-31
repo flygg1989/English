@@ -182,12 +182,6 @@ export default new Router({
                     meta: { title: '待处理' }
                 },
                 {
-                    //部门 追问待处理 弹窗
-                    path: '/maskThirteen',
-                    component: resolve => require(['../components/page/mask/maskThirteen'], resolve),
-                    meta: { title: '追问待处理' }
-                },
-                {
                     //部门 审核通过 /待审核 弹窗
                     path: '/maskFourteen',
                     component: resolve => require(['../components/page/mask/maskFourteen'], resolve),

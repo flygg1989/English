@@ -40,7 +40,7 @@
                 <!--追问的回复 内容-->
                 <div class="bg_color_f7">
                     <div v-if="formdata.chase_list != null">
-                    <div v-for="(item,index) in formdata.chase_list.reply_list" :key="index">
+                    <div v-for="(item,index) in formdata.reply_list" :key="index">
                         <div class="bg_color_tip">
                             <h1>原回复</h1>
                             <div>
@@ -243,7 +243,7 @@ export default {
             //评分 文字
             texts:['非常不满意 ', '不满意', '一般', '比较满意', '非常满意'],
 
-            BtnNum:'', //第几个修改
+            BtnNum:'0', //第几个修改
                   
         }
     },
@@ -313,7 +313,7 @@ export default {
     },
     created(){
         Bus.$on('sendID',(data)=>{
-            //console.log(data)
+            console.log(data)
             if(data.plat_status == 14){
                 this.editVisible = true;
                 this.id = data.id;
@@ -332,7 +332,7 @@ export default {
                         expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,sugType,member',
                     }
                 }).then(res=>{
-                    //console.log(res.data.data.common)
+                    console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,

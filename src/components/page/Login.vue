@@ -199,7 +199,7 @@
                 } else {
                     this.$notify.error({
                         title: '错误',
-                        message: '账号密码有误'
+                        message: '请将滑块拖动到右侧'
                     });
                     return false;
                 }
@@ -211,7 +211,7 @@
             this.$refs[formName].validate((valid) => {
                 var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");  // 邮箱正则表达式  
                    
-                if (valid ==true && this.$refs.Verify.isPassing ==true ) {
+                if (valid ==true && this.$refs.Verify.isPassing ==true ){
                     if(!reg.test(this.ruleForm.email)){
                         this.$notify.error({
                             title: '错误',
@@ -262,18 +262,11 @@
                             message: '数据请求失败',
                         });
                     })
-                        // localStorage.setItem('email',this.ruleForm.email);
-                        // this.$notify({
-                        //     title: '成功',
-                        //     message: '登录成功',
-                        //     type: 'success'
-                        // });
-                        // self.$router.push('/'); 
                     }
-                } else {
+                }else{
                     this.$notify.error({
                         title: '错误',
-                        message: '账号密码有误'
+                        message: '请将滑块拖动到右侧'
                     });
                     return false;
                 }

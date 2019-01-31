@@ -31,12 +31,12 @@
         min-width="144">
       </el-table-column>
       <el-table-column
-        prop="replyNum"
+        prop="starNum"
         label="满意数"
         min-width="144">
       </el-table-column>
       <el-table-column
-        prop="replyRate"
+        prop="customerRate"
         label="满意度"
         min-width="144">
       </el-table-column>

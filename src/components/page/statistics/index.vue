@@ -83,10 +83,9 @@ export default {
       //请求表格
       async getExport(){
           if(this.selectTime.length===2  ){
-              window.location.href=(domain.testUrl+exportUrl+`?token=8f240c6a88f9ac5bcc7781
-              392dcfd659&sort_type=${this.radio}&date_type=4&start_time=${this.selectTime[0]}&end_time=${this.selectTime[1]}`)
+              window.location.href=(domain.testUrl+exportUrl+`?token=${localStorage.getItem('sk')}&sort_type=${this.radio}&date_type=4&start_time=${this.selectTime[0]}&end_time=${this.selectTime[1]}`)
           }else {
-              window.location.href=(domain.testUrl+exportUrl+'?token=8f240c6a88f9ac5bcc7781392dcfd659&sort_type='+this.radio)
+              window.location.href=(domain.testUrl+exportUrl+'?token='+localStorage.getItem('sk')+'&sort_type='+this.radio)
           }
 
       },

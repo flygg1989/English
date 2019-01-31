@@ -68,7 +68,7 @@ export default {
       tabsOneTable:"1",
     }
   },
-  created(){
+  mounted(){
     this.getAmount()
   },
   methods:{
