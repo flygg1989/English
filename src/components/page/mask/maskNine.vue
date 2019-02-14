@@ -2,6 +2,7 @@
     <div class="mask maskone">
          <el-dialog :title="formdata.title" :visible.sync="editVisible" :close-on-click-modal="false" width="864px">
             <el-form ref="formdata" :model="formdata">
+                <i class="el-icon-caret-bottom el-icon-edit edit-title" @click="edittitle"></i>
                 <div class="mask_tip mask_tip_color_three" v-if="formdata.plat_status == 15">{{this.formdata.status_name}}</div>
                 
                 <div class="mask_tip_p">
@@ -123,6 +124,41 @@
                                 <span>{{item.created_at}}</span>
                             </div>
                         </div>
+                        <!--图片上传-->
+                        <el-upload
+                            :action="uploadImg"
+                            accept="image/jpeg,image/png"
+                            list-type="picture-card"
+                            :limit ='6'
+                            :on-success="uploadsuccess"
+                            v-if="buttononestate == 2 && item.attachments && item.attachments.length < 6" class="uploadImg_nolist"> 
+                            <i class="el-icon-plus"></i>
+                            <p>只可上传6张</p>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
+                        <!--图片展示-->
+                        <ul class="el-upload-list el-upload-list--picture-card">
+                            <li tabindex="0" class="el-upload-list__item is-success" v-for="(item,index) in item.attachments" :key="index">
+                                <img :src="item.url" alt="" class="el-upload-list__item-thumbnail">
+                                <a class="el-upload-list__item-name">
+                                    <i class="el-icon-document"></i>
+                                </a>
+                                <label class="el-upload-list__item-status-label"  v-if="buttononestate == 2">
+                                    <i class="el-icon-upload-success el-icon-check"></i>
+                                </label>
+                                <i class="el-icon-close"></i>
+                                <i class="el-icon-close-tip">按 delete 键可删除</i>
+                                <!---->
+                                <span class="el-upload-list__item-actions">
+                                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(item,index)">
+                                        <i class="el-icon-zoom-in"></i>
+                                    </span><span class="el-upload-list__item-delete" @click="handleRemove(item,index)"  v-if="buttononestate == 2">
+                                        <i class="el-icon-delete"></i>
+                                </span></span>
+                            </li>
+                        </ul>
                         <el-input type="textarea" :readonly="isReadOnlyOne" rows="3" v-model="item.reply" placeholder=""></el-input>
                         <div class="modify" v-if="buttononestate == 1">
                             <el-button plain class="handle-modify mr10" @click="readonlyonestate(index)" >修 改</el-button>
@@ -223,14 +259,14 @@
                         </el-rate>
                 </el-form-item>
 
-                <div class="hr-top"></div>
+                <!-- <div class="hr-top"></div>
 
                 <div class="handle-box">
                     <el-checkbox-group v-model="type">
                         <el-checkbox label="置顶" disabled name="type"></el-checkbox>
                         <el-checkbox label="隐藏" disabled name="type" @change="checkchange(type)"></el-checkbox>
                     </el-checkbox-group>
-                </div>
+                </div> -->
 
             </el-form>
         </el-dialog>
@@ -390,10 +426,10 @@ export default {
                     method: "GET",
                     data:{
                         id:this.id,
-                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,sugType,member',
+                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,chaseList.replyList.attachments,sugType,member',
                     }
                 }).then(res=>{
-                    //console.log(res.data.data.common)
+                    console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,
@@ -461,6 +497,52 @@ export default {
         });
     },
     methods: {
+        //修改标题
+        edittitle(){
+            this.$prompt('请输入新的标题', '提示', {
+                inputValue:this.formdata.title,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    api.request({
+                        url: 'suggest/save',
+                        method: "POST",
+                        data:{
+                            id: this.id,
+                            title:value
+                        }
+                    })
+                    .then(
+                    res => {
+                        //console.log(res)
+                        if (res.status == 200) {
+                            if(res.data.state == true){
+                                this.$notify({
+                                    title: '成功',
+                                    message: '标题修改成功',
+                                    type: 'success'
+                                });
+                                this.formdata.title=value,
+                                Bus.$emit('detailChange',true);
+                            }else{
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: res.data.message
+                                }); 
+                            }
+                        }
+                    },
+                    res => {
+                        this.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    });
+                }).catch(() => {
+                      
+                });
+        },
+
         //投诉下拉菜单选择事件
         Complaintclick(item,index) {
             //console.log(item)
@@ -495,7 +577,7 @@ export default {
         quillconfirm(){
             this.isReadOnly = true;
             this.buttonstate = 1;
-            if(this.chase_list == null){
+            if(this.formdata.chase_list == null){
                 //先提交修改
                 api.request({
                     url: 'suggest/save',
@@ -518,7 +600,11 @@ export default {
                                 message: res.data.message
                             });
                         }else{
-                            console.log("修改成功")
+                            this.$notify({
+                                title: '成功',
+                                message: '修改成功',
+                                type: 'success'
+                            });
                         }
                     }
                 },
@@ -551,7 +637,11 @@ export default {
                                 message: res.data.message
                             });
                         }else{
-                            console.log("修改成功")
+                            this.$notify({
+                                title: '成功',
+                                message: '修改成功',
+                                type: 'success'
+                            });
                         }
                     }
                 },
@@ -576,7 +666,7 @@ export default {
         quillconfirmReply(){
             this.isReadOnlyOne = true;
             this.buttononestate = 1;
-            if(this.chase_list == null){
+            if(this.formdata.chase_list == null){
                 
                 //回复 修改
                 api.request({
@@ -594,8 +684,17 @@ export default {
                 res => {
                     //console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
-                            console.log('回复 修改成功')
+                        if(res.data.state == true){
+                            this.$notify({
+                                title: '成功',
+                                message: '修改成功',
+                                type: 'success'
+                            });
+                        }else{
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });
                         }
                     }
                 },
@@ -610,21 +709,31 @@ export default {
 
                 //回复 追问 修改
                 api.request({
-                    url: 'suggest/reply',
+                    url: 'suggest/reply/save',
                     method: "POST",
                     data:{
                         id:this.id,
-                        chase_id:this.formdata.chase_list.reply_list[0].id,
+                        replyId:this.formdata.chase_list.reply_list[0].id,
                         content:this.formdata.chase_list.reply_list[0].reply,
                         remark:this.formdata.chase_list.reply_list[0].remark,
+                        files:this.uploadImgList,
                     },
                 })
                 .then(
                 res => {
                     //console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
-                            console.log('回复 修改成功')
+                        if(res.data.state == true){
+                            this.$notify({
+                                title: '成功',
+                                message: '修改成功',
+                                type: 'success'
+                            });
+                        }else{
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });
                         }
                     }
                 },
@@ -649,8 +758,13 @@ export default {
                     message: '上传成功',
                     type: 'success'
                 });
-                this.formdata.reply_list[this.BtnNum].attachments = this.formdata.reply_list[this.BtnNum].attachments.concat({url:res.data.common.src}) ;
-                this.uploadImgList = this.uploadImgList.concat(res.data.common.src);
+                if(this.formdata.chase_list ==null){
+                    this.formdata.reply_list[this.BtnNum].attachments = this.formdata.reply_list[this.BtnNum].attachments.concat({url:res.data.common.src}) ;
+                    this.uploadImgList = this.uploadImgList.concat(res.data.common.src);
+                }else{
+                    this.formdata.chase_list.reply_list[this.BtnNum].attachments = this.formdata.chase_list.reply_list[this.BtnNum].attachments.concat({url:res.data.common.src}) ;
+                    this.uploadImgList = this.uploadImgList.concat(res.data.common.src);
+                }
             }  
             console.log( this.uploadImgList)  
         },
@@ -678,13 +792,17 @@ export default {
                 res => {
                     console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
+                        if(res.data.state == true){
                             this.$notify({
                                 title: '成功',
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                            if(this.formdata.chase_list ==null){
+                                this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                            }else{
+                                this.formdata.chase_list.reply_list[this.BtnNum].attachments.splice(index,1)
+                            }
                         }else{
                             this.$notify.error({
                                 title: "错误",
@@ -700,8 +818,14 @@ export default {
                     });
                 });
             }else{
-                this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
-                this.uploadImgList =this.uploadImgList.splice(index,1) 
+                if(this.formdata.chase_list ==null){
+                    this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                    this.uploadImgList =this.uploadImgList.splice(index,1) 
+                }else{
+                    this.formdata.chase_list.reply_list[this.BtnNum].attachments.splice(index,1)
+                    this.uploadImgList =this.uploadImgList.splice(index,1) 
+                }
+                
             }
         },
     },

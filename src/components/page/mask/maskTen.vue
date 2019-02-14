@@ -2,6 +2,7 @@
     <div class="mask maskone">
          <el-dialog :title="formdata.title" :visible.sync="editVisible" :close-on-click-modal="false" width="864px">
             <el-form ref="formdata" :model="formdata">
+                <i class="el-icon-caret-bottom el-icon-edit edit-title" @click="edittitle"></i>
                 <div class="mask_tip mask_tip_color_three" v-if="formdata.plat_status == 15">{{this.formdata.status_name}}</div>
                 
                 <div class="mask_tip_p">
@@ -280,8 +281,8 @@
 
                 <div class="handle-box">
                     <el-checkbox-group v-model="type">
-                        <el-checkbox label="置顶" name="type"></el-checkbox>
-                        <el-checkbox label="隐藏" name="type" @change="checkchange(type)"></el-checkbox>
+                        <!-- <el-checkbox label="置顶" name="type"></el-checkbox> -->
+                        <el-checkbox label="隐藏" :disabled ="checkboxstate" name="type" @change="checkchange(type)"></el-checkbox>
                     </el-checkbox-group>
                 </div>
 
@@ -357,6 +358,8 @@ export default {
             isReadOnlyOne:true,  //回复控制textarea是否可以编辑
             buttononestate:1, //回复 问题修改 显示隐藏
             type: [],
+
+            checkboxstate:false,  //隐藏是否可以修改
 
             //图片上传
             uploadImg:domain.testUrl+'upload?token='+localStorage.getItem('sk'),
@@ -494,6 +497,14 @@ export default {
                         }else{
                             this.type = [];
                         };
+
+                        //隐藏是否可修改
+                        if(res.data.data.common.is_pub == 1){
+                            this.checkboxstate =false;
+                        }else{
+                            this.checkboxstate =true;
+                        }
+
                         //switch 开关
                         if(res.data.data.common.scope_type == 1){
                             this.switchvalue =true
@@ -528,6 +539,51 @@ export default {
         });
     },
     methods: {
+        //修改标题
+        edittitle(){
+            this.$prompt('请输入新的标题', '提示', {
+                inputValue:this.formdata.title,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    api.request({
+                        url: 'suggest/save',
+                        method: "POST",
+                        data:{
+                            id: this.id,
+                            title:value
+                        }
+                    })
+                    .then(
+                    res => {
+                        //console.log(res)
+                        if (res.status == 200) {
+                            if(res.data.state == true){
+                                this.$notify({
+                                    title: '成功',
+                                    message: '标题修改成功',
+                                    type: 'success'
+                                });
+                                this.formdata.title=value,
+                                Bus.$emit('detailChange',true);
+                            }else{
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: res.data.message
+                                }); 
+                            }
+                        }
+                    },
+                    res => {
+                        this.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    });
+                }).catch(() => {
+                      
+                });
+        },
         //投诉下拉菜单选择事件
         Complaintclick(item,index) {
             //console.log(item)
@@ -603,7 +659,7 @@ export default {
 
         //提交修改 确定
         adoptsubmit(){
-             if(this.chase_list == null){
+             if(this.formdata.chase_list == null){
                 //先提交修改
                 api.request({
                     url: 'suggest/save',
@@ -734,7 +790,7 @@ export default {
                 res => {
                     console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
+                        if(res.data.state == true){
                             Bus.$emit('detailChange',true);
                             this.$notify({
                                 title: '成功',

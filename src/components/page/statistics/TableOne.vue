@@ -131,18 +131,35 @@ export default {
 watch:{
     async selectTime(val){
         console.log(val)
-        let postTime = await api.request({
+        if(val !=null){
+          let postTime = await api.request({
             url:url,
             method:'post',
             data:{
-                date_type:1,
+                date_type:4,
                 start_time:val[0],
                 end_time:val[1]
             }
-        })
-        let arr=postTime.data.data.common.data
-        this.tableList=arr
-        console.log(this.tableList)
+          })
+          let arr=postTime.data.data.common.data
+          this.tableList=arr
+          console.log(this.tableList)
+        }else{
+          let postTime = await api.request({
+                  url:url,
+                  method:'post',
+                  data:{
+                      date_type:2,
+                      current_page:1,
+                      per_page_count: 10,
+                  }
+              })
+
+              let arr=postTime.data.data.common.data
+              this.tableList=arr
+              console.log(this.tableList)
+        }
+        
 
     }
 }

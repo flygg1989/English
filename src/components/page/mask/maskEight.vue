@@ -2,6 +2,7 @@
     <div class="mask maskone">
          <el-dialog :title="formdata.title" :visible.sync="editVisible" :close-on-click-modal="false" width="864px">
             <el-form ref="formdata" :model="formdata">
+                <i class="el-icon-caret-bottom el-icon-edit edit-title" @click="edittitle"></i>
                 <div class="mask_tip mask_tip_color_four" v-if="formdata.plat_status == 14">{{this.formdata.status_name}}</div>
                 
                 <div class="mask_tip_p">
@@ -398,6 +399,52 @@ export default {
         });
     },
     methods: {
+        //修改标题
+        edittitle(){
+            this.$prompt('请输入新的标题', '提示', {
+                inputValue:this.formdata.title,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    api.request({
+                        url: 'suggest/save',
+                        method: "POST",
+                        data:{
+                            id: this.id,
+                            title:value
+                        }
+                    })
+                    .then(
+                    res => {
+                        //console.log(res)
+                        if (res.status == 200) {
+                            if(res.data.state == true){
+                                this.$notify({
+                                    title: '成功',
+                                    message: '标题修改成功',
+                                    type: 'success'
+                                });
+                                this.formdata.title=value;
+                                Bus.$emit('detailChange',true);
+                            }else{
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: res.data.message
+                                }); 
+                            }
+                        }
+                    },
+                    res => {
+                        this.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    });
+                }).catch(() => {
+                      
+                });
+        },
+
         //投诉下拉菜单选择事件
         Complaintclick(item,index) {
             //console.log(item)
@@ -451,8 +498,13 @@ export default {
                     message: '上传成功',
                     type: 'success'
                 });
-                this.formdata.reply_list[this.BtnNum].attachments = this.formdata.reply_list[this.BtnNum].attachments.concat({url:res.data.common.src}) ;
-                this.uploadImgList = this.uploadImgList.concat(res.data.common.src);
+                if(this.formdata.chase_list ==null){
+                    this.formdata.reply_list[this.BtnNum].attachments = this.formdata.reply_list[this.BtnNum].attachments.concat({url:res.data.common.src}) ;
+                    this.uploadImgList = this.uploadImgList.concat(res.data.common.src);
+                }else{
+                    this.formdata.chase_list.reply_list[this.BtnNum].attachments = this.formdata.chase_list.reply_list[this.BtnNum].attachments.concat({url:res.data.common.src}) ;
+                    this.uploadImgList = this.uploadImgList.concat(res.data.common.src);
+                }
             }  
             console.log( this.uploadImgList)  
         },
@@ -480,13 +532,17 @@ export default {
                 res => {
                     console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
+                        if(res.data.state == true){
                             this.$notify({
                                 title: '成功',
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                            if(this.formdata.chase_list ==null){
+                                this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                            }else{
+                                this.formdata.chase_list.reply_list[this.BtnNum].attachments.splice(index,1)
+                            }
                         }else{
                             this.$notify.error({
                                 title: "错误",
@@ -502,8 +558,13 @@ export default {
                     });
                 });
             }else{
-                this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
-                this.uploadImgList =this.uploadImgList.splice(index,1) 
+                if(this.formdata.chase_list ==null){
+                    this.formdata.reply_list[this.BtnNum].attachments.splice(index,1)
+                    this.uploadImgList =this.uploadImgList.splice(index,1) 
+                }else{
+                    this.formdata.chase_list.reply_list[this.BtnNum].attachments.splice(index,1)
+                    this.uploadImgList =this.uploadImgList.splice(index,1) 
+                }
             }
         },
         

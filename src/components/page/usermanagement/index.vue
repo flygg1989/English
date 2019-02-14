@@ -148,6 +148,7 @@ export default {
       // },
       //列表切换
       async switchList(item){
+        console.log(item)
           item.status==1?item.status=2:item.status=1
           try{
               let postTime = await api.request({
@@ -162,7 +163,7 @@ export default {
                   message: "用户屏蔽切换成功",
                   type: 'success'
               });
-              this.initList()
+              //this.initList()
           }catch (e) {
               this.$notify.error({
                   title: "错误",

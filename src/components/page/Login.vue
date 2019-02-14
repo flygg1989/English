@@ -186,11 +186,16 @@
                                     message: '登录成功',
                                     type: 'success'
                                 });
-                                self.$router.push('/audit'); 
+                                if(common.utype == 1){
+                                    self.$router.push('/audit'); 
+                                }else{
+                                    self.$router.push('/politicshandle'); 
+                                }
+                                
                             }
                         }
                     }).catch(function (err) {
-                        console.log(err);
+                        //console.log(err);
                         self.$notify.error({
                             title: '错误',
                             message: '数据请求失败',
@@ -227,7 +232,7 @@
                         },
                         headers: {'Content-Type': 'application/json;charset=UTF-8'}
                     }).then(function (res) {
-                        console.log(res);
+                        //console.log(res);
                         if(res.status == 200){
                             if(res.data.state == false){
                                 self.$notify.error({
@@ -252,11 +257,15 @@
                                     message: '登录成功',
                                     type: 'success'
                                 });
-                                self.$router.push('/politicshandle'); 
+                                if(common.utype == 1){
+                                    self.$router.push('/audit'); 
+                                }else{
+                                    self.$router.push('/politicshandle'); 
+                                }
                             }
                         }
                     }).catch(function (err) {
-                        console.log(err);
+                        //console.log(err);
                         self.$notify.error({
                             title: '错误',
                             message: '数据请求失败',

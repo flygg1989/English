@@ -1,7 +1,7 @@
 <template>
     <div class="mask maskone">
          <el-dialog :title="formdata.title" :visible.sync="editVisible" :close-on-click-modal="false" width="864px">
-            <el-form ref="formdata" :model="formdata" label-width="50px">
+            <el-form ref="formdata" :model="formdata">
                 <div class="mask_tip mask_tip_color_four" v-if="formdata.plat_status == 2">{{this.formdata.status_name}}</div>
                 <div class="mask_tip mask_tip_color_four" v-if="formdata.plat_status == 4">{{this.formdata.status_name}}</div>
                 <div class="mask_tip mask_tip_color_four" v-if="formdata.plat_status == 9">{{this.formdata.status_name}}</div>
@@ -102,7 +102,7 @@
                         <i class="el-icon-plus"></i>
                         <p>只可上传6张</p>
                     </el-upload>
-                    <el-dialog :visible.sync="dialogVisible">
+                    <el-dialog :visible.sync="dialogVisible" class="maskimg">
                         <img width="100%" :src="dialogImageUrl" alt="">
                     </el-dialog>
                     <!--图片展示-->
@@ -239,10 +239,10 @@ export default {
                     method: "GET",
                     data:{
                         id:this.id,
-                        expand:'attachments,replyList.attachments,chaseList,sugType,member',
+                        expand:'attachments,replyList.attachments,chaseList,sugType,member,chaseList.attachments',
                     }
                 }).then(res=>{
-                   //console.log(res.data.data.common)
+                   console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,
@@ -295,87 +295,96 @@ export default {
     methods: {
         //提交
         adoptsubmit(){
-            if(this.formdata.chase_list ==null){
-                //回复 
-                api.request({
-                    url: 'suggest/reply',
-                    method: "POST",
-                    data:{
-                        id:this.id,
-                        //chase_id:this.formdata.chase_list.id,
-                        content:this.replylist.content,
-                        remark:this.replylist.remark,
-                        files:this.replylist.attachments,
-                    },
-                    
-                })
-                .then(
-                res => {
-                    //console.log(res)
-                    if (res.status == 200) {
-                        if(res.data.state = true){
-                            Bus.$emit('detailChange',true);
-                            this.editVisible = false; 
-                            this.$notify({
-                                title: '成功',
-                                message: '提交成功',
-                                type: 'success'
-                            });
-                        }else{
-                            this.$notify.error({
-                                title: "错误",
-                                message: res.data.message
-                            }); 
-                        }
-                    }
-                },
-                res => {
-                    this.$notify.error({
-                        title: "错误",
-                        message: "数据请求失败"
-                    });
-                });   
-            }else{
-                //回复 
-                api.request({
-                    url: 'suggest/reply',
-                    method: "POST",
-                    data:{
-                        id:this.id,
-                        chase_id:this.formdata.chase_list.id,
-                        content:this.replylist.content,
-                        remark:this.replylist.remark,
-                        files:this.replylist.attachments,
-                    },
-                    
-                })
-                .then(
-                res => {
-                    //console.log(res)
-                    if (res.status == 200) {
-                        if(res.data.state = true){
-                            Bus.$emit('detailChange',true);
-                            this.editVisible = false; 
-                            this.$notify({
-                                title: '成功',
-                                message: '提交成功',
-                                type: 'success'
-                            });
-                        }else{
-                            this.$notify.error({
-                                title: "错误",
-                                message: res.data.message
-                            }); 
-                        }
-                    }
-                },
-                res => {
-                    this.$notify.error({
-                        title: "错误",
-                        message: "数据请求失败"
-                    });
+            if(this.replylist.content.length ==0 && this.replylist.remark.length == 0){
+                this.$notify.error({
+                    title: "错误",
+                    message: "回复内容或备注不能为空！",
                 });
+                return false
+            }else{
+                if(this.formdata.chase_list ==null){
+                    //回复 
+                    api.request({
+                        url: 'suggest/reply',
+                        method: "POST",
+                        data:{
+                            id:this.id,
+                            //chase_id:this.formdata.chase_list.id,
+                            content:this.replylist.content,
+                            remark:this.replylist.remark,
+                            files:this.replylist.attachments,
+                        },
+                        
+                    })
+                    .then(
+                    res => {
+                        //console.log(res)
+                        if (res.status == 200) {
+                            if(res.data.state == true){
+                                Bus.$emit('detailChange',true);
+                                this.editVisible = false; 
+                                this.$notify({
+                                    title: '成功',
+                                    message: '提交成功',
+                                    type: 'success'
+                                });
+                            }else{
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: res.data.message
+                                }); 
+                            }
+                        }
+                    },
+                    res => {
+                        this.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    });   
+                }else{
+                    //回复 
+                    api.request({
+                        url: 'suggest/reply',
+                        method: "POST",
+                        data:{
+                            id:this.id,
+                            chase_id:this.formdata.chase_list.id,
+                            content:this.replylist.content,
+                            remark:this.replylist.remark,
+                            files:this.replylist.attachments,
+                        },
+                        
+                    })
+                    .then(
+                    res => {
+                        //console.log(res)
+                        if (res.status == 200) {
+                            if(res.data.state == true){
+                                Bus.$emit('detailChange',true);
+                                this.editVisible = false; 
+                                this.$notify({
+                                    title: '成功',
+                                    message: '提交成功',
+                                    type: 'success'
+                                });
+                            }else{
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: res.data.message
+                                }); 
+                            }
+                        }
+                    },
+                    res => {
+                        this.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    });
+                }
             }
+            
 
         },
 
@@ -420,7 +429,7 @@ export default {
         //图片 放大
         handlePictureCardPreview(item,index) {
             console.log(item,index)
-            this.dialogImageUrl =this.formdata.reply_list.attachments[index].url;
+            this.dialogImageUrl =item;
             this.dialogVisible = true;
             
         },
@@ -461,7 +470,7 @@ export default {
                 res => {
                     console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
+                        if(res.data.state == true){
                             Bus.$emit('detailChange',true);
                             this.$notify({
                                 title: '成功',

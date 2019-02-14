@@ -1,7 +1,8 @@
 <template>
     <div class="mask maskone">
          <el-dialog :title="formdata.title" :visible.sync="editVisible" :close-on-click-modal="false" width="864px">
-            <el-form ref="formdata" :model="formdata" label-width="50px">
+            <el-form ref="formdata" :model="formdata">
+                <i class="el-icon-caret-bottom el-icon-edit edit-title" @click="edittitle"></i>
                 <div class="mask_tip mask_tip_color_one" v-if="formdata.plat_status == 1">{{this.formdata.status_name}}</div>
                 <div class="mask_tip mask_tip_color_one" v-if="formdata.plat_status == 8">{{this.formdata.status_name}}</div>
                 <div class="mask_tip mask_tip_color_one" v-if="formdata.plat_status == 13">{{this.formdata.status_name}}</div>
@@ -50,7 +51,7 @@
                 <div class="hr-top"></div>
 
                 <div class="handle-box">
-                    <el-select v-model="provinceId" :placeholder="provincename" class="selsct_city">
+                    <el-select v-model="provinceId" :placeholder="provincename" clearable  class="selsct_city">
                         <el-option
                         v-for="item in provinceList"
                         :key="item.id"
@@ -58,7 +59,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="cityId" :placeholder="cityname"  class="selsct_city">
+                    <el-select v-model="cityId" :placeholder="cityname" clearable  class="selsct_city">
                         <el-option
                         v-for="item in cityList"
                         :key="item.id"
@@ -66,7 +67,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="areaId" :placeholder="areaname"  class="selsct_city">
+                    <el-select v-model="areaId" :placeholder="areaname" clearable   class="selsct_city">
                         <el-option
                         v-for="item in areaList"
                         :key="item.id"
@@ -75,7 +76,7 @@
                         </el-option>
                     </el-select>
 
-                    <el-select v-model="Classificationid" placeholder="请选择部门分类"  class="selsct_cityone">
+                    <el-select v-model="Classificationid" placeholder="请选择部门分类" clearable   class="selsct_cityone">
                         <el-option
                         v-for="item in ClassificationLIstanbul"
                         :key="item.id"
@@ -84,7 +85,7 @@
                         </el-option>
                     </el-select>
 
-                    <el-select v-model="dept_id" :placeholder="deptname"  class="selsct_cityone">
+                    <el-select v-model="dept_id" :placeholder="deptname" clearable  class="selsct_cityone">
                         <el-option
                         v-for="item in departmentList"
                         :key="item.user_id"
@@ -97,7 +98,7 @@
 
                     <el-checkbox-group v-model="type">
                         <!-- <el-checkbox label="置顶" name="type"></el-checkbox> -->
-                        <el-checkbox label="隐藏"  name="type"></el-checkbox>
+                        <el-checkbox label="隐藏" :disabled ="checkboxstate" name="type"></el-checkbox>
                     </el-checkbox-group>
                 </div>
 
@@ -172,6 +173,8 @@ export default {
             buttonstate:1,    //问题修改 显示隐藏
             type: [],
 
+            checkboxstate:false,  //隐藏是否可以修改
+
             //不予处理
             denyVisible:false,
             desc:'',
@@ -237,18 +240,19 @@ export default {
                 //根据省获取 部门分类
                 this.dept_id='';
                 this.departmentList=[];
-                var areaNum=this.provinceId+'|'+'0'+'|'+'0';
+                var areaNum=this.provinceId+'|'+0+'|'+0;
                 api.request({
                     url: 'dept',
                     method: "GET",
                     data:{
                         limit:0,
                         area:areaNum,
+                        type_id:this.Classificationid,
                     }
                 })
                 .then(
                 res => {
-                    //console.log(res)
+                    console.log(res)
                     if (res.status == 200) {
                         this.departmentList =res.data.data.common;
                     }
@@ -265,8 +269,10 @@ export default {
         //根据市获取区
         cityId(newedid,oldedid){
             if(newedid ==null || newedid ==""){
-                console.log('空')
+                //console.log('空')
+                this.cityId='';
                 this.areaId ='';
+                this.dept_id='';
                 this.areaList = [];
             }else{
                 this.areaId ='';
@@ -302,6 +308,9 @@ export default {
 
                 //根据区获取 部门分类
                 this.dept_id='';
+                if(this.cityId ==null || this.cityId==''){
+                    this.cityId=0
+                }
                 var areaNum=this.provinceId+'|'+this.cityId+'|'+'0';
                 api.request({
                     url: 'dept',
@@ -309,11 +318,12 @@ export default {
                     data:{
                         limit:0,
                         area:areaNum,
+                        type_id:this.Classificationid,
                     }
                 })
                 .then(
                 res => {
-                    //console.log(res)
+                    console.log(res)
                     if (res.status == 200) {
                         this.departmentList =res.data.data.common;
                     }
@@ -330,8 +340,10 @@ export default {
          //根据区获取分类
         areaId(newedid,oldedid){
             if(newedid ==null || newedid ==""){
-                console.log('空')
+                //console.log('空')
+                this.areaId=='',
                 this.areaList = [];
+                this.dept_id='';
             }else{
                 this.Classificationid='',
                 //根据区获取 部门分类
@@ -343,11 +355,12 @@ export default {
                     data:{
                         limit:0,
                         area:areaNum,
+                        type_id:this.Classificationid,
                     }
                 })
                 .then(
                 res => {
-                    //console.log(res)
+                    console.log(res)
                     if (res.status == 200) {
                         this.departmentList =res.data.data.common;
                     }
@@ -369,6 +382,14 @@ export default {
                 this.departmentList = [];
             }else{
                 this.dept_id='';
+                if(this.cityId == null || this.cityId ==''){
+                    this.cityId =0;
+                }
+                if(this.areaId ==null || this.areaId ==''){
+                    this.areaId=0;
+                }
+                console.log(this.cityId)
+                console.log(this.areaId)
                 var areaNum=this.provinceId+'|'+this.cityId+'|'+this.areaId;
                 api.request({
                     url: 'dept',
@@ -406,6 +427,7 @@ export default {
                 this.provinceId = '',
                 this.cityId = '',
                 this.areaId = '',
+                this.Classificationid = '',
                 this.dept_id = '',
                 this.buttonstate = 1,
                 this.desc='',
@@ -420,7 +442,7 @@ export default {
                         expand:'attachments,replyList,chaseList,sugType,member',
                     }
                 }).then(res=>{
-                   //console.log(res.data.data.common)
+                    console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,
@@ -451,6 +473,12 @@ export default {
                             this.type = ['隐藏'];
                         }else{
                             this.type = [];
+                        }
+                        //隐藏是否可修改
+                        if(res.data.data.common.is_pub == 1){
+                            this.checkboxstate =false;
+                        }else{
+                            this.checkboxstate =true;
                         }
                         
                     }
@@ -528,6 +556,52 @@ export default {
             });
         },
 
+        //修改标题
+        edittitle(){
+            this.$prompt('请输入新的标题', '提示', {
+                inputValue:this.formdata.title,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    api.request({
+                        url: 'suggest/save',
+                        method: "POST",
+                        data:{
+                            id: this.id,
+                            title:value
+                        }
+                    })
+                    .then(
+                    res => {
+                        //console.log(res)
+                        if (res.status == 200) {
+                            if(res.data.state == true){
+                                this.$notify({
+                                    title: '成功',
+                                    message: '标题修改成功',
+                                    type: 'success'
+                                });
+                                this.formdata.title=value,
+                                Bus.$emit('detailChange',true);
+                            }else{
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: res.data.message
+                                }); 
+                            }
+                        }
+                    },
+                    res => {
+                        this.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    });
+                }).catch(() => {
+                      
+                });
+        },
+
         //投诉下拉菜单选择事件
         Complaintclick(item,index) {
             //console.log(item)
@@ -540,18 +614,32 @@ export default {
         //通过审核 已转办
         adoptsubmit(){
             //省市区 部门 没有选择时选取原来的id
+            
             if(this.provinceId == '' || this.provinceId ==null){
-                this.provinceId = this.area[0]
-            };
+                this.provinceId = this.area[0];
+                this.cityId = this.area[1];
+                this.areaId = this.area[2];
+                this.dept_id =this.formdata.dept_id
+            }
             if(this.cityId == '' || this.cityId == null){
-                this.cityId = this.area[1]
-            };
+                this.cityId = 0;
+                this.areaId = 0
+            }
             if(this.areaId == '' || this.areaId ==null){
-                this.areaId = this.area[2]
+                this.areaId = 0
             };
             if(this.dept_id == '' || this.dept_id ==null){
-                this.dept_id =this.formdata.dept_id
+                this.$notify.error({
+                    title: "错误",
+                    message: "部门不能为空",
+                });
+                return false
             };
+            console.log(this.provinceId)
+            console.log(this.cityId)
+            console.log(this.areaId)
+            console.log(this.dept_id)
+            //return false;
             //先提交修改
             api.request({
                 url: 'suggest/save',
@@ -570,42 +658,51 @@ export default {
             })
             .then(
             res => {
-                //console.log(res)
+                console.log(res)
                 if (res.status == 200) {
                     if(res.data.state == false){
                         this.$notify.error({
                             title: "错误",
                             message: res.data.message
                         });
+                        return false;
                     }else{
-                        //问政待审
-                        api.request({
-                            url: 'suggest/verify',
-                            method: "GET",
-                            data:{
-                                id:this.id
-                            },
-                        })
-                        .then(
-                        res => {
-                            //console.log(res)
-                            if (res.status == 200) {
-                                if(res.data.state = true){
-                                    Bus.$emit('detailChange',true);
-                                    this.$notify({
-                                        title: '审核通过，已转办',
-                                        message: '3秒后自动关闭',
-                                        type: 'success'
-                                    });
-                                    this.editVisible = false; 
-                                }
-                            }
-                        },
-                        res => {
-                            this.$notify.error({
-                                title: "错误",
-                                message: "数据请求失败"
-                            });
+                        console.log("修改成功!")
+                    }
+                }
+            },
+            res => {
+                this.$notify.error({
+                    title: "错误",
+                    message: "数据请求失败"
+                });
+                return false;
+            });
+
+            //问政待审
+            api.request({
+                url: 'suggest/verify',
+                method: "GET",
+                data:{
+                    id:this.id
+                },
+            })
+            .then(
+            res => {
+                //console.log(res)
+                if (res.status == 200) {
+                    if(res.data.state == true){
+                        Bus.$emit('detailChange',true);
+                        this.$notify({
+                            title: '审核通过，已转办',
+                            message: '3秒后自动关闭',
+                            type: 'success'
+                        });
+                        this.editVisible = false; 
+                    }else{
+                        this.$notify.error({
+                            title: "错误",
+                            message: res.data.message
                         });
                     }
                 }
@@ -666,7 +763,7 @@ export default {
                 res => {
                     console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
+                        if(res.data.state == true){
                             Bus.$emit('detailChange',true);
                             this.$notify({
                                 title: '成功',
@@ -675,6 +772,11 @@ export default {
                             });
                             this.denyVisible =false;
                             this.editVisible =false;
+                        }else{
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });
                         }
                     }
                 },

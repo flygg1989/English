@@ -92,6 +92,41 @@
                                 <span>{{item.created_at}}</span>
                             </div>
                         </div>
+                        <!--图片上传-->
+                        <el-upload
+                            :action="uploadImg"
+                            accept="image/jpeg,image/png"
+                            list-type="picture-card"
+                            :limit ='6'
+                            :on-success="uploadsuccess"
+                            v-if="buttononestate == 2 && item.attachments && item.attachments.length < 6" class="uploadImg_nolist"> 
+                            <i class="el-icon-plus"></i>
+                            <p>只可上传6张</p>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
+                        <!--图片展示-->
+                        <ul class="el-upload-list el-upload-list--picture-card">
+                            <li tabindex="0" class="el-upload-list__item is-success" v-for="(item,index) in item.attachments" :key="index">
+                                <img :src="item.url" alt="" class="el-upload-list__item-thumbnail">
+                                <a class="el-upload-list__item-name">
+                                    <i class="el-icon-document"></i>
+                                </a>
+                                <label class="el-upload-list__item-status-label"  v-if="buttononestate == 2">
+                                    <i class="el-icon-upload-success el-icon-check"></i>
+                                </label>
+                                <i class="el-icon-close"></i>
+                                <i class="el-icon-close-tip">按 delete 键可删除</i>
+                                <!---->
+                                <span class="el-upload-list__item-actions">
+                                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(item,index)">
+                                        <i class="el-icon-zoom-in"></i>
+                                    </span><span class="el-upload-list__item-delete" @click="handleRemove(item,index)"  v-if="buttononestate == 2">
+                                        <i class="el-icon-delete"></i>
+                                </span></span>
+                            </li>
+                        </ul>
                         <el-input type="textarea" readonly rows="3" v-model="item.reply" placeholder=""></el-input>
 
                         <!--备注-->
@@ -267,7 +302,7 @@ export default {
                     method: "GET",
                     data:{
                         id:this.id,
-                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,sugType,member',
+                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,chaseList.replyList.attachments,sugType,member',
                     }
                 }).then(res=>{
                     //console.log(res.data.data.common)

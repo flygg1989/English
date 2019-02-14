@@ -82,7 +82,7 @@ export default {
   methods: {
       //请求表格
       async getExport(){
-          if(this.selectTime.length===2  ){
+          if(this.selectTime.length===2 ){
               window.location.href=(domain.testUrl+exportUrl+`?token=${localStorage.getItem('sk')}&sort_type=${this.radio}&date_type=4&start_time=${this.selectTime[0]}&end_time=${this.selectTime[1]}`)
           }else {
               window.location.href=(domain.testUrl+exportUrl+'?token='+localStorage.getItem('sk')+'&sort_type='+this.radio)

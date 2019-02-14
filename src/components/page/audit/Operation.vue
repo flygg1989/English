@@ -75,6 +75,7 @@ export default {
     //发送 筛选/搜索值 至table
     operationDataChange: function () {
       Bus.$emit('operationDataChange', this.operationData)
+      console.log(this.operationData)
     },
     getTableData(){
       let exportUrl = []

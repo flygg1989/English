@@ -112,7 +112,7 @@
         <template slot-scope="scope">
           <el-button @click="adoptOne(scope.row)" plain size="mini" type="primary">通过</el-button>
           <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">修改</el-button>
-          <el-button @click="handleClick(scope.row)" plain size="mini" type="primary">驳回</el-button>
+          <el-button @click="RejectClick(scope.row)" plain size="mini" type="primary">驳回</el-button>
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
               <i class="el-icon-more"></i>
@@ -425,6 +425,16 @@ export default {
     handleClick(row) {
       console.log(row);
       Bus.$emit('sendID', row)//-------发送单挑信息到弹窗组件
+    },
+
+    //驳回
+    RejectClick(row){
+      console.log(row)
+      var data={
+        rowid:row.id,
+        state:true,
+      }
+      Bus.$emit('sendID',data)
     },
 
     //adopt单条通过

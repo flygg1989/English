@@ -197,6 +197,7 @@
                     url: "suggest/statistics",
                     method: "GET"
                 }).then(res=>{
+                    //console.log(res)
                     if(res.status == 200){
                         if(res.data.state ==true){
                             this.items[0].subs[0].num = res.data.data.common.a1;
@@ -205,6 +206,11 @@
                             this.items[0].subs[3].num = res.data.data.common.top_count;
                             this.items[0].subs[4].num = res.data.data.common.hide_count;
                             this.departmentitems[0].subs[0].num = res.data.data.common.a3
+                        }else{
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });  
                         }
                     }
                 },res => {

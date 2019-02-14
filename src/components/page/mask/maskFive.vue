@@ -1,7 +1,8 @@
 <template>
     <div class="mask maskone">
          <el-dialog :title="formdata.title" :visible.sync="editVisible" :close-on-click-modal="false" width="864px">
-            <el-form ref="formdata" :model="formdata" label-width="50px">
+            <el-form ref="formdata" :model="formdata">
+                <i class="el-icon-caret-bottom el-icon-edit edit-title" @click="edittitle"></i>
                 <div class="mask_tip mask_tip_color_one" v-if="formdata.plat_status == 7">{{this.formdata.status_name}}</div>
                 
                 <div class="mask_tip_p">
@@ -127,8 +128,8 @@
 
                 <div class="handle-box">
                     <el-checkbox-group v-model="type">
-                        <el-checkbox label="置顶" name="type"></el-checkbox>
-                        <el-checkbox label="隐藏" name="type"></el-checkbox>
+                        <!-- <el-checkbox label="置顶" name="type"></el-checkbox> -->
+                        <el-checkbox label="隐藏" :disabled ="checkboxstate" name="type"></el-checkbox>
                     </el-checkbox-group>
                 </div>
 
@@ -206,6 +207,8 @@ export default {
             isReadOnly:true,  //控制textarea是否可以编辑
             buttonstate:1,    //问题修改 显示隐藏
             type: [],
+
+            checkboxstate:false,  //隐藏是否可以修改
 
             //不予处理
             denyVisible:false,
@@ -285,6 +288,13 @@ export default {
                         }else{
                             this.type = [];
                         }
+
+                        //隐藏是否可修改
+                        if(res.data.data.common.is_pub == 1){
+                            this.checkboxstate =false;
+                        }else{
+                            this.checkboxstate =true;
+                        }
                         
                     }
                 },res => {
@@ -326,6 +336,54 @@ export default {
                 });
             });
         },
+
+         //修改标题
+        edittitle(){
+            this.$prompt('请输入新的标题', '提示', {
+                inputValue:this.formdata.title,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    api.request({
+                        url: 'suggest/save',
+                        method: "POST",
+                        data:{
+                            id: this.id,
+                            title:value
+                        }
+                    })
+                    .then(
+                    res => {
+                        //console.log(res)
+                        if (res.status == 200) {
+                            if(res.data.state == true){
+                                this.$notify({
+                                    title: '成功',
+                                    message: '标题修改成功',
+                                    type: 'success'
+                                });
+                                this.formdata.title=value;
+                                Bus.$emit('detailChange',true);
+                                
+                            }else{
+                                this.$notify.error({
+                                    title: "错误",
+                                    message: res.data.message
+                                }); 
+                            }
+                        }
+                    },
+                    res => {
+                        this.$notify.error({
+                            title: "错误",
+                            message: "数据请求失败"
+                        });
+                    });
+                }).catch(() => {
+                      
+                });
+        },
+
         //投诉下拉菜单选择事件
         Complaintclick(item,index) {
             //console.log(item)
@@ -371,7 +429,7 @@ export default {
                         res => {
                             //console.log(res)
                             if (res.status == 200) {
-                                if(res.data.state = true){
+                                if(res.data.state == true){
                                     Bus.$emit('detailChange',true);
                                     this.$notify({
                                         title: '审核通过',
@@ -379,6 +437,11 @@ export default {
                                         type: 'success'
                                     });
                                     this.editVisible = false; 
+                                }else{
+                                    this.$notify.error({
+                                        title: "错误",
+                                        message: res.data.message
+                                    });
                                 }
                             }
                         },
@@ -447,7 +510,7 @@ export default {
                 res => {
                     console.log(res)
                     if (res.status == 200) {
-                        if(res.data.state = true){
+                        if(res.data.state == true){
                             Bus.$emit('detailChange',true);
                             this.$notify({
                                 title: '成功',
@@ -456,6 +519,11 @@ export default {
                             });
                             this.denyVisible =false;
                             this.editVisible =false;
+                        }else{
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });
                         }
                     }
                 },

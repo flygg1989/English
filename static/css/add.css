@@ -173,7 +173,15 @@
         color: #2D3557 !important;
         font-size: 20px !important;
     }
-
+    /********修改标题**********/
+    .edit-title{
+        position: absolute;
+        top:15px;
+        right: 150px;
+        padding:10px;
+        font-size: 14px;
+        color: #4D84FF;
+    }
     /********状态**********/
     .mask_tip{
         position: absolute;
@@ -409,4 +417,8 @@
         font-size: 16px;
         color: #2D3557;
         line-height: 21px;
+    }
+    /**预览图片**/
+    .v-modal{
+        z-index: 2000 !important;
     }

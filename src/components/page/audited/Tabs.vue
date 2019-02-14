@@ -102,6 +102,9 @@ export default {
   mounted(){
     this.getAmount()
   },
+  created(){
+    this.getAmount()
+  },
   methods:{
 
     refreshTab:function(data){
