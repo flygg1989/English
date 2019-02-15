@@ -24,61 +24,93 @@
                     
                     <span>时间：{{formdata.created_at}}</span>
                 </div>
-                
-                <ul class="imgstyleone" v-if="formdata.attachments.length <= 3">
-                    <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
-                </ul>
 
-                <el-carousel :interval="4000" type="card" height="200px" v-if="formdata.attachments.length > 3">
-                    <el-carousel-item v-for="(item,index) in formdata.attachments" :key="index">
-                        <img :src="item.url" alt="">
-                    </el-carousel-item>
-                </el-carousel>
-            
-                <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.content" placeholder=""></el-input>
-                <div class="modify" v-if="buttonstate == 1">
-                    <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
+                <!--当chase_list 追问有值时-->
+                <div v-if="formdata.chase_list ==null">
+                    <!--图片 少于三张-->
+                    <ul class="imgstyleone" v-if="formdata.attachments.length <= 3">
+                        <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
+                    </ul>
+                    <!--图片 多于三张-->
+                    <el-carousel :interval="4000" type="card" height="200px" v-if="formdata.attachments.length > 3">
+                        <el-carousel-item v-for="(item,index) in formdata.attachments" :key="index">
+                            <img :src="item.url" alt="">
+                        </el-carousel-item>
+                    </el-carousel>
+                
+                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.content" placeholder=""></el-input>
+                    <div class="modify" v-if="buttonstate == 1">
+                        <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
+                    </div>
+                    <div class="el-dialog__footer quill-editor-footer" v-if="buttonstate == 2">
+                        <span slot="footer" class="dialog-footer">
+                            <!-- <el-button type="" @click="quillcancel()">取消</el-button> -->
+                            <el-button type="primary" @click="quillconfirm()">确定</el-button>
+                        </span>
+                    </div>
+
                 </div>
-                <div class="el-dialog__footer quill-editor-footer" v-if="buttonstate == 2">
-                    <span slot="footer" class="dialog-footer">
-                        <!-- <el-button type="" @click="quillcancel()">取消</el-button> -->
-                        <el-button type="primary" @click="quillconfirm()">确定</el-button>
-                    </span>
+                
+                <!--当chase_list 追问没有值时-->
+                <div v-else>
+                    <!--图片 少于三张-->
+                    <ul class="imgstyleone" v-if="formdata.chase_list.attachments && formdata.chase_list.attachments.length <= 3">
+                        <li v-for="(item,index) in formdata.chase_list.attachments" :key="index"><img :src="item.url" alt=""></li>
+                    </ul>
+                    <!--图片 多于三张-->
+                    <el-carousel :interval="4000" type="card" height="200px" v-if="formdata.chase_list.attachments && formdata.chase_list.attachments.length > 3">
+                        <el-carousel-item v-for="(item,index) in formdata.chase_list.attachments" :key="index">
+                            <img :src="item.url" alt="">
+                        </el-carousel-item>
+                    </el-carousel>
+                
+                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.chase_list.content" placeholder=""></el-input>
+                    <div class="modify" v-if="buttonstate == 1">
+                        <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
+                    </div>
+                    <div class="el-dialog__footer quill-editor-footer" v-if="buttonstate == 2">
+                        <span slot="footer" class="dialog-footer">
+                            <!-- <el-button type="" @click="quillcancel()">取消</el-button> -->
+                            <el-button type="primary" @click="quillconfirm()">确定</el-button>
+                        </span>
+                    </div>
+
                 </div>
 
                 <div class="hr-top"></div>
 
-                 <!--返回的回复 内容-->
-                <div class="bg_color_f7">
-                    <div v-if="formdata.chase_list != null">
-                    <div v-for="(item,index) in formdata.reply_list" :key="index">
-                        <div class="bg_color_tip">
-                            <h1>原回复</h1>
-                            <div>
-                                <span>{{formdata.dept_name}}</span>
-                                <span>{{formdata.uname}}</span>
-                                <span>{{item.created_at}}</span>
+                <!--返回的回复 内容-->
+                <div class="bg_color_f7" v-if="formdata.chase_list !=null ">
+                    
+                        <div v-for="(item,index) in formdata.reply_list" :key="index">
+                            <div class="bg_color_tip">
+                                <h1>原回复</h1>
+                                <div>
+                                    <span>{{formdata.dept_name}}</span>
+                                    <span>{{formdata.uname}}</span>
+                                    <span>{{item.created_at}}</span>
+                                </div>
                             </div>
+                            
+                            <!--回复图片展示-->
+                            <ul class="ReplyImg">
+                                <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
+                            </ul>
+                            <el-input type="textarea" rows="3" readonly v-model="item.reply" placeholder=""></el-input>
                         </div>
                         
-                        <!--回复图片展示-->
-                        <ul class="ReplyImg">
-                            <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
-                        </ul>
-                        <el-input type="textarea" rows="3" readonly v-model="item.reply" placeholder=""></el-input>
-                    </div>
-
+                    <div v-if="formdata.chase_list != null">
                         <div class="bg_color_tip">
                             <h1>原问题</h1>
                             <div>
-                                <span>{{formdata.chase_list.type_name}}</span>
-                                <span>提问时间：{{formdata.chase_list.created_at}}</span>
+                                <span>{{formdata.type_name}}</span>
+                                <span>提问时间：{{formdata.created_at}}</span>
                             </div>
                         </div> 
                         <ul class="ReplyImg">
-                            <li v-for="(item,index) in formdata.chase_list.attachments" :key="index"><img :src="item.url" alt=""></li>
+                            <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
                         </ul>                  
-                        <el-input type="textarea" rows="3" readonly v-model="formdata.chase_list.content" placeholder=""></el-input>
+                        <el-input type="textarea" rows="3" readonly v-model="formdata.content" placeholder=""></el-input>
                     </div>
                 </div>
                 
@@ -148,7 +180,7 @@
             <i class="num">{{textlength}}/200</i>
             <span slot="footer" class="dialog-footer">
                 <!-- <el-button @click="denyVisible = false">取 消</el-button> -->
-                <el-button type="primary" @click="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提   交 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </el-button>
+                <el-button type="primary" :disabled="btnstate" @click="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提   交 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </el-button>
             </span>
         </el-dialog>
     </div>
@@ -214,6 +246,7 @@ export default {
             denyVisible:false,
             desc:'',
             textlength:'0',
+            btnstate:false, //驳回按钮状态
                   
         }
     },
@@ -258,7 +291,7 @@ export default {
                         expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,sugType,member',
                     }
                 }).then(res=>{
-                   //console.log(res.data.data.common)
+                   console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,
@@ -395,61 +428,99 @@ export default {
         
         //通过审核 已转办
         adoptsubmit(){
-            //先提交修改
+            if(this.formdata.chase_list == null){
+                //先提交修改
+                api.request({
+                    url: 'suggest/save',
+                    method: "post",
+                    data:{
+                        id: this.id,
+                        content:this.formdata.content,
+                        type_id:this.formdata.sug_type.type_id,
+                        is_top:this.formdata.is_top,
+                        is_show:this.formdata.is_show,
+                    }
+                })
+                .then(
+                res => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        if(res.data.state == false){
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });
+                        }else{
+                            console.log("修改成功1")
+                        }
+                    }
+                },
+                res => {
+                    this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                    });
+                });
+
+            }else{
+               //先提交修改
+                api.request({
+                    url: 'suggest/save',
+                    method: "post",
+                    data:{
+                        id: this.id,
+                        content:this.formdata.chase_list.content,
+                        type_id:this.formdata.sug_type.type_id,
+                        is_top:this.formdata.is_top,
+                        is_show:this.formdata.is_show,
+                    }
+                })
+                .then(
+                res => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        if(res.data.state == false){
+                            this.$notify.error({
+                                title: "错误",
+                                message: res.data.message
+                            });
+                        }else{
+                            console.log("修改成功2")
+                        }
+                    }
+                },
+                res => {
+                    this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                    });
+                });
+            }
+            
+            //回复 审核通过
             api.request({
-                url: 'suggest/save',
-                method: "post",
+                url: 'suggest/return/verify',
+                method: "GET",
                 data:{
-                    id: this.id,
-                    content:this.formdata.content,
-                    type_id:this.formdata.sug_type.type_id,
-                    is_top:this.formdata.is_top,
-                    is_show:this.formdata.is_show,
-                }
+                    id:this.id
+                },
             })
             .then(
             res => {
                 //console.log(res)
                 if (res.status == 200) {
-                    if(res.data.state == false){
+                    if(res.data.state == true){
+                        Bus.$emit('detailChange',true);
+                        this.$notify({
+                            title: '审核通过',
+                            message: '3秒后自动关闭',
+                            type: 'success'
+                        });
+                        this.editVisible = false; 
+                    }else{
                         this.$notify.error({
                             title: "错误",
                             message: res.data.message
-                        });
-                    }else{
-                        //审核通过
-                        api.request({
-                            url: 'return/verify',
-                            method: "GET",
-                            data:{
-                                id:this.id
-                            },
-                        })
-                        .then(
-                        res => {
-                            //console.log(res)
-                            if (res.status == 200) {
-                                if(res.data.state == true){
-                                    Bus.$emit('detailChange',true);
-                                    this.$notify({
-                                        title: '审核通过',
-                                        message: '3秒后自动关闭',
-                                        type: 'success'
-                                    });
-                                    this.editVisible = false; 
-                                }else{
-                                    this.$notify.error({
-                                        title: "错误",
-                                        message: res.data.message
-                                    });
-                                }
-                            }
-                        },
-                        res => {
-                            this.$notify.error({
-                                title: "错误",
-                                message: "数据请求失败"
-                            });
                         });
                     }
                 }
@@ -498,6 +569,7 @@ export default {
                 message: '原因不能为空！'
                 });
             }else{
+                this.btnstate = true;
                 api.request({
                     url: 'suggest/reject',
                     method: "POST",
@@ -519,11 +591,13 @@ export default {
                             });
                             this.denyVisible =false;
                             this.editVisible =false;
+                            this.btnstate =false;
                         }else{
                             this.$notify.error({
                                 title: "错误",
                                 message: res.data.message
                             });
+                            this.btnstate =false;
                         }
                     }
                 },
@@ -532,6 +606,7 @@ export default {
                         title: "错误",
                         message: "数据请求失败"
                     });
+                    this.btnstate =false;
                 });
                 
             }

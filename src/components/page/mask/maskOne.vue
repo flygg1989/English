@@ -117,7 +117,7 @@
             <i class="num">{{textlength}}/200</i>
             <span slot="footer" class="dialog-footer">
                 <!-- <el-button @click="denyVisible = false">取 消</el-button> -->
-                <el-button type="primary" @click="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提   交 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </el-button>
+                <el-button type="primary" :disabled="btnstate" @click="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提   交 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </el-button>
             </span>
         </el-dialog>
     </div>
@@ -176,6 +176,7 @@ export default {
             checkboxstate:false,  //隐藏是否可以修改
 
             //不予处理
+            btnstate:false, //不予处理的按钮状态
             denyVisible:false,
             desc:'',
             textlength:'0',
@@ -432,6 +433,7 @@ export default {
                 this.buttonstate = 1,
                 this.desc='',
                 this.textlength= 0,
+                this.btnstate=false,
                 //console.log(data)
                 //获取  弹窗数据
                 api.request({
@@ -442,7 +444,7 @@ export default {
                         expand:'attachments,replyList,chaseList,sugType,member',
                     }
                 }).then(res=>{
-                    console.log(res.data.data.common)
+                    //console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,
@@ -614,7 +616,6 @@ export default {
         //通过审核 已转办
         adoptsubmit(){
             //省市区 部门 没有选择时选取原来的id
-            
             if(this.provinceId == '' || this.provinceId ==null){
                 this.provinceId = this.area[0];
                 this.cityId = this.area[1];
@@ -751,6 +752,7 @@ export default {
                 message: '原因不能为空！'
                 });
             }else{
+                this.btnstate =true;
                 api.request({
                     url: 'suggest/refuse',
                     method: "POST",
@@ -772,11 +774,13 @@ export default {
                             });
                             this.denyVisible =false;
                             this.editVisible =false;
+                            this.btnstate=false;
                         }else{
                             this.$notify.error({
                                 title: "错误",
                                 message: res.data.message
                             });
+                            this.btnstate=false;
                         }
                     }
                 },
@@ -785,6 +789,7 @@ export default {
                         title: "错误",
                         message: "数据请求失败"
                     });
+                    this.btnstate=false;
                 });
                 
             }

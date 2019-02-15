@@ -459,6 +459,7 @@ export default {
                     if (res.status == 200) {
                         if(res.data.state == true){
                             console.log('回复 修改成功')
+                            this.editVisible = false;
                         }else{
                             this.$notify.error({
                                 title: "错误",
@@ -484,6 +485,7 @@ export default {
                         replyId:this.formdata.chase_list.reply_list[0].id,
                         content:this.formdata.chase_list.reply_list[0].reply,
                         remark:this.formdata.chase_list.reply_list[0].remark,
+                        files:this.uploadImgList,
                     },
                 })
                 .then(
@@ -492,6 +494,7 @@ export default {
                     if (res.status == 200) {
                         if(res.data.state == true){
                             console.log('回复 修改成功')
+                            this.editVisible = false;
                         }else{
                             this.$notify.error({
                                 title: "错误",

@@ -78,20 +78,64 @@ export default {
   },
 
   methods: {
-      async initList(page,limit){ //当前页，一页数量
+      // async initList(page,limit){ //当前页，一页数量
+      //     try{
+      //         let postTime = await api.request({
+      //             url:url,
+      //             method:'post',
+      //             data:{
+      //                 date_type:2,
+      //                 current_page:page,
+      //                 per_page_count: limit,
+      //             }
+      //         })
+      //         let arr=postTime.data.data.common.data
+      //         this.tableList=arr
+      //         this.total=postTime.data.data.common.page_param.all_page_count;
+      //     }catch (e) {
+      //         this.$notify.error({
+      //             title: "错误",
+      //             message: "数据请求失败"
+      //         })
+      //     }
+      // },
+
+  async initList(page,limit){ //当前页，一页数量
           try{
-              let postTime = await api.request({
+              if(this.selectTime.length){
+               
+                 let postTime = await api.request({
                   url:url,
                   method:'post',
                   data:{
-                      date_type:2,
+                      date_type:4,
+                      current_page:page,
+                      per_page_count: limit,
+                      start_time:this.selectTime[0],
+                      end_time:this.selectTime[1]
+                  }
+              })
+
+              let arr=postTime.data.data.common.data
+              this.tableList=arr
+             
+              this.total=postTime.data.data.common.page_param.all_page_count;
+              }else{
+                 let postTime = await api.request({
+                  url:url,
+                  method:'post',
+                  data:{
                       current_page:page,
                       per_page_count: limit,
                   }
               })
+
               let arr=postTime.data.data.common.data
               this.tableList=arr
+              console.log(this.tableList)
               this.total=postTime.data.data.common.page_param.all_page_count;
+              }
+             
           }catch (e) {
               this.$notify.error({
                   title: "错误",
@@ -99,7 +143,6 @@ export default {
               })
           }
       },
-
     filterHandler(value, row, column) {
       const property = column['property'];
       return row[property] === value;

@@ -215,7 +215,7 @@ export default {
                 this.editVisible = true;
                 this.id = data.sugid;
                 this.plat_status =data.op_status;
-                this.status_name =data.verifyName;
+                this.status_name =data.platform.verifyName;
                 this.buttonstate = 1,
                 this.buttononestate =1,
                 //console.log(data)
@@ -225,10 +225,10 @@ export default {
                     method: "GET",
                     data:{
                         id:this.id,
-                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,sugType,member',
+                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,chaseList.replyList.attachments,sugType,member',
                     }
                 }).then(res=>{
-                    //console.log(res.data.data.common)
+                    console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             title: res.data.data.common.title,

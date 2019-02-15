@@ -148,7 +148,7 @@
             <i class="num">{{textlength}}/200</i>
             <span slot="footer" class="dialog-footer">
                 <!-- <el-button @click="denyVisible = false">取 消</el-button> -->
-                <el-button type="primary" @click="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提   交 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </el-button>
+                <el-button :disabled="btnstate" type="primary" @click="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提   交 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </el-button>
             </span>
         </el-dialog>
     </div>
@@ -205,6 +205,8 @@ export default {
             desc:'',
             textlength:'0',
 
+            log:[], //驳回原因
+
             //图片上传
             uploadImg:domain.testUrl+'upload?token='+localStorage.getItem('sk'),
             dialogImageUrl: '',
@@ -216,6 +218,8 @@ export default {
                 content:'',
                 remark:'',
             },
+
+            btnstate:false, //原因按钮状态
                   
         }
     },
@@ -239,7 +243,7 @@ export default {
                     method: "GET",
                     data:{
                         id:this.id,
-                        expand:'attachments,replyList.attachments,chaseList,sugType,member,chaseList.attachments',
+                        expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,chaseList.replyList.attachments,sugType,member',
                     }
                 }).then(res=>{
                    console.log(res.data.data.common)
@@ -265,6 +269,7 @@ export default {
                             reply_list:res.data.data.common.reply_list,   //回复列表
 
                             chase_list:res.data.data.common.chase_list,  //追问
+                            log:res.data.data.common.log,
                         }
                     }
                 },res => {
@@ -458,6 +463,7 @@ export default {
                 message: '原因不能为空！'
                 });
             }else{
+                this.btnstate =true;
                 api.request({
                     url: 'suggest/return',
                     method: "POST",
@@ -479,6 +485,7 @@ export default {
                             });
                             this.denyVisible =false;
                             this.editVisible =false;
+                            this.btnstate = false;
                         }
                     }
                 },
@@ -487,6 +494,7 @@ export default {
                         title: "错误",
                         message: "数据请求失败"
                     });
+                    this.btnstate = false;
                 });
                 
             }

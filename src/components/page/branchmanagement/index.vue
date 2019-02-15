@@ -125,7 +125,8 @@ export default {
         form:{
             name:'',
             region:''
-        }
+        },
+        pagenum:1, //当前页数
     }
   },
   components: {
@@ -243,6 +244,8 @@ export default {
 
       //当前选择页
       async handleCurrentChange(val) {
+          console.log(val)
+          this.pagenum = val;
           this.initList(val,this.pageSize)
       },
 
@@ -257,6 +260,7 @@ export default {
       //监听弹窗成功操作单条数据事件
     Bus.$on('detailChange',(data) => {
       if(data == true){
+        this.currentPage = this.pagenum ;
         this.initList(this.currentPage,this.pageSize)
       }
     })

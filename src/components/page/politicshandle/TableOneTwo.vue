@@ -46,7 +46,7 @@
         sortable="custom"
         width="144">
         <template slot-scope="scope">
-          <div v-if="scope.row.verifyName == '待审核'?false:true">{{scope.row.suggest.updated_at.substring(0,scope.row.suggest.updated_at.length-3)}}</div>
+          <div v-if="scope.row.platform.verifyName == '待审核'?false:true">{{scope.row.suggest.created_at.substring(0,scope.row.suggest.updated_at.length-3)}}</div>
         </template>
       </el-table-column>
       <el-table-column
@@ -59,7 +59,7 @@
               <el-button type="text" class="hover-btn">退回原因</el-button>
             </el-tooltip>
           </div> -->
-          <el-tooltip class="table-tooltip" visible-arrow="" effect="light"  v-if="scope.row.verifyName == '审核不通过'">
+          <el-tooltip class="table-tooltip" visible-arrow="" effect="light"  v-if="scope.row.platform.verifyName == '审核不通过'">
             <div slot="content">{{scope.row.reason}}</div>
             <el-button type="text" class="hover-btn">退回原因</el-button>
           </el-tooltip>
@@ -70,9 +70,9 @@
         label="审核结果"
         min-width="144">
         <template slot-scope="scope">
-          <span v-if="scope.row.verifyName == '待审核'">{{ scope.row.verifyName }}</span>
-          <span v-if="scope.row.verifyName == '审核通过'" class="font-green">{{ scope.row.verifyName }}</span>
-          <span v-if="scope.row.verifyName == '审核不通过'" class="font-red">{{ scope.row.verifyName }}</span>
+          <span v-if="scope.row.platform.verifyName == '待审核'">{{ scope.row.platform.verifyName }}</span>
+          <span v-if="scope.row.platform.verifyName == '审核通过'" class="font-green">{{ scope.row.platform.verifyName }}</span>
+          <span v-if="scope.row.platform.verifyName == '审核不通过'" class="font-red">{{ scope.row.platform.verifyName }}</span>
         </template>
       </el-table-column>
     </el-table>

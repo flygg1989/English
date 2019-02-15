@@ -261,7 +261,12 @@ export default {
 
     //监听operation组件筛选/搜索值
     Bus.$on('operationDataChange', (data) => {
-      this.listData.status = data.filterValue
+      console.log(data.filterValue);
+      if(data.filterValue){
+        this.listData.status = data.filterValue
+      }else{
+        this.listData.status = 'b'
+      }
       this.listData.t = data.timeValue
       this.listData.title = data.searchValue
       this.getList(this.listData)

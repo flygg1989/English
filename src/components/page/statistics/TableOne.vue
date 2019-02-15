@@ -81,11 +81,28 @@ export default {
   methods: {
       async initList(page,limit){ //当前页，一页数量
           try{
-              let postTime = await api.request({
+              if(this.selectTime.length){
+                 let postTime = await api.request({
                   url:url,
                   method:'post',
                   data:{
-                      date_type:1,
+                      date_type:4,
+                      current_page:page,
+                      per_page_count: limit,
+                      start_time:this.selectTime[0],
+                      end_time:this.selectTime[1]
+                  }
+              })
+
+              let arr=postTime.data.data.common.data
+              this.tableList=arr
+              console.log(this.tableList)
+              this.total=postTime.data.data.common.page_param.all_page_count;
+              }else{
+                 let postTime = await api.request({
+                  url:url,
+                  method:'post',
+                  data:{
                       current_page:page,
                       per_page_count: limit,
                   }
@@ -95,6 +112,8 @@ export default {
               this.tableList=arr
               console.log(this.tableList)
               this.total=postTime.data.data.common.page_param.all_page_count;
+              }
+             
           }catch (e) {
               this.$notify.error({
                   title: "错误",
@@ -112,20 +131,18 @@ export default {
     },
       //每页数量
       async handleSizeChange(val) {
-
           this.currentSize=val
           this.currentPage=1
           this.initList(this.currentPage,this.currentSize)
       },
       //当前页
       async handleCurrentChange(val) {
-          console.log('Current size: '+this.currentSize)
           this.currentPage=val
-          console.log('Current Page: '+this.currentPage)
           this.initList(val,this.currentSize)
       }
   },
   mounted(){
+    console.log(11)
       this.initList(this.currentPage,this.currentSize)
    },
 watch:{
@@ -141,7 +158,10 @@ watch:{
                 end_time:val[1]
             }
           })
+
           let arr=postTime.data.data.common.data
+          let res=postTime.data.data.common.page_param
+           console.log(res)
           this.tableList=arr
           console.log(this.tableList)
         }else{
