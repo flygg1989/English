@@ -76,7 +76,7 @@
                         </el-option>
                     </el-select>
 
-                    <el-select v-model="Classificationid" placeholder="请选择部门分类" clearable   class="selsct_cityone">
+                    <el-select v-model="Classificationid" :placeholder="type_name" clearable   class="selsct_cityone">
                         <el-option
                         v-for="item in ClassificationLIstanbul"
                         :key="item.id"
@@ -85,7 +85,7 @@
                         </el-option>
                     </el-select>
 
-                    <el-select v-model="dept_id" :placeholder="deptname" clearable  class="selsct_cityone">
+                    <el-select v-model="deptt_id" :placeholder="dept_name" clearable  class="selsct_cityone">
                         <el-option
                         v-for="item in departmentList"
                         :key="item.user_id"
@@ -153,8 +153,12 @@ export default {
 
             ComplaintList:[], //投诉类型列表
             departmentList:[],  //部门分类
+            dtypeid:'',        //部门分类id
+            type_name:'',      //部门分类名称
             area:[],        //省市区
-            dept_id:'',      //部门选择id
+            deptt_id:'',      //部门选择id
+            dept_id:'',      //部门id
+            dept_name:'',   //部门名称
             provinceId:'',  //省id
             provinceList:[],//省列表
             cityId:'',     //市id
@@ -164,7 +168,6 @@ export default {
             provincename:'',
             cityname:'',
             areaname:'',
-            deptname:'',
             area:'',  //省市区拼接
             Classificationid:'', //部门分类id
             ClassificationLIstanbul:[], //部门分类列表
@@ -208,7 +211,12 @@ export default {
         //根据省获取市
         provinceId(newid,oldid){
             if(newid ==null || newid ==""){
-                console.log('空')
+                this.provinceId='';
+                this.cityId ='';
+                this.areaId ='';
+                this.Classificationid='';
+                this.departmentList=[];
+                this.deptt_id='';
             }else{
                 this.cityId ='',
                 this.areaId ='',
@@ -237,33 +245,6 @@ export default {
                     message: "数据请求失败"
                     });
                 });
-                
-                //根据省获取 部门分类
-                this.dept_id='';
-                this.departmentList=[];
-                var areaNum=this.provinceId+'|'+0+'|'+0;
-                api.request({
-                    url: 'dept',
-                    method: "GET",
-                    data:{
-                        limit:0,
-                        area:areaNum,
-                        type_id:this.Classificationid,
-                    }
-                })
-                .then(
-                res => {
-                    console.log(res)
-                    if (res.status == 200) {
-                        this.departmentList =res.data.data.common;
-                    }
-                },
-                res => {
-                    this.$notify.error({
-                        title: "错误",
-                        message: "数据请求失败"
-                    });
-                });
             }
         },
 
@@ -273,7 +254,7 @@ export default {
                 //console.log('空')
                 this.cityId='';
                 this.areaId ='';
-                this.dept_id='';
+                this.deptt_id='';
                 this.areaList = [];
             }else{
                 this.areaId ='';
@@ -306,35 +287,6 @@ export default {
                         message: "数据请求失败2"
                     });
                 });
-
-                //根据区获取 部门分类
-                this.dept_id='';
-                if(this.cityId ==null || this.cityId==''){
-                    this.cityId=0
-                }
-                var areaNum=this.provinceId+'|'+this.cityId+'|'+'0';
-                api.request({
-                    url: 'dept',
-                    method: "GET",
-                    data:{
-                        limit:0,
-                        area:areaNum,
-                        type_id:this.Classificationid,
-                    }
-                })
-                .then(
-                res => {
-                    console.log(res)
-                    if (res.status == 200) {
-                        this.departmentList =res.data.data.common;
-                    }
-                },
-                res => {
-                    this.$notify.error({
-                        title: "错误",
-                        message: "数据请求失败"
-                    });
-                });
             }
         },
 
@@ -344,34 +296,12 @@ export default {
                 //console.log('空')
                 this.areaId=='',
                 this.areaList = [];
-                this.dept_id='';
-            }else{
                 this.Classificationid='',
+                this.deptt_id='';
+            }else{
                 //根据区获取 部门分类
                 this.dept_id='';
                 var areaNum=this.provinceId+'|'+this.cityId+'|'+this.areaId;
-                api.request({
-                    url: 'dept',
-                    method: "GET",
-                    data:{
-                        limit:0,
-                        area:areaNum,
-                        type_id:this.Classificationid,
-                    }
-                })
-                .then(
-                res => {
-                    console.log(res)
-                    if (res.status == 200) {
-                        this.departmentList =res.data.data.common;
-                    }
-                },
-                res => {
-                    this.$notify.error({
-                        title: "错误",
-                        message: "数据请求失败"
-                    });
-                });
             }
         },
 
@@ -379,10 +309,10 @@ export default {
         Classificationid(newedid,oldedid){
             if(newedid ==null || newedid ==""){
                 console.log('空')
-                this.dept_id ='';
+                this.deptt_id ='';
                 this.departmentList = [];
             }else{
-                this.dept_id='';
+                this.deptt_id='';
                 if(this.cityId == null || this.cityId ==''){
                     this.cityId =0;
                 }
@@ -441,10 +371,10 @@ export default {
                     method: "GET",
                     data:{
                         id:this.id,
-                        expand:'attachments,replyList,chaseList,sugType,member',
+                        expand:'attachments,replyList,chaseList,sugType,member,user.depType'
                     }
                 }).then(res=>{
-                    //console.log(res.data.data.common)
+                    console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,
@@ -460,14 +390,15 @@ export default {
                             is_show: res.data.data.common.is_show,
                             address:res.data.data.common.address,
                             area: res.data.data.common.area,
-                            dept_id: res.data.data.common.dept_id,
-                            dept_name: res.data.data.common.dept_name,
                         }
                         this.area =res.data.data.common.area.split("|");
                         this.provincename =res.data.data.common.address[0];
                         this.cityname =res.data.data.common.address[1];
                         this.areaname =res.data.data.common.address[2];
-                        this.deptname =res.data.data.common.dept_name;
+                        this.dtypeid=res.data.data.common.user.dtypeid; //市州区县id
+                        this.type_name=res.data.data.common.user.dep_type.type_name; //市州区县名称
+                        this.dept_id= res.data.data.common.dept_id; //部门id
+                        this.dept_name= res.data.data.common.dept_name; //部门名称
                         
                         if(res.data.data.common.is_top == 2){
                             this.type =['置顶'];
@@ -620,7 +551,8 @@ export default {
                 this.provinceId = this.area[0];
                 this.cityId = this.area[1];
                 this.areaId = this.area[2];
-                this.dept_id =this.formdata.dept_id
+                this.Classificationid=this.dtypeid;
+                this.deptt_id =this.dept_id;
             }
             if(this.cityId == '' || this.cityId == null){
                 this.cityId = 0;
@@ -629,7 +561,7 @@ export default {
             if(this.areaId == '' || this.areaId ==null){
                 this.areaId = 0
             };
-            if(this.dept_id == '' || this.dept_id ==null){
+            if(this.deptt_id == '' || this.deptt_id ==null){
                 this.$notify.error({
                     title: "错误",
                     message: "部门不能为空",
@@ -639,7 +571,8 @@ export default {
             console.log(this.provinceId)
             console.log(this.cityId)
             console.log(this.areaId)
-            console.log(this.dept_id)
+            console.log(this.Classificationid)
+            console.log(this.deptt_id)
             //return false;
             //先提交修改
             api.request({
@@ -649,7 +582,7 @@ export default {
                     id: this.id,
                     content:this.formdata.content,
                     type_id:this.formdata.sug_type.type_id,
-                    dept_id:this.dept_id,
+                    dept_id:this.deptt_id,
                     province:this.provinceId,
                     city:this.cityId,
                     region:this.areaId,

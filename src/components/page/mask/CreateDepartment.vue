@@ -3,16 +3,16 @@
         <el-dialog :title="title=='新建部门'?title='新建部门':title='修改部门'" :visible.sync="editVisible" :close-on-click-modal="false" width="560px">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="100px" class="ms-content">
                 <el-form-item label="部门名称" prop="department">
-                    <el-input v-model="ruleForm.department"></el-input>
+                    <el-input v-model.trim="ruleForm.department"></el-input>
                 </el-form-item>
                 <el-form-item label="责任人"  prop="Personliable" >
-                    <el-input v-model="ruleForm.Personliable"></el-input>
+                    <el-input v-model.trim="ruleForm.Personliable"></el-input>
                 </el-form-item>
                  <el-form-item label="手机号" prop="phone" >
-                    <el-input v-model="ruleForm.phone"></el-input>
+                    <el-input v-model.trim="ruleForm.phone"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱"  prop="email" >
-                    <el-input v-model="ruleForm.email"></el-input>
+                    <el-input v-model.trim="ruleForm.email"></el-input>
                 </el-form-item>
                  <el-form-item label="部门分类" prop="branch" >
                     <el-select v-model="ruleForm.branch" clearable placeholder="请选择" class="select_department">
@@ -51,7 +51,7 @@
                     </el-select>
                 </el-form-item>
                  <el-form-item label="默认密码" prop="Defaultpassword" v-if="pagestate == 1">
-                    <el-input v-model="ruleForm.Defaultpassword" placeholder="请输入密码"></el-input>
+                    <el-input v-model.trim="ruleForm.Defaultpassword" placeholder="请输入密码"></el-input>
                 </el-form-item>
                 <el-form-item label="上传部门头像" >
                     <el-upload

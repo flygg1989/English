@@ -447,6 +447,7 @@ export default {
                 this.buttonstate = 1,
                 this.buttononestate =1,
                 this.desc='',
+                this.uploadImgList=[],
                 this.textlength= 0,
                 this.disabledstate =false,
                 this.scope = data.scope,

@@ -276,7 +276,7 @@ export default {
             scope_type:'',
 
             //评分 分数
-            scope:0, 
+            scope:null, 
 
             //评分 文字
             texts:['非常不满意 ', '不满意', '一般', '比较满意', '非常满意'],

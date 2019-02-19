@@ -210,14 +210,24 @@
                             this.$notify.error({
                                 title: "错误",
                                 message: res.data.message
-                            });  
-                        }
+                            }); 
+                        };
                     }
                 },res => {
                     this.$notify.error({
-                    title: "错误",
-                    message: "数据请求失败"
+                        title: "错误",
+                        message: "数据请求失败"
                     });
+                    this.$confirm('此账号已在别处登录，请知悉！', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$router.push('/login'); 
+                    }).catch(() => {
+                                 
+                    });
+                    
                 })
             },
         }

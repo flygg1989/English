@@ -12,11 +12,11 @@
                     <el-tab-pane :label="`平台`" name="first">
                         <el-form :model="platForm" :rules="platrules" ref="platForm" status-icon label-width="0px" class="ms-content-psw">
                             <el-form-item prop="username" :show-header="true">
-                                <el-input v-model="platForm.username" placeholder="账号">
+                                <el-input v-model.trim="platForm.username"  placeholder="账号">
                                 </el-input>
                             </el-form-item>
                             <el-form-item prop="password">
-                                <el-input type="password" placeholder="密码" v-model="platForm.password">
+                                <el-input type="password" placeholder="密码" v-model.trim="platForm.password">
                                 </el-input>
                             </el-form-item>
 
@@ -48,11 +48,11 @@
                         <template v-if="message === 'second'">
                                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="0px" class="ms-content-psw">
                                     <el-form-item prop="email" :show-header="false">
-                                        <el-input v-model="ruleForm.email" placeholder="邮箱">
+                                        <el-input v-model.trim="ruleForm.email" placeholder="邮箱">
                                         </el-input>
                                     </el-form-item>
                                     <el-form-item prop="password">
-                                        <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+                                        <el-input type="password" placeholder="密码" v-model.trim="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
                                         </el-input>
                                     </el-form-item>
                                     <p class="login-tips"><router-link to="/Retrievepassword">忘记密码？</router-link></p>

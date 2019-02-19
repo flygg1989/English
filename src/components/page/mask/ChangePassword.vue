@@ -3,13 +3,13 @@
         <el-dialog title="修改密码" :visible.sync="editVisible" :close-on-click-modal="false" width="560px">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="100px" class="ms-content">
                 <el-form-item label="原密码" prop="Oldpassword" >
-                    <el-input v-model="ruleForm.Oldpassword" type="password"></el-input>
+                    <el-input v-model.trim="ruleForm.Oldpassword" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="新密码"  prop="Newpassword" >
-                    <el-input v-model="ruleForm.Newpassword" type="password"></el-input>
+                    <el-input v-model.trim="ruleForm.Newpassword" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="重复新密码"  prop="Repeatpassword">
-                    <el-input v-model="ruleForm.Repeatpassword" type="password"  @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                    <el-input v-model.trim="ruleForm.Repeatpassword" type="password"  @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
                 <div class="line-top"></div>
                 <div class="login-btn">

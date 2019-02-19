@@ -333,7 +333,7 @@ export default {
             scope_type:'',
 
             //评分 分数
-            scope:0, 
+            scope:null, 
             disabledstate:false, 
 
             //评分 文字
@@ -416,6 +416,7 @@ export default {
                 this.buttonstate = 1,
                 this.buttononestate =1,
                 this.desc='',
+                this.uploadImgList=[],
                 this.textlength= 0,
                 this.disabledstate =false,
                 this.scope = data.scope,
@@ -605,6 +606,7 @@ export default {
                                 message: '修改成功',
                                 type: 'success'
                             });
+                            Bus.$emit('detailChange',true);
                         }
                     }
                 },
@@ -642,6 +644,7 @@ export default {
                                 message: '修改成功',
                                 type: 'success'
                             });
+                            Bus.$emit('detailChange',true);
                         }
                     }
                 },
@@ -690,6 +693,7 @@ export default {
                                 message: '修改成功',
                                 type: 'success'
                             });
+                            Bus.$emit('detailChange',true);
                         }else{
                             this.$notify.error({
                                 title: "错误",
@@ -729,6 +733,7 @@ export default {
                                 message: '修改成功',
                                 type: 'success'
                             });
+                            Bus.$emit('detailChange',true);
                         }else{
                             this.$notify.error({
                                 title: "错误",

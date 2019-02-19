@@ -366,7 +366,7 @@ export default {
             scope_type:'',
 
             //评分 分数
-            scope:0, 
+            scope:null, 
             disabledstate:false, 
 
             //评分 文字
@@ -450,6 +450,7 @@ export default {
                 this.buttonstate = 1,
                 this.buttononestate =1,
                 this.desc='',
+                this.uploadImgList=[],
                 this.scope = data.scope,
                 //console.log(data)
                 //获取  弹窗数据

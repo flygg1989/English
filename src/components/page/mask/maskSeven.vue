@@ -434,6 +434,7 @@ export default {
                 this.buttononestate =1,
                 this.desc='',
                 this.textlength= 0,
+                this.uploadImgList=[],
                 this.scope = data.scope,
                 //console.log(data)
                 //获取  弹窗数据
@@ -695,6 +696,7 @@ export default {
                         replyId:this.formdata.chase_list.reply_list[0].id,
                         content:this.formdata.chase_list.reply_list[0].reply,
                         remark:this.formdata.chase_list.reply_list[0].remark,
+                        files:this.uploadImgList,
                     },
                 })
                 .then(
@@ -722,36 +724,42 @@ export default {
             }
             
             // 平台代评
-            api.request({
-                url: 'suggest/scope',
-                method: "GET",
-                data:{
-                    id:this.id,
-                    scope:this.scope,
-                },
-            })
-            .then(
-            res => {
-                //console.log(res)
-                if (res.status == 200) {
-                    if(res.data.state = true){
-                        Bus.$emit('detailChange',true);
-                        this.$notify({
-                            title: '成功',
-                            message: '代评成功',
-                            type: 'success'
-                        });
-                        this.editVisible = false; 
-                    }
-                }
-            },
-            res => {
+            if(this.scope==null || this.scope ==0){
                 this.$notify.error({
                     title: "错误",
-                    message: "数据请求失败"
+                    message: "请对满意度进行评价！"
+                }); 
+            }else{
+                api.request({
+                    url: 'suggest/scope',
+                    method: "GET",
+                    data:{
+                        id:this.id,
+                        scope:this.scope,
+                    },
+                })
+                .then(
+                res => {
+                    //console.log(res)
+                    if (res.status == 200) {
+                        if(res.data.state = true){
+                            Bus.$emit('detailChange',true);
+                            this.$notify({
+                                title: '成功',
+                                message: '代评成功',
+                                type: 'success'
+                            });
+                            this.editVisible = false; 
+                        }
+                    }
+                },
+                res => {
+                    this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                    });
                 });
-            });
-            
+            }
 
         },
 

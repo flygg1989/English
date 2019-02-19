@@ -13,17 +13,17 @@
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="" class="ms-content-psw">
                     <div class="login_right_con_title">找回密码</div>
                     <el-form-item label="" prop="phone">
-                        <el-input v-model="ruleForm.phone" placeholder="手机号"></el-input>
+                        <el-input v-model.trim="ruleForm.phone" placeholder="手机号"></el-input>
                     </el-form-item>
                     <el-form-item label="" prop="code" class="code_div">
-                        <el-input v-model="ruleForm.code" placeholder="" maxlength="4"></el-input>
-                        <el-button type="primary" @click="Obtaincode()">{{code_text}}</el-button>
+                        <el-input v-model.trim="ruleForm.code" placeholder="" maxlength="4"></el-input>
+                        <el-button :loading="smsLoading" @click="postCode">{{smsLoading?smsSec+'s后获取':'获取验证码'}}</el-button>
                     </el-form-item>
                     <el-form-item label="" prop="Newpassword" >
-                        <el-input v-model="ruleForm.Newpassword" type="password" placeholder="新密码"></el-input>
+                        <el-input v-model.trim="ruleForm.Newpassword" type="password" placeholder="新密码"></el-input>
                     </el-form-item>
                     <el-form-item label=""  prop="Repeatpassword" >
-                        <el-input v-model="ruleForm.Repeatpassword" type="password" placeholder="重复新密码"></el-input>
+                        <el-input v-model.trim="ruleForm.Repeatpassword" type="password" placeholder="重复新密码"></el-input>
                     </el-form-item>
                     <div class="login-btn">
                         <el-button type="primary" @click="submitForm('ruleForm')">确 认</el-button>
@@ -57,12 +57,15 @@
                     { required: true, message: '未填写', trigger: 'blur' }
                 ],
             },
-            code_text:'获取验证码',  //验证码文字
+            //验证码
+            smsLoading:false,
+            smsSec: 0,
+            
       };
     },
     methods: {
        //获取验证码
-       Obtaincode(){
+       postCode(){
            var self =this;
            if(!(/^1[34578]\d{9}$/.test(this.ruleForm.phone))){
                 this.$notify.error({
@@ -70,6 +73,18 @@
                     message: '手机号错误'
                 });
             }else{
+                this.smsLoading = true;
+                this.smsSec = 60;
+                let timer = setInterval(() => {
+                    if (this.smsSec > 0) {
+                    this.smsSec--;
+
+                    } else {
+                    this.smsSec = 0
+                    this.smsLoading = false
+                    clearInterval(timer)
+                    }
+                }, 1000);
                 axios({
                     url: 'http://api.politics.com/api/member/getSmsCode',
                     method: 'post',
@@ -137,6 +152,7 @@
                                 "sms_code":this.ruleForm.code,
                                 "new_password":this.ruleForm.Newpassword,
                                 "new_password_confirmation":this.ruleForm.Repeatpassword,
+                                "type":'pc',
                             },
                             headers: {'Content-Type': 'application/json;charset=UTF-8'}
                         }).then(function (res) {
@@ -154,6 +170,7 @@
                                         message: '密码已重置',
                                         type: 'success'
                                     });
+                                    self.$router.push('/login'); 
                                 }
                             }
                         }).catch(function (err) {
@@ -286,5 +303,6 @@
         background: #2CD696;
         font-size: 18px;
         border-color:#2CD696;
+        color:#fff;
     }
 </style>

@@ -227,7 +227,7 @@ export default {
                 dept_id:'',
                 is_top:'',
                 is_show:'',
-                scope:0,  //评分
+                scope:null,  //评分
 
                 //回复
                 dept_name:'',

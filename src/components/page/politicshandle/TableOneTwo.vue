@@ -27,8 +27,10 @@
                 <span v-if="scope.row.is_chase == '1'" class="is-chase">追问</span>
               </div>
             </div>
-            <div v-if="scope.row.suggest.attachments.length > 0" class="title-right">
-              <img src="static/img/icon-photo.png">
+            <div v-if="scope.row.suggest !=null">
+              <div v-if="scope.row.suggest.attachments.length > 0" class="title-right">
+                <img src="static/img/icon-photo.png">
+              </div>
             </div>
           </div>
         </template>
@@ -37,7 +39,7 @@
         label="类型"
         width="80">
         <template slot-scope="scope">
-          <div>{{scope.row.suggest.sug_type.type_name}}</div>
+          <div v-if="scope.row.suggest !=null">{{scope.row.suggest.sug_type.type_name}}</div>
         </template>
       </el-table-column>
       <el-table-column
@@ -46,13 +48,20 @@
         sortable="custom"
         width="144">
         <template slot-scope="scope">
-          <div v-if="scope.row.platform.verifyName == '待审核'?false:true">{{scope.row.suggest.created_at.substring(0,scope.row.suggest.updated_at.length-3)}}</div>
+          <div v-if="scope.row.platform">
+            <div v-if="scope.row.suggest">
+              <div v-if="scope.row.platform.verifyName == '待审核'?false:true">{{scope.row.suggest.created_at.substring(0,scope.row.suggest.updated_at.length-3)}}</div>
+            </div>
+          </div>
+          <div v-if="scope.row.platform ==null">
+            <div v-if="scope.row.verifyName == '待审核'">{{scope.row.suggest.created_at.substring(0,scope.row.suggest.updated_at.length-3)}}</div>
+          </div>
         </template>
       </el-table-column>
       <el-table-column
         label="退回原因"
         width="184">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.platform">
           <!-- <div v-if="scope.row.verifyName != '审核不通过'?false:true">
             <el-tooltip class="table-tooltip" visible-arrow="" effect="light">
               <div slot="content">{{scope.row.rejectreason}}</div>
@@ -70,9 +79,15 @@
         label="审核结果"
         min-width="144">
         <template slot-scope="scope">
-          <span v-if="scope.row.platform.verifyName == '待审核'">{{ scope.row.platform.verifyName }}</span>
-          <span v-if="scope.row.platform.verifyName == '审核通过'" class="font-green">{{ scope.row.platform.verifyName }}</span>
-          <span v-if="scope.row.platform.verifyName == '审核不通过'" class="font-red">{{ scope.row.platform.verifyName }}</span>
+          <div v-if="scope.row.platform">
+            <span v-if="scope.row.platform.verifyName == '待审核'">{{ scope.row.platform.verifyName }}</span>
+            <span v-if="scope.row.platform.verifyName == '审核通过'" class="font-green">{{ scope.row.platform.verifyName }}</span>
+            <span v-if="scope.row.platform.verifyName == '审核不通过'" class="font-red">{{ scope.row.platform.verifyName }}</span>
+          </div>
+          <div v-if="scope.row.platform ==null">
+            <span v-if="scope.row.verifyName == '待审核'">{{ scope.row.verifyName }}</span>
+          </div>
+          
         </template>
       </el-table-column>
     </el-table>
@@ -115,7 +130,7 @@ export default {
         t:'',
         title:'',
         page:1,
-        limit:0
+        limit:10
       }
     };
   },
@@ -212,6 +227,7 @@ export default {
         method: "GET",
         data
       }).then(res=>{
+        console.log(res)
         if(res.status == 200){
           this.amount = res.data.data.common.total
           this.tableList = res.data.data.common.data

@@ -136,7 +136,7 @@ export default {
         t:'',
         title:'',
         page:1,
-        limit:0
+        limit:10
       }
     };
   },
@@ -239,6 +239,7 @@ export default {
         method: "GET",
         data
       }).then(res=>{
+        console.log(res.data.data.common)
         if(res.status == 200){
           this.amount = res.data.data.common.total
           this.tableList = res.data.data.common.data

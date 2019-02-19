@@ -319,6 +319,7 @@ export default {
                 this.buttonstate = 1,
                 this.buttononestate =1,
                 this.desc='',
+                this.uploadImgList=[],
                 this.textlength= 0,
                 this.disabledstate =false,
                 this.scope = data.scope,
@@ -460,6 +461,7 @@ export default {
                         if(res.data.state == true){
                             console.log('回复 修改成功')
                             this.editVisible = false;
+                            Bus.$emit('detailChange',true);
                         }else{
                             this.$notify.error({
                                 title: "错误",
@@ -495,6 +497,7 @@ export default {
                         if(res.data.state == true){
                             console.log('回复 修改成功')
                             this.editVisible = false;
+                            Bus.$emit('detailChange',true);
                         }else{
                             this.$notify.error({
                                 title: "错误",

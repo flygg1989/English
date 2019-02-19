@@ -87,6 +87,7 @@ export default {
                   method:'post',
                   data:{
                       date_type:4,
+                      sort_type:1,
                       current_page:page,
                       per_page_count: limit,
                       start_time:this.selectTime[0],
@@ -103,6 +104,7 @@ export default {
                   url:url,
                   method:'post',
                   data:{
+                      sort_type:1,
                       current_page:page,
                       per_page_count: limit,
                   }
@@ -154,6 +156,7 @@ watch:{
             method:'post',
             data:{
                 date_type:4,
+                sort_type:1,
                 start_time:val[0],
                 end_time:val[1]
             }
@@ -170,6 +173,7 @@ watch:{
                   method:'post',
                   data:{
                       date_type:2,
+                      sort_type:1,
                       current_page:1,
                       per_page_count: 10,
                   }

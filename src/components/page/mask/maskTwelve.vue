@@ -233,6 +233,7 @@ export default {
                 this.buttononestate =1,
                 this.desc='',
                 this.replylist.attachments=[],
+                this.uploadImgList=[],
                 this.replylist.content='',
                 this.replylist.remark='',
                 this.textlength= 0,
@@ -388,6 +389,8 @@ export default {
                         });
                     });
                 }
+
+
             }
             
 

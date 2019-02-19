@@ -137,7 +137,7 @@ export default {
         t:'',
         title:'',
         page:1,
-        limit:0
+        limit:10
       },
       reason:''
     };

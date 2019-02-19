@@ -194,6 +194,7 @@ export default {
       url: "suggest/category",
       method: "GET"
     }).then(res=>{
+      console.log(res.data.dta.common)
       if(res.status == 200){
         let list = res.data.data.common
         for(let i=0;i<list.length;i++){

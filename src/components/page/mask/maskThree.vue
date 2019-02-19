@@ -371,6 +371,7 @@ export default {
                 this.id = data.id;
                 this.buttonstate = 1,
                 this.buttononestate =1,
+                this.uploadImgList=[],
                 this.desc='',
                 this.textlength= 0,
                 //console.log(data)
