@@ -422,3 +422,14 @@
     .v-modal{
         z-index: 2000 !important;
     }
+
+    /** 弹框全部上调位置**/
+    .el-dialog__wrapper{
+        position: fixed;
+        top: -45px !important;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow: auto;
+        margin: 0;
+    }

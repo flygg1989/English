@@ -37,7 +37,7 @@
                     </el-carousel-item>
                 </el-carousel>
             
-                <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.content" placeholder=""></el-input>
+                <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.content" placeholder=""></el-input>
                 <div class="modify" v-if="buttonstate == 1">
                     <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
                 </div>

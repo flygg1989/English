@@ -25,7 +25,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.content" placeholder=""></el-input>
                     
                 </div>
                 
@@ -42,7 +42,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.chase_list.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.chase_list.content" placeholder=""></el-input>
 
                 </div>
 
@@ -65,7 +65,7 @@
                             <ul class="ReplyImg">
                                 <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
                             </ul>
-                            <el-input type="textarea" rows="3" readonly v-model="item.reply" placeholder=""></el-input>
+                            <el-input type="textarea" rows="8" readonly v-model="item.reply" placeholder=""></el-input>
                         </div>
                         
                     <div v-if="formdata.chase_list != null">
@@ -79,7 +79,7 @@
                         <ul class="ReplyImg">
                             <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
                         </ul>                  
-                        <el-input type="textarea" rows="3" readonly v-model="formdata.content" placeholder=""></el-input>
+                        <el-input type="textarea" rows="8" readonly v-model="formdata.content" placeholder=""></el-input>
                     </div>
                 </div>
 
@@ -126,13 +126,13 @@
                             </span></span>
                         </li>
                     </ul>
-                    <el-input type="textarea"  rows="3" v-model="replylist.content" placeholder="请输入回复内容"></el-input>
+                    <el-input type="textarea"  rows="8" v-model="replylist.content" placeholder="请输入回复内容"></el-input>
 
                 <!--备注-->
                 <div class="bg_color_tip">
                     <h1>备注</h1>
                 </div>
-                <el-input type="textarea"  rows="3" v-model="replylist.remark" placeholder="可以将需要与管理员沟通的信息写在这里……"></el-input>
+                <el-input type="textarea"  rows="8" v-model="replylist.remark" placeholder="可以将需要与管理员沟通的信息写在这里……"></el-input>
 
             </el-form>
             

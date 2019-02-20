@@ -39,7 +39,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.content" placeholder=""></el-input>
                     <div class="modify" v-if="buttonstate == 1">
                         <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
                     </div>
@@ -65,7 +65,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="3" v-model="formdata.chase_list.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.chase_list.content" placeholder=""></el-input>
                     <div class="modify" v-if="buttonstate == 1">
                         <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
                     </div>
@@ -97,7 +97,7 @@
                             <ul class="ReplyImg">
                                 <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
                             </ul>
-                            <el-input type="textarea" rows="3" readonly v-model="item.reply" placeholder=""></el-input>
+                            <el-input type="textarea" rows="8" readonly v-model="item.reply" placeholder=""></el-input>
                         </div>
                         
                     <div v-if="formdata.chase_list != null">
@@ -111,7 +111,7 @@
                         <ul class="ReplyImg">
                             <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
                         </ul>                  
-                        <el-input type="textarea" rows="3" readonly v-model="formdata.content" placeholder=""></el-input>
+                        <el-input type="textarea" rows="8" readonly v-model="formdata.content" placeholder=""></el-input>
                     </div>
                 </div>
 
@@ -444,7 +444,7 @@ export default {
                         expand:'attachments,replyList.attachments,replyList.user,chaseList.sugType,chaseList.attachments,chaseList.replyList,sugType,member,user.depType',
                     }
                 }).then(res=>{
-                    //console.log(res.data.data.common)
+                    console.log(res.data.data.common)
                     if(res.status == 200){
                         this.formdata={
                             plat_status: res.data.data.common.plat_status,
