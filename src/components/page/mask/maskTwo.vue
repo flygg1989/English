@@ -39,7 +39,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" autosize v-model="formdata.content" placeholder=""></el-input>
                     <div class="modify" v-if="buttonstate == 1">
                         <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
                     </div>
@@ -65,7 +65,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.chase_list.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" autosize v-model="formdata.chase_list.content" placeholder=""></el-input>
                     <div class="modify" v-if="buttonstate == 1">
                         <el-button plain class="handle-modify mr10" @click="readonlystate" >问题修改</el-button>
                     </div>
@@ -97,7 +97,7 @@
                             <ul class="ReplyImg">
                                 <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
                             </ul>
-                            <el-input type="textarea" rows="8" readonly v-model="item.reply" placeholder=""></el-input>
+                            <el-input type="textarea" autosize readonly v-model="item.reply" placeholder=""></el-input>
                         </div>
                         
                     <div v-if="formdata.chase_list != null">
@@ -111,7 +111,7 @@
                         <ul class="ReplyImg">
                             <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
                         </ul>                  
-                        <el-input type="textarea" rows="8" readonly v-model="formdata.content" placeholder=""></el-input>
+                        <el-input type="textarea" autosize readonly v-model="formdata.content" placeholder=""></el-input>
                     </div>
                 </div>
 
@@ -175,8 +175,8 @@
         </el-dialog>
 
         <!--不予处理原因 -->
-        <el-dialog title="不予处理原因" :visible.sync="denyVisible" width="704px">
-            <el-input type="textarea" rows="10" v-model="desc" :maxlength="200"  @input="removeActive($event)" placeholder="请输入原因，200个字符以内"></el-input>
+        <el-dialog title="不予处理原因" :visible.sync="denyVisible" :close-on-click-modal="false" width="704px">
+            <el-input type="textarea" :autosize="{ minRows: 10}" v-model="desc" :maxlength="200"  @input="removeActive($event)" placeholder="请输入原因，200个字符以内"></el-input>
             <i class="num">{{textlength}}/200</i>
             <span slot="footer" class="dialog-footer">
                 <!-- <el-button @click="denyVisible = false">取 消</el-button> -->

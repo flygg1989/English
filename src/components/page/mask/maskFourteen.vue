@@ -26,7 +26,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" autosize v-model="formdata.content" placeholder=""></el-input>
                 </div>
                 
                 <!--当chase_list 追问没有值时-->
@@ -42,7 +42,7 @@
                         </el-carousel-item>
                     </el-carousel>
                 
-                    <el-input type="textarea" :readonly="isReadOnly" rows="8" v-model="formdata.chase_list.content" placeholder=""></el-input>
+                    <el-input type="textarea" :readonly="isReadOnly" autosize v-model="formdata.chase_list.content" placeholder=""></el-input>
                 </div>
 
                 <!--返回的回复 内容-->
@@ -62,7 +62,7 @@
                             <ul class="ReplyImg">
                                 <li v-for="(item,index) in item.attachments" :key="index"><img :src="item.url" alt=""></li>
                             </ul>
-                            <el-input type="textarea" rows="8" readonly v-model="item.reply" placeholder=""></el-input>
+                            <el-input type="textarea" autosize readonly v-model="item.reply" placeholder=""></el-input>
                         </div>
                         
                     <div v-if="formdata.chase_list != null">
@@ -76,7 +76,7 @@
                         <ul class="ReplyImg">
                             <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
                         </ul>                  
-                        <el-input type="textarea" rows="8" readonly v-model="formdata.content" placeholder=""></el-input>
+                        <el-input type="textarea" autosize readonly v-model="formdata.content" placeholder=""></el-input>
                     </div>
                 </div>
             </el-form>
