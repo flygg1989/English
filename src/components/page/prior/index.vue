@@ -668,6 +668,7 @@ export default {
       this.getList(this.listData)
     },
     handleCurrentChange(val) {
+      console.log(val)
       this.listData.page = val
       console.log(`当前页: ${this.listData.page}`);
       this.getList(this.listData)
@@ -683,6 +684,7 @@ export default {
         method: "GET",
         data
       }).then(res=>{
+        console.log(res)
         if(res.status == 200){
           this.amount = res.data.data.common.total
           this.tableList = res.data.data.common.data

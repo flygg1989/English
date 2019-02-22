@@ -273,20 +273,9 @@
                         </el-rate>
                 </el-form-item>
 
-                <!-- <div class="hr-top"></div>
-
-                <div class="handle-box">
-                    <el-checkbox-group v-model="type">
-                        <el-checkbox label="置顶" disabled name="type"></el-checkbox>
-                        <el-checkbox label="隐藏" disabled name="type" @change="checkchange(type)"></el-checkbox>
-                    </el-checkbox-group>
-                </div> -->
 
             </el-form>
-            <!-- <span slot="footer" class="dialog-footer">
-                <el-button type="primary" v-if="formdata.plat_status == 6" @click="adoptsubmit">平台代评</el-button>
-                <el-button type="primary" v-if="formdata.plat_status == 14" @click="saveEdit">办结问题</el-button>
-            </span> -->
+         
         </el-dialog>
 
     </div>
@@ -589,27 +578,13 @@ export default {
             this.formdata.sug_type.type_name =item.type_name
         },
         
-        //隐藏选择
-        checkchange(type){
-            if(type = ['']){
-                this.$confirm('该问题在客户端将仅对提问用户可见', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {}).catch(() => {});
-            }
-        },
         
         //问题修改  控制readonlystate 和按钮显示隐藏
         readonlystate(){
             this.isReadOnly = false;
             this.buttonstate = 2;
         },
-        //问题修改  取消
-        // quillcancel(){
-        //     this.isReadOnly = true;
-        //     this.buttonstate = 1;
-        // },
+       
 
         //问题修改 确定
         quillconfirm(){

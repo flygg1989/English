@@ -161,7 +161,7 @@
 
                     <el-checkbox-group v-model="type">
                         <el-checkbox label="置顶" name="type"></el-checkbox>
-                        <el-checkbox label="隐藏" :disabled ="checkboxstate" name="type" @change="checkchange(type)"></el-checkbox>
+                        <el-checkbox label="隐藏" :disabled ="checkboxstate" name="type"></el-checkbox>
                     </el-checkbox-group>
                 </div>
 
@@ -616,17 +616,6 @@ export default {
             //console.log(item)
             this.formdata.sug_type.type_id =item.id
             this.formdata.sug_type.type_name =item.type_name
-        },
-        
-        //隐藏选择
-        checkchange(type){
-            if(type = ['']){
-                this.$confirm('该问题在客户端将仅对提问用户可见', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {}).catch(() => {});
-            }
         },
         
         //通过审核 已转办

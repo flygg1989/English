@@ -564,6 +564,7 @@ export default {
     //获取更多操作信息
     handleCommand(command) {
       console.log(command);
+      if(command.is_pub==1){
         api.request({
           url: "suggest/hide",
           method: "GET",
@@ -588,7 +589,12 @@ export default {
               message: "数据请求失败"
             });
         })
-
+      }else{
+        this.$notify.error({
+            title: "错误",
+            message:"用户非公开的问政不能取消隐藏"
+        });
+      }
     },
 
     //多选

@@ -79,22 +79,22 @@
                             {
                                 index: 'audited',
                                 title: '已审核',
-                                num:'496',
+                                num:'',
                             },
                             {
                                 index: 'refusetohandle',
                                 title: '不予处理',
-                                num:'67',
+                                num:'',
                             },
                             {
                                 index: 'prior',
                                 title: '置顶',
-                                num:'496',
+                                num:'',
                             },
                             {
                                 index: 'cryptic',
                                 title: '隐藏',
-                                num:'67',
+                                num:'',
                             }
                         ]
                     },

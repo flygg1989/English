@@ -201,7 +201,7 @@ export default {
       url: "suggest/category",
       method: "GET"
     }).then(res=>{
-      console.log(res.data.dta.common)
+      console.log(res.data.data.common)
       if(res.status == 200){
         let list = res.data.data.common
         for(let i=0;i<list.length;i++){
@@ -716,13 +716,14 @@ export default {
         method: "GET",
         data
       }).then(res=>{
+        console.log(res)
         if(res.status == 200){
           this.amount = res.data.data.common.total
           this.tableList = res.data.data.common.data
           this.tabList = res.data.data.common.data
           Bus.$emit('tableDataChange', this.listData)//------发送表格参数至operation
           this.tabList.forEach(item => {
-            item.open = item.scope_type == 1?true:false
+            item.open = item.scope_allow == 1?true:false
           })
           
 

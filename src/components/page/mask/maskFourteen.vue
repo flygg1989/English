@@ -244,17 +244,6 @@ export default {
             this.formdata.sug_type.type_name =item.type_name
         },
         
-        //隐藏选择
-        checkchange(type){
-            if(type = ['']){
-                this.$confirm('该问题在客户端将仅对提问用户可见', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {}).catch(() => {});
-            }
-        },
-        
         //问题修改  控制readonlystate 和按钮显示隐藏
         readonlystate(){
             this.isReadOnly = false;

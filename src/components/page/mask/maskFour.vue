@@ -189,7 +189,7 @@
                 <div class="handle-box">
                     <el-checkbox-group v-model="type">
                         <el-checkbox label="置顶" disabled name="type"></el-checkbox>
-                        <el-checkbox label="隐藏" disabled name="type" @change="checkchange(type)"></el-checkbox>
+                        <el-checkbox label="隐藏" disabled name="type"></el-checkbox>
                     </el-checkbox-group>
                 </div>
 
@@ -434,17 +434,6 @@ export default {
             this.formdata.sug_type.type_name =item.type_name
         },
         
-        //隐藏选择
-        checkchange(type){
-            if(type = ['']){
-                this.$confirm('该问题在客户端将仅对提问用户可见', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {}).catch(() => {});
-            }
-        },
-       
         //图片 放大
         handlePictureCardPreview(item,index) {
             console.log(item,index)

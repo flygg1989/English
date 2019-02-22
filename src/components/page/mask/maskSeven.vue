@@ -250,6 +250,7 @@
                     <h1>用户评价</h1>
                     <div>
                        <el-switch 
+                       @change="switchChange"
                        active-color="#3CD970"
                        inactive-color="#dcdfe6"
                        v-model="switchvalue" v-if="formdata.plat_status == 6">
@@ -279,7 +280,7 @@
                 <div class="handle-box">
                     <el-checkbox-group v-model="type">
                         <el-checkbox label="置顶" name="type"></el-checkbox>
-                        <el-checkbox label="隐藏" :disabled ="checkboxstate" name="type" @change="checkchange(type)"></el-checkbox>
+                        <el-checkbox label="隐藏" :disabled ="checkboxstate" name="type"></el-checkbox>
                     </el-checkbox-group>
                 </div>
 
@@ -350,7 +351,7 @@ export default {
 
             //switch 开关
             switchvalue:true,
-            scope_type:'',
+            scope_allow:'',
 
             //评分 分数
             scope:null, 
@@ -383,38 +384,13 @@ export default {
             }
         },
 
-        //判断开关真假
-        switchvalue(old,active){
-            if(old == true){
-                api.request({
-                    url: "suggest/scope/switch",
-                    method: "GET",
-                    data:{
-                        id:this.id
-                    }
-                }).then(res=>{
-                    
-                },res => {
-                    this.$notify.error({
-                    title: "错误",
-                    message: "数据请求失败"
-                    });
-                })
-            }else if(old == false){
-                api.request({
-                    url: "suggest/scope/switch",
-                    method: "GET",
-                    data:{
-                        id:this.id
-                    }
-                }).then(res=>{
-                    
-                },res => {
-                    this.$notify.error({
-                    title: "错误",
-                    message: "数据请求失败"
-                    });
-                })
+        //判断开关
+        scope_allow(old){
+            //console.log(old)
+            if(old ==1){
+               this.switchvalue=true 
+            }else{
+                this.switchvalue=false 
             }
         },
 
@@ -433,6 +409,7 @@ export default {
                 this.buttonstate = 1,
                 this.buttononestate =1,
                 this.desc='',
+                this.scope_allow =data.scope_allow,
                 this.textlength= 0,
                 this.uploadImgList=[],
                 this.scope = data.scope,
@@ -466,7 +443,7 @@ export default {
                             dept_name: res.data.data.common.dept_name,
                             remark: res.data.data.common.remark,
                             scope:res.data.data.common.scope,  //评分
-                            scope_type:res.data.data.common.scope_type, //switch 开关
+                            
                             reply_list:res.data.data.common.reply_list,   //回复列表
                             chase_list:res.data.data.common.chase_list,  //追问列表
                         }
@@ -486,9 +463,10 @@ export default {
                             this.checkboxstate =true;
                         }
                         //switch 开关
-                        if(res.data.data.common.scope_type == 1){
+                        this.scope_allow=res.data.data.common.scope_allow; //switch 开关
+                        if(res.data.data.common.scope_allow == 1){
                             this.switchvalue =true
-                        }else if(res.data.data.common.scope_type == 2){
+                        }else if(res.data.data.common.scope_allow == 2){
                             this.switchvalue =false
                         }
                         
@@ -573,15 +551,25 @@ export default {
             this.formdata.sug_type.type_name =item.type_name
         },
         
-        //隐藏选择
-        checkchange(type){
-            if(type = ['']){
-                this.$confirm('该问题在客户端将仅对提问用户可见', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {}).catch(() => {});
-            }
+        //评价开关
+        switchChange(row){
+            api.request({
+                url: "suggest/scope/switch",
+                method: "GET",
+                data:{
+                id:this.id
+                }
+            }).then(res=>{
+                if(res.status == 200){
+                this.handleCurrentChange(this.listData.page)
+                }
+            },res => {
+                this.$notify.error({
+                    title: "错误",
+                    message: "数据请求失败"
+                });
+            })
+        
         },
         
         //平台代评 

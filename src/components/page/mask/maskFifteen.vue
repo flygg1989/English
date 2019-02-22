@@ -79,7 +79,7 @@
                         <ul class="ReplyImg">
                             <li v-for="(item,index) in formdata.attachments" :key="index"><img :src="item.url" alt=""></li>
                         </ul>                  
-                        <el-input type="textarea" readonly readonly v-model="formdata.content" placeholder=""></el-input>
+                        <el-input type="textarea" autosize readonly v-model="formdata.content" placeholder=""></el-input>
                     </div>
                 </div>
 
@@ -128,7 +128,7 @@
                                 </span></span>
                             </li>
                         </ul>
-                        <el-input type="textarea" :readonly="isReadOnlyOne" readonly v-model="item.reply" placeholder=""></el-input>
+                        <el-input type="textarea" :readonly="isReadOnlyOne" autosize v-model="item.reply" placeholder=""></el-input>
                         <div v-if="formdata.plat_status == 10">
                         <div class="modify" v-if="buttononestate == 1">
                             <el-button plain class="handle-modify mr10" @click="readonlyonestate(index)" >修 改</el-button>
@@ -145,7 +145,7 @@
                         <div class="bg_color_tip">
                             <h1>备注</h1>
                         </div>
-                        <el-input type="textarea"  readonly v-model="item.remark" placeholder="建议将该问题对外隐藏！"></el-input>
+                        <el-input type="textarea"  autosize v-model="item.remark" placeholder="建议将该问题对外隐藏！"></el-input>
                     </div>
                 </div>
 
@@ -194,7 +194,7 @@
                                 </span></span>
                             </li>
                         </ul>
-                        <el-input type="textarea" :readonly="isReadOnlyOne" readonly v-model="item.reply" placeholder=""></el-input>
+                        <el-input type="textarea" :readonly="isReadOnlyOne" autosize v-model="item.reply" placeholder=""></el-input>
                         <div v-if="formdata.plat_status == 10">
                         <div class="modify" v-if="buttononestate == 1">
                             <el-button plain class="handle-modify mr10" @click="readonlyonestate(index)" >修 改</el-button>
@@ -211,7 +211,7 @@
                         <div class="bg_color_tip">
                             <h1>备注</h1>
                         </div>
-                        <el-input type="textarea"  readonly v-model="item.remark" placeholder="建议将该问题对外隐藏！"></el-input>
+                        <el-input type="textarea"  autosize v-model="item.remark" placeholder="建议将该问题对外隐藏！"></el-input>
                     </div>
                 </div>
                 
@@ -401,17 +401,6 @@ export default {
 
             this.formdata.sug_type.type_id =item.id
             this.formdata.sug_type.type_name =item.type_name
-        },
-        
-        //隐藏选择
-        checkchange(type){
-            if(type = ['']){
-                this.$confirm('该问题在客户端将仅对提问用户可见', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {}).catch(() => {});
-            }
         },
         
         //问题修改  控制readonlystate 和按钮显示隐藏
