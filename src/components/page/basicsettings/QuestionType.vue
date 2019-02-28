@@ -132,7 +132,7 @@ export default {
         }).then(({ value }) => {
           this.$message({
             type: 'success',
-            message: '添加: ' + value
+            message: '修改: ' + value
           });
         console.log(item)
           //post 修改类型

@@ -165,7 +165,7 @@ export default {
             if(res.status == 200){
                this.$notify({
                   title: "成功",
-                  message: "声明更换成功",
+                  message: "修改成功",
                   type: 'success'
                 });
                 this.showModifyBtn=true
