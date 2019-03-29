@@ -433,3 +433,10 @@
         overflow: auto;
         margin: 0;
     }
+
+
+    /**录音**/
+    .avatar-uploader-p{
+        position: relative;
+        top: -30px;
+    }

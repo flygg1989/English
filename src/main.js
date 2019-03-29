@@ -15,6 +15,10 @@ import '../static/css/add.css';   //新增样式
 Vue.use(ElementUI, { size: 'small' });
 Vue.prototype.$axios = axios;
 
+import AudioRecorder from 'vue-audio-recorder'
+
+Vue.use(AudioRecorder)
+
 //调用全局接口
 import domain from './domain.js';
 global.domain = domain;

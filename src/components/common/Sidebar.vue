@@ -1,27 +1,159 @@
 <template>
     <div class="sidebar">
-         <el-menu class="sidebar-el-menu" :default-active="onRoutes" unique-opened router>
-            <v-SidebarL></v-SidebarL>
-            <v-SidebarR></v-SidebarR>
-            <!-- <div class="btn_return" @click="collapseChage"><i class="el-icon-lx-back"></i></div> -->
+        <el-menu class="sidebar-el-menu" :default-active="onRoutes"  background-color="#EBECF1"
+            text-color="#2D3557" active-text-color="#fff" unique-opened router>
+            <template v-for="item in items">
+                <template v-if="item.subs">
+                    <el-submenu :index="item.index" :key="item.index">
+                        <template slot="title">
+                            <span slot="title" style="font-size:16px;font-weight:bold;color:#2D3557">{{ item.title }}</span>
+                        </template>
+                        <template v-for="subItem in item.subs">
+                            <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
+                                <template slot="title">{{ subItem.title }} <span v-if="subItem.num">（{{subItem.num}}）</span></template>
+                            </el-submenu>
+                            <el-menu-item v-else :index="subItem.index" :key="subItem.index">
+                                {{ subItem.title }}<span v-if="subItem.num">（{{subItem.num}}）</span>
+                            </el-menu-item>
+                        </template>
+                    </el-submenu>
+                </template>
+                <template v-else>
+                    <el-menu-item :index="item.index" :key="item.index">
+                        <span slot="title" style="font-size:16px;font-weight:bold;color:#2D3557">{{ item.title }}</span>
+                    </el-menu-item>
+                </template>
+            </template>
         </el-menu>
        
     </div>
 </template>
 
 <script>
-    import vSidebarL from '../common/SidebarLeft.vue';
-    import vSidebarR from '../common/SidebarRight.vue';
+   
     import bus from '../common/bus';
     export default {
         data() {
             return {
               collapse: false,
+              //平台
+                items: [
+                    {
+                        index: '1',
+                        title: '用户管理',
+                        subs: [
+                            {
+                                index: 'platformUser',
+                                title: '平台用户管理',
+                            },
+                            {
+                                index: 'commonUser',
+                                title: '普通用户管理',
+                            }
+                        ]
+                    },
+                    {
+                        index: '2',
+                        title: '学习管理',
+                        subs: [
+                            {
+                                index: 'Column',
+                                title: '学习栏目管理'
+                            }
+                        ]
+                    },
+                    {
+                        index: '3',
+                        title: '单词管理',
+                        subs: [
+                            {
+                                index: 'Word',
+                                title: '单词列表'
+                            },
+                            {
+                                index: 'Wordpractice',
+                                title: '单词练习'
+                            }
+                        ]
+                    },
+                    {
+                        index: '4',
+                        title: '口语管理',
+                        subs: [
+                            {
+                                index: 'colloquialism',
+                                title: '口语列表'
+                            },
+                            {
+                                index: 'colloquialismpractice',
+                                title: '口语练习'
+                            }
+                        ]
+                    },
+                    {
+                        index: '5',
+                        title: '听力管理',
+                        subs: [
+                            {
+                                index: 'hearing',
+                                title: '听力列表'
+                            },
+                            {
+                                index: 'hearingpractice',
+                                title: '听力练习'
+                            }
+                        ]
+                    },
+                    {
+                        index: '6',
+                        title: '语法管理',
+                        subs: [
+                            {
+                                index: 'grammar',
+                                title: '语法列表'
+                            },
+                            {
+                                index: 'grammarpractice',
+                                title: '语法练习'
+                            }
+                        ]
+                    },
+                    {
+                        index: '7',
+                        title: '场景管理',
+                        subs: [
+                            {
+                                index: 'Sceneclassification',
+                                title: '场景分类列表'
+                            },
+                            {
+                                index: 'Scenedialogue',
+                                title: '场景对话管理'
+                            }
+                        ]
+                    },
+                    {
+                        index: '8',
+                        title: '系统管理',
+                        subs: [
+                            {
+                                index: 'Organizationmanagement',
+                                title: '组织架构管理'
+                            },
+                            {
+                                index: 'UserRoles',
+                                title: '角色管理'
+                            },
+                            {
+                                index: 'GlobalManagement',
+                                title: '全局配置'
+                            },
+                        ]
+                    },
+                ],
             }
         },
-        components:{
-            vSidebarL, vSidebarR
-        },
+        
         computed:{
             onRoutes(){
                 return this.$route.path.replace('/','');
@@ -53,7 +185,7 @@
         width: 0;
     }
     .sidebar-el-menu:not(.el-menu--collapse){
-        width: 250px;
+        width: 190px;
     }
     .sidebar-el-menu{
         height: 100%;
@@ -61,5 +193,15 @@
     .sidebar > ul {
         height:100%;
     }
+    .sidebar .is-active{
+        background: #4D84FF !important;
+        color: #fff !important;
+    }
+    .sidebar .el-menu-item{
+        min-width: auto;
+    }
     
+    .sidebar .el-submenu{
+        overflow: hidden;
+    }
 </style>

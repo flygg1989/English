@@ -15,6 +15,7 @@
     "element-ui": "^2.4.5",
     "mavon-editor": "^2.5.4",
     "vue": "^2.5.16",
+    "vue-audio-recorder": "^3.0.1",
     "vue-cropperjs": "^2.2.0",
     "vue-drag-verify": "^1.0.6",
     "vue-quill-editor": "3.0.6",

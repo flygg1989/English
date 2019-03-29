@@ -3,83 +3,42 @@
        <div class="login_left">
             <div>
                 <img src="static/img/icon-logo.png">
-                <p>荆楚问政</p>
+                <p>飞行英语</p>
             </div>
        </div>
        <div class="login_right">
             <div class="login_right_con">
-                 <el-tabs v-model="message">
-                    <el-tab-pane :label="`平台`" name="first">
-                        <el-form :model="platForm" :rules="platrules" ref="platForm" status-icon label-width="0px" class="ms-content-psw">
-                            <el-form-item prop="username" :show-header="true">
-                                <el-input v-model.trim="platForm.username"  placeholder="账号">
-                                </el-input>
-                            </el-form-item>
-                            <el-form-item prop="password">
-                                <el-input type="password" placeholder="密码" v-model.trim="platForm.password">
-                                </el-input>
-                            </el-form-item>
+                <el-form :model="platForm" :rules="platrules" ref="platForm" status-icon label-width="0px" class="ms-content-psw">
+                    <el-form-item prop="name" :show-header="true">
+                        <el-input v-model.trim="platForm.name"  placeholder="账号">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input type="password" placeholder="密码" v-model.trim="platForm.password">
+                        </el-input>
+                    </el-form-item>
 
-                            <p class="login-tips"><router-link to="/Retrievepassword">忘记密码？</router-link></p>
+                    <p class="login-tips"><router-link to="/Retrievepassword">忘记密码？</router-link></p>
 
-                            <drag-verify 
-                                :width="width" 
-                                :height="height" 
-                                :text="text" 
-                                :success-text="successText" 
-                                :background="background" 
-                                :progress-bar-bg="progressBarBg" 
-                                :completed-bg="completedBg" 
-                                :handler-bg="handlerBg" 
-                                :handler-icon="handlerIcon" 
-                                :text-size="textSize" 
-                                :success-icon="successIcon"
-                                ref="Verify"
-                            >     
-                            </drag-verify>
-
-                            <div class="login-btn">
-                                <el-button type="primary" @click="platsubmitForm('platForm')">确认登录</el-button>
-                            </div>
-                        </el-form>
-                    </el-tab-pane>
-
-                    <el-tab-pane :label="`部门`" name="second">
-                        <template v-if="message === 'second'">
-                                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="0px" class="ms-content-psw">
-                                    <el-form-item prop="email" :show-header="false">
-                                        <el-input v-model.trim="ruleForm.email" placeholder="邮箱">
-                                        </el-input>
-                                    </el-form-item>
-                                    <el-form-item prop="password">
-                                        <el-input type="password" placeholder="密码" v-model.trim="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
-                                        </el-input>
-                                    </el-form-item>
-                                    <p class="login-tips"><router-link to="/Retrievepassword">忘记密码？</router-link></p>
-
-                                    <drag-verify 
-                                        :width="width" 
-                                        :height="height" 
-                                        :text="text" 
-                                        :success-text="successText" 
-                                        :background="background" 
-                                        :progress-bar-bg="progressBarBg" 
-                                        :completed-bg="completedBg" 
-                                        :handler-bg="handlerBg" 
-                                        :handler-icon="handlerIcon" 
-                                        :text-size="textSize" 
-                                        :success-icon="successIcon"
-                                        ref="Verify"
-                                    >     
-                                    </drag-verify>
-                                    <div class="login-btn">
-                                        <el-button type="primary" @click="submitForm('ruleForm')">确认登录</el-button>
-                                    </div>
-                                </el-form>
-                        </template>
-                    </el-tab-pane>
-                </el-tabs>
-              
+                    <drag-verify 
+                        :width="width" 
+                        :height="height" 
+                        :text="text" 
+                        :success-text="successText" 
+                        :background="background" 
+                        :progress-bar-bg="progressBarBg" 
+                        :completed-bg="completedBg" 
+                        :handler-bg="handlerBg" 
+                        :handler-icon="handlerIcon" 
+                        :text-size="textSize" 
+                        :success-icon="successIcon"
+                        ref="Verify"
+                    >     
+                    </drag-verify>
+                    <div class="login-btn">
+                        <el-button type="primary" @click="platsubmitForm('platForm')">确认登录</el-button>
+                    </div>
+                </el-form>
             </div>
        </div>
    </div> 
@@ -87,7 +46,8 @@
 
 <script>
     import axios from 'axios';
-    import dragVerify from 'vue-drag-verify'
+    import dragVerify from 'vue-drag-verify';
+    import api from "@/utils/api";
     
     export default {
         components:{
@@ -96,33 +56,15 @@
     data() {
       return {
         API:domain.testUrl,   //全局接口
-        //tabs切换
-        message: 'first',
-        showHeader: false,
         //平台 邮箱密码
         platForm: {
-            username: '',
+            name: '',
             password: ''
         }, 
         //平台 验证
         platrules: {
-            username: [
+            name: [
                 { required: true, message: '请输入账号', trigger: 'blur' }
-            ],
-            password: [
-                { required: true, message: '请输入密码', trigger: 'blur' }
-            ]
-        },
-        //部门 邮箱密码 
-        ruleForm: {
-            email: '',
-            password: ''
-        },
-        
-        //部门 验证
-        rules: {
-            email: [
-                { required: true, message: '请输入邮箱', trigger: 'blur' }
             ],
             password: [
                 { required: true, message: '请输入密码', trigger: 'blur' }
@@ -153,54 +95,44 @@
                
                 if (valid ==true && this.$refs.Verify.isPassing ==true ) {
                     axios({
-                        url: this.API +'auth/login',
+                        url: this.API +'login',
                         method: 'POST',
-                        data:{
-                            "username":this.platForm.username,
+                        data: {
+                            "name":this.platForm.name,
                             "password":this.platForm.password,
                         },
                         headers: {'Content-Type': 'application/json;charset=UTF-8'}
                     }).then(function (res) {
-                        //console.log(res.data);
-                        if(res.status == 200){
-                            if(res.data.state == false){
-                                self.$notify.error({
-                                    title: '错误',
-                                    message: res.data.message,
-                                });
-                            }else{
-                                var common =res.data.data.common;
-
-                                localStorage.setItem('account',common.account);
-                                localStorage.setItem('email',common.email);
-                                localStorage.setItem('mobile',common.mobile);
-                                localStorage.setItem('sk',common.sk);
-                                localStorage.setItem('status',common.status);
-                                localStorage.setItem('uname',common.uname);
-                                localStorage.setItem('user_id',common.user_id);
-                                localStorage.setItem('dept_name',common.dept_name);
-                                localStorage.setItem('headimg',common.headimg);
-                                localStorage.setItem('utype',common.utype);
-                                self.$notify({
-                                    title: '成功',
-                                    message: '登录成功',
-                                    type: 'success'
-                                });
-                                if(common.utype == 1){
-                                    self.$router.push('/audit'); 
-                                }else{
-                                    self.$router.push('/politicshandle'); 
-                                }
-                                
-                            }
+                        //console.log(res);
+                        if(res.data.state ==false){
+                            self.$notify.error({
+                                 title: '错误',
+                                 message: res.data.message,
+                            });
+                        }else{
+                            var token =res.data.data.token;
+                            localStorage.setItem('sk',token);
+                            var n = token.split(".");
+                            var m =window.atob(n[1])
+                            var b =eval('(' + m + ')');;
+                            console.log(b);
+                            localStorage.setItem('user_id',b.sub.id);
+                            localStorage.setItem('uname',b.sub.name);
+                            self.$notify({
+                                 title: '成功',
+                                 message:res.data.message,
+                                 type: 'success'
+                            });
+                            self.$router.push('/platformUser'); 
                         }
-                    }).catch(function (err) {
-                        //console.log(err);
-                        self.$notify.error({
-                            title: '错误',
-                            message: '数据请求失败',
-                        });
-                    })
+                        })
+                        .catch(function (err) {
+                            self.$notify.error({
+                                title: '错误',
+                                message: '数据请求失败',
+                            });
+                         return false;
+                        })
                 } else {
                     this.$notify.error({
                         title: '错误',
@@ -210,77 +142,6 @@
                 }
             });
         },
-        //部门验证
-        submitForm(formName) {
-            let self = this;
-            this.$refs[formName].validate((valid) => {
-                var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");  // 邮箱正则表达式  
-                   
-                if (valid ==true && this.$refs.Verify.isPassing ==true ){
-                    if(!reg.test(this.ruleForm.email)){
-                        this.$notify.error({
-                            title: '错误',
-                            message: '邮箱格式错误'
-                        });
-                    }else{
-                        axios({
-                        url: this.API +'auth/login',
-                        method: 'POST',
-                        data:{
-                            "username":this.ruleForm.email,
-                            "password":this.ruleForm.password,
-                        },
-                        headers: {'Content-Type': 'application/json;charset=UTF-8'}
-                    }).then(function (res) {
-                        //console.log(res);
-                        if(res.status == 200){
-                            if(res.data.state == false){
-                                self.$notify.error({
-                                    title: '错误',
-                                    message: res.data.message,
-                                });
-                            }else{
-                                var common =res.data.data.common;
-
-                                localStorage.setItem('account',common.account);
-                                localStorage.setItem('email',common.email);
-                                localStorage.setItem('mobile',common.mobile);
-                                localStorage.setItem('sk',common.sk);
-                                localStorage.setItem('status',common.status);
-                                localStorage.setItem('uname',common.uname);
-                                localStorage.setItem('user_id',common.user_id);
-                                localStorage.setItem('dept_name',common.dept_name);
-                                localStorage.setItem('headimg',common.headimg);
-                                localStorage.setItem('utype',common.utype);
-                                self.$notify({
-                                    title: '成功',
-                                    message: '登录成功',
-                                    type: 'success'
-                                });
-                                if(common.utype == 1){
-                                    self.$router.push('/audit'); 
-                                }else{
-                                    self.$router.push('/politicshandle'); 
-                                }
-                            }
-                        }
-                    }).catch(function (err) {
-                        //console.log(err);
-                        self.$notify.error({
-                            title: '错误',
-                            message: '数据请求失败',
-                        });
-                    })
-                    }
-                }else{
-                    this.$notify.error({
-                        title: '错误',
-                        message: '请将滑块拖动到右侧'
-                    });
-                    return false;
-                }
-            });
-        }
     }
 
   };

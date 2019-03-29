@@ -13,7 +13,7 @@ const api = {
             await axios({
                 url: domain.testUrl + url + '?token='+localStorage.getItem('sk')+ getBody(method,data),
                 method,
-                headers: { "Content-Type": "application/json;charset=UTF-8" },
+                headers: { "Content-Type": "application/json;charset=UTF-8"},
                 data: method == 'POST' || method == 'post' ? data : undefined
             })
             .then( res => {
