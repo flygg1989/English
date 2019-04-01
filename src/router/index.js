@@ -270,7 +270,7 @@ export default new Router({
                 {
                     //单词列表
                     path: '/Word',
-                    component: resolve => require(['../components/page/Wordmanagement/Word'], resolve),
+                    component: resolve => require(['../components/page/Wordmanagement/WordList'], resolve),
                     meta: { title: '单词列表' }
                 },
                 {

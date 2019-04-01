@@ -12,6 +12,9 @@ import "babel-polyfill";
 import '../static/css/element-ui.css'; //修改element组件默认样式
 import '../static/css/add.css';   //新增样式
 
+import api from '@/utils/api'
+Vue.prototype.$api = api
+
 Vue.use(ElementUI, { size: 'small' });
 Vue.prototype.$axios = axios;
 
