@@ -4,7 +4,7 @@
         <div class="collapse-btn">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">荆楚问政</div>
+        <div class="logo">飞行英语</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 用户头像 -->
@@ -89,6 +89,14 @@
                   this.getuserinfo()  
                 }
             });
+            Bus.$on('sendPersonal',(data)=>{
+                if(data == true){
+                  this.getuserinfo()  
+                }
+            });
+            Bus.$on('sendID',(data)=>{
+
+            });
             this.getuserinfo() //判断用户信息
         },
         methods:{
@@ -97,11 +105,40 @@
                 let headimg = localStorage.getItem('headimg'); //判断用户头像
                 if(headimg != null){
                     this.headimg =headimg
+                    console.log(headimg)
                 }else{
                     this.headimg='static/img/headimg.png'
                 };
                 this.username =localStorage.getItem('uname');  //判断用户名称
-            },
+
+                let expTime =localStorage.getItem('expTime')  //登录token时长
+                setInterval(function(){
+                    api.request({
+                        url: "refreshToken",
+                        method: "POST",
+                    }).then(res=>{
+                        console.log(res)
+                        if(res.data.state ==true){
+                           var token =res.data.data;
+                            localStorage.setItem('sk',token);
+                            var n = token.split(".");
+                            var m =window.atob(n[1])
+                            var b =eval('(' + m + ')');;
+                            //console.log(b);
+                            localStorage.setItem('user_id',b.sub.id);
+                            localStorage.setItem('uname',b.sub.name);
+                            localStorage.setItem('headimg',b.sub.headimg);
+                            localStorage.setItem('expTime',b.exp);
+                        }
+                    },res => {
+                        this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                        });
+                    })
+                },expTime);
+
+            }, 
 
             // 用户名下拉菜单选择事件
             handleCommand(command) {

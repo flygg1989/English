@@ -51,7 +51,7 @@
       
       <!--创建 编辑弹窗--->
       <el-dialog :title="title" :visible.sync="editVisible" :close-on-click-modal="false" width="30%">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form v-if="editVisible" ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="角色名称"  prop="name">
               <el-input v-model.trim="form.name" placeholder="角色名称"></el-input>
           </el-form-item>
@@ -73,8 +73,8 @@
          </el-form-item>
           <el-form-item label="是否禁用" prop="status" v-if="submitstate==2">
             <el-select v-model="form.status"  placeholder="请选择">
-                <el-option key="1" label="是" value="1"></el-option>
-                <el-option key="2" label="否" value="2"></el-option>
+                <el-option :key="1" label="是" :value="1"></el-option>
+                <el-option :key="2" label="否" :value="2"></el-option>
             </el-select>
          </el-form-item>
         </el-form>
@@ -127,7 +127,7 @@ export default {
         name:'',
         pid:'',
         status:1,
-        sort:'',
+        sort:0,
         role_ids:[],
       },
 
@@ -331,7 +331,7 @@ export default {
           name:'',
           pid:'',
           status:1,
-          sort:'',
+          sort:0,
           role_ids:[],
         }
         this.editVisible=true;

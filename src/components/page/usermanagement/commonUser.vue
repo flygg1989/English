@@ -36,32 +36,31 @@
           min-width="144">
         </el-table-column>
         <el-table-column
-          prop="phone"
-          label="手机号"
+          prop="department"
+          label="所属部门"
           min-width="144">
-        </el-table-column>
-        <el-table-column
-          prop="status"
-          label="是否禁用"
-          :formatter="formatter"
-          min-width="144">
+          <template slot-scope="scope">
+            <div v-if="scope.row.department">{{ scope.row.department.name}}</div>
+          </template>
         </el-table-column>
         <el-table-column
         fixed="right"
         label="操作"
-        min-width="150">
+        min-width="220">
         <template slot-scope="scope">
           <el-button type="primary"  @click="handleedit(scope.row)">编辑</el-button>
           <el-button type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
+          <el-switch
+            :value="scope.row.status==1?true:false"
+            inactive-text="启用禁用"
+            active-color="#3CD970"
+            @change="switchList(scope.row)"
+            inactive-color="#DFE5EB">
+          </el-switch>
         </template>
       </el-table-column>
       </el-table>
       <div class="table-footer">
-        <!--<div class="footer-left">-->
-          <!--<el-button plain type="primary">刷新</el-button>-->
-          <!--<el-button plain type="primary" @click="handleShield">屏蔽</el-button>-->
-          <!--<el-button plain type="primary">取消屏蔽</el-button>-->
-        <!--</div>-->
         <div class="footer-right">
           <el-pagination
             background
@@ -76,24 +75,21 @@
         </div>
       </div>
       <!--创建 编辑弹窗--->
-      <el-dialog :title="title" :visible.sync="editVisible" :close-on-click-modal="false" width="30%">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-dialog :title="title" :visible.sync="editVisible" :close-on-click-modal="false" width="35%">
+        <el-form v-if="editVisible" ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="用户名称"  prop="account">
-              <el-input v-model.trim="form.account" clearable @change="handlenane"></el-input>
+              <el-input v-model.trim="form.account" clearable @change="handlename"></el-input>
           </el-form-item>
           <el-form-item label="登录密码"  prop="password">
               <el-input v-model.trim="form.password" clearable></el-input>
           </el-form-item>
-          <el-form-item label="联系方式"  prop="phone">
-              <el-input v-model.trim="form.phone" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="性别"  prop="sex">
-              <el-select v-model="form.sex" :label="form.sex ==1 ?'男':'女'" placeholder="请选择">
-                  <el-option key="1" label="男" value="1"></el-option>
-                  <el-option key="2" label="女" value="2"></el-option>
+          <el-form-item label="组织架构" prop="department_id">
+              <el-select v-model="form.department_id"  placeholder="请选择">
+                  <el-option v-for="item in departmentlist" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="头像" >
+          <el-form-item label="头像" prop="headimg">
+            <el-input v-show="false" v-model.trim="form.headimg" clearable></el-input>
              <el-upload
               class="avatar-uploader"
               :action="uploadImg"
@@ -117,7 +113,7 @@
   </div>
 </template>
 <script>
-    import api from '@/utils/api'
+import api from '@/utils/api'
 export default {
   data(){
     return {
@@ -130,18 +126,17 @@ export default {
       editVisible:false,
       title:'',
       submitstate:1,
+
+      departmentlist:[], //组织列表
       
       //新建
       form:{
-        headimg: '',
+        headimg: null,
         id:'',
         account:'',
         password: '',
-        phone: '',
-        sex: '',
-        name:'',
-        user_id:'',
-        new_password:'',
+        member_id:'',
+        department_id:null,
       },
 
       //图片上传
@@ -156,18 +151,23 @@ export default {
           {required: true, message: '请输入登录密码', trigger: 'blur'},
           {min:6,  message: '密码长度不能少于6位', trigger: 'blur'}
         ],
-        phone: [
-          {required: true, message: '请输入手机号码', trigger: 'blur'},
-          {min: 11, max: 11, message: '长度为11位', trigger: 'blur'}
-        ],
-        sex:[
-          {required: true, message: '请选择性别', trigger: 'change'},
+        department_id:[
+          {required: true, message: '请选择组织', trigger: 'change'},
         ],
       },
     }
   },
+  watch:{
+    searchValue(val){
+      console.log(val)
+      if(val ==null && val ==''){
+        this.gettableList();
+      }
+    },
+  },
   created() {
       this.gettableList(); // 获取表格数据
+      this.getdepartmentlist(); //获取组织架构
   },
 
   methods: { 
@@ -184,7 +184,25 @@ export default {
           //console.log(res.data.data)
           if(res.data.state ==true){
             this.tableList =res.data.data.list;
-            this.total=res.data.data.current_page_num;
+            this.total=res.data.data.all_data_num;
+          }
+      },res => {
+          this.$notify.error({
+          title: "错误",
+          message: "数据请求失败"
+          });
+      })
+    },
+
+    //获取组织架构
+    getdepartmentlist(){
+      api.request({
+          url: "getDepartmentInfo",
+          method: "POST"
+      }).then(res=>{
+          //console.log(res.data.data)
+          if(res.data.state ==true){
+            this.departmentlist =res.data.data
           }
       },res => {
           this.$notify.error({
@@ -194,32 +212,8 @@ export default {
       })
     },
     
-      async getSreach(){
-          try{
-              let res =  await api.request({
-                  url:memberList,
-                  method:'GET',
-                  data:{
-                      wd:this.searchValue
-                  }
-              });
-              this.tableList=res.data.data.common.data
-          }catch (e) {
-              console.log(e)
-              this.$notify.error({
-                  title: "错误",
-                  message: "数据请求失败"
-              })
-          }
-      },
-
-      //判断男女
-      formatter(row, column) {
-          return row.sex == 1 ? '是' : row.sex == 2 ? '否' : '未知';
-      },
-
       //判断用户名是否重名
-      handlenane(){
+      handlename(){
         api.request({
             url: "checkUserName",
             method: "POST",
@@ -272,34 +266,62 @@ export default {
         this.title="创建用户";
         this.submitstate=1,
         this.form={
-          headimg: '',
-          id:'',
+          headimg: null,
           account:'',
           password: '',
-          phone: '',
-          sex: '',
-          name:'',
-          user_id:'',
-          new_password:'',
-          }
+          department_id:null,
+        }
         this.editVisible=true;
+      },
+
+       //是否禁用
+      switchList(val){
+        if(val.status == 1){
+          val.status =2
+        }else{
+          val.status =1
+        }
+        api.request({
+          url: "setStatus",
+          method: "POST",
+          data:{
+            status:val.status,
+            user_id:val.id,
+            user_type:2,
+          }
+        }).then(res=>{
+            //console.log(res)
+            if(res.data.state ==true){
+              this.gettableList();
+            }else{
+              this.$notify.error({
+                title: "错误",
+                message: res.data.message
+              });
+              this.gettableList();
+            }
+        },res => {
+            this.$notify.error({
+            title: "错误",
+            message: "数据请求失败"
+            });
+        })
       },
 
       //创建提交
       submitForm(formName) {
           this.$refs[formName].validate((valid) => {
               if (valid) {
-                if(this.form.headimg ==null || this.form.headimg==""){
-                  this.$notify.error({
-                      title: "错误",
-                      message: "头像不能为空！"
-                  })
-                  return false;
-                }else{
                   api.request({
                       url: "createMember",
                       method: "POST",
-                      data:this.form,
+                      // data:this.form,
+                      data:{
+                        headimg:this.form.headimg,
+                        account:this.form.account,
+                        password:this.form.password,
+                        department_id:this.form.department_id
+                      }
                   }).then(res=>{
                       //console.log(res)
                       if(res.data.state ==true){
@@ -317,7 +339,6 @@ export default {
                       message: "数据请求失败"
                       });
                   })
-                }
               } else {
                   console.log('error submit!!');
                   return false;
@@ -338,26 +359,20 @@ export default {
       submitedit(formName){
         this.$refs[formName].validate((valid) => {
               if (valid) {
-                if(this.form.headimg ==null || this.form.headimg==""){
-                  this.$notify.error({
-                      title: "错误",
-                      message: "头像不能为空！"
-                  })
-                  return false;
-                }else{
                   api.request({
-                      url: "editUserInfo",
+                      url: "editMember",
                       method: "POST",
                       data:{
-                        name:this.form.account,
+                        account:this.form.account,
                         headimg:this.form.headimg,
                         phone:this.form.phone,
                         sex:this.form.sex,
-                        user_id:this.form.id,
-                        new_password:this.form.password
-                      }
+                        member_id:this.form.id,
+                        password:this.form.password,
+                        department_id:this.form.department_id
+                      } 
                   }).then(res=>{
-                      console.log(res)
+                      //console.log(res)
                       if(res.data.state ==true){
                          this.$notify({
                             title: "成功",
@@ -373,7 +388,6 @@ export default {
                       message: "数据请求失败"
                       });
                   })
-                }
               } else {
                   console.log('error submit!!');
                   return false;
@@ -419,54 +433,56 @@ export default {
       },
       //搜索
       handleSreach(){
-          this.searchValue? this.getSreach():this.$notify.error({
-              title: "错误",
-              message: "请输入关键字"
-          })
+        this.currentPage = 1;
+        if(this.searchValue !=null && this.searchValue !=''){
+        this.getSreach()
+        }else{
+          this.gettableList();
+        }
       },
 
+      async getSreach(){
+        api.request({
+          url: "getMemberList",
+          method: "POST",
+          data:{
+            page_size:this.pageSize,
+            page_num:this.currentPage,
+            account:this.searchValue,
+          }
+        }).then(res=>{
+            //console.log(res)
+            if(res.data.state ==true){
+              this.tableList =res.data.data.list;
+              this.total=res.data.data.all_data_num;
+            }
+        },res => {
+            this.$notify.error({
+            title: "错误",
+            message: "数据请求失败"
+            });
+        })
+      },
 
-      
-      
-      //初始化
-    //   async initList(page,limit){
-    //       console.log('init')
-    //       try{
-    //           let get = await api.request({
-    //               url:memberList,
-    //               method:'GET',
-    //               data:{
-    //                   page:page,
-    //                   limit: limit,
-    //               }
-    //           })
-    //           let arr=get.data.data.common.data
-    //           this.tableList=arr
-    //           this.total=get.data.data.common.total;
-    //           console.log(  this.tableList)
-    //       }catch (e) {
-    //           this.$notify.error({
-    //               title: "错误",
-    //               message: "数据请求失败"
-    //           })
-    //       }
-    //   },
-    // filterHandler(value, row, column) {
-    //   const property = column['property'];
-    //   return row[property] === value;
-    // },
-    
-      //每页数量
+    //每页数量
     handleSizeChange(val) {
-        this.pageSize=val
-        this.currentPage=1
-      this.gettableList();
+        this.pageSize=val;
+        this.currentPage =1;
+        if(this.searchValue !=null && this.searchValue !=''){
+          this.getSreach()
+        }else{
+          this.gettableList();
+        }
 
     },
       //当前选择页
     handleCurrentChange(val) {
-      this.pageSize =val;
-      this.gettableList();
+      this.currentPage =val;
+      if(this.searchValue !=null && this.searchValue !=''){
+        this.getSreach()
+      }else{
+        this.gettableList();
+      }
     }
   },
   

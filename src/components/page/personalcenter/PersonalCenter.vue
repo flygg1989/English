@@ -6,6 +6,7 @@
           <img :src="form.headimg">
         </div>
         <el-upload
+          v-show="!editingstatus"
           class="upload-box"
           :action="uploadImg"
           accept="image/jpeg,image/png"
@@ -20,49 +21,37 @@
         </el-upload>
       </div>
       <div class="box-right">
-        <el-form ref="form" :model="form"  label-width="72px">
-          <el-form-item label="用户名称">
-            <el-input v-model.trim="form.name">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="用户名称" prop="name">
+            <el-input v-model.trim="form.name" :disabled="editingstatus">
             </el-input>
           </el-form-item>
-          <el-form-item label="手机号" >
-              <el-input v-model.number="form.phone"></el-input>
+          <el-form-item label="手机号" prop="phone">
+              <el-input v-model.number="form.phone" :disabled="editingstatus"></el-input>
           </el-form-item>
           <el-form-item label="性别"  prop="sex">
-              <el-select v-model="form.sex" :label="form.sex ==1 ?'男':'女'" placeholder="请选择">
-                  <el-option key="1" label="男" value="1"></el-option>
-                  <el-option key="2" label="女" value="2"></el-option>
+              <el-select v-model="form.sex" :disabled="editingstatus" placeholder="请选择">
+                  <el-option :key="1" label="男" :value="1"></el-option>
+                  <el-option :key="2" label="女" :value="2"></el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="是否禁用" >
-              <el-input v-model.trim="form.status ==1?'否':form.status ==2?'是':'未知'"></el-input>
+          <el-form-item label="是否禁用"  prop="status">
+              <el-select v-model="form.status" :disabled="editingstatus" placeholder="请选择">
+                  <el-option :key="1" label="否" :value="1"></el-option>
+                  <el-option :key="2" label="是" :value="2"></el-option>
+              </el-select>
           </el-form-item>
-          <div class="form-footer">
-            <el-button type="text" @click="editVisible=true">修改密码</el-button>
-          </div>
         </el-form>
+
+        <div class="el-dialog__footer editPersonal">
+          <span slot="footer" class="dialog-footer">
+              <el-button type="" @click="handlecancel">取消</el-button>
+              <el-button type="primary" v-show="editingstatus" @click="handleedit">修改</el-button>
+              <el-button type="primary" v-show="!editingstatus" @click="submitedit('form')">提交</el-button>
+          </span>
+        </div>
       </div>
     </div>
-    <!-- <div class="ChangePassword">
-        <el-dialog title="修改密码" :visible.sync="editVisible" :close-on-click-modal="false"  width="560px">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" status-icon label-width="100px" class="ms-content">
-                <el-form-item label="原密码" prop="Oldpassword" >
-                    <el-input v-model="ruleForm.Oldpassword" type="password"></el-input>
-                </el-form-item>
-                <el-form-item label="新密码"  prop="Newpassword" >
-                    <el-input v-model="ruleForm.Newpassword" type="password"></el-input>
-                </el-form-item>
-                <el-form-item label="重复新密码"  prop="Repeatpassword">
-                    <el-input v-model="ruleForm.Repeatpassword" type="password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
-                </el-form-item>
-                <div class="line-top"></div>
-                <div class="login-btn">
-                    <el-button type="primary" @click="submitForm('ruleForm')">确 认</el-button>
-                </div>
-            </el-form>
-
-        </el-dialog>  
-    </div> -->
   </div>
 </template>
 <script>
@@ -73,7 +62,19 @@ import Bus from "@/components/common/bus.js";
 
 export default {
   data(){
-
+    var checkPhone = (rule, value, callback) => {
+      if (value ==null && value =='') {
+        return callback(new Error('手机号不能为空'));
+      } else {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+        console.log(reg.test(value));
+        if (reg.test(value)) {
+          callback();
+        } else {
+          return callback(new Error('请输入正确的手机号'));
+        }
+      }
+    };
     return {
       imgUrl:'',
       base64:'',
@@ -92,32 +93,27 @@ export default {
         name:'',
         phone:"",
         headimg:'static/img/headimg.png',
-        sex:'',
-        status:'',
+        sex:null,
+        status:null,
       },
-        code:{
-          oldpassword:'',
-          newpasswoed1:'',
-          newpasswoed2:''
-        },
-
-        editVisible: false,  //控制弹框显示隐藏
-        // ruleForm: {
-        //     Oldpassword: '',
-        //     Newpassword: '',
-        //     Repeatpassword:'',
-        // },
-        // rules: {
-        //     Oldpassword: [
-        //         { required: true, message: '未填写', trigger: 'blur' }
-        //     ],
-        //     Newpassword: [
-        //         { required: true, message: '未填写', trigger: 'blur' }
-        //     ],
-        //     Repeatpassword: [
-        //         { required: true, message: '未填写', trigger: 'blur' }
-        //     ]
-        // }
+      
+      editingstatus: true,  //控制弹框显示隐藏
+      rules:{
+        name:[
+          {required: true, message: '请输入用户名称', trigger: 'blur'},
+          {min:2, max: 11, message: '名称长度为2-11位', trigger: 'blur'}
+        ],
+        phone: [
+          {required: true, message: '请输入手机号码', trigger: 'blur'},
+          {validator: checkPhone, trigger: 'blur'}
+        ],
+        sex:[
+          {required: true, message: '请选择性别', trigger: 'change'},
+        ],
+        status:[
+          {required: true, message: '请选择是否禁用', trigger: 'change'},
+        ],
+      },
     }
   },
   created() {
@@ -144,122 +140,14 @@ export default {
           });
       })
     },
-    //用户名修改
-      modifyName(formName){
-
-          if (this.edit1==false) {
-              this.edit1=true
-          }else {
-
-              if(this.form.uname.length != null){
-                  api.request({
-                      url: modifyUserInfo,
-                      method: "post",
-                      data:{
-                          uname:this.form.uname
-                      }
-                  }).then(res=>{
-                      if(res.status == 200){
-                          localStorage.setItem('uname',this.form.uname);
-                          Bus.$emit('senduserinfo', true)//-------发送信息到头部
-                          this.$notify({
-                              title: "成功",
-                              message: "责任人修改成功",
-                              type: 'success'
-                          });
-                          this.edit1=false
-                          this.initData()
-                      }else {
-                          this.$notify.error({
-                              title: "错误",
-                              message: "数据请求失败"
-                          })
-                      }
-                  }).catch(err=>{
-                      this.$notify.error({
-                          title: "错误",
-                          message: "数据请求失败"
-                      })
-                  })
-              }else {
-                  this.$notify.error({
-                      title: "错误",
-                      message: "只能是6-12位字母，数字，下划线"
-                  })
-              }
-          }
-
-      },
-      //手机号修改
-      modifyMobile(formName){
-
-          if (this.edit2==false) {
-              this.edit2=true
-          }else {
-
-                if(/^1[34578]\d{9}$/.test(this.form.mobile)&&this.form.mobile){
-                    api.request({
-                        url: modifyUserInfo,
-                        method: "post",
-                        data:{
-                            mobile:this.form.mobile
-                        }
-                    }).then(res=>{
-                        if(res.status == 200){
-                            localStorage.setItem('mobile',this.form.mobile);
-                            this.$notify({
-                                title: "成功",
-                                message: "手机号修改成功",
-                                type: 'success'
-                            });
-                            this.edit2=false
-                            this.initData()
-                        }else {
-                            this.$notify.error({
-                                title: "错误",
-                                message: "数据请求失败"
-                            })
-                        }
-                    }).catch(err=>{
-                        this.$notify.error({
-                            title: "错误",
-                            message: "数据请求失败"
-                        })
-                    })
-                }else {
-                    this.$notify.error({
-                                    title: "错误",
-                                    message: "请输入正确的手机号码"
-                     })
-                }
-          }
-      },
+    
+     
     //上传成功
     handleAvatarSuccess(res,file) {
-      console.log(res)
+      //console.log(res)
+      if(res.state ==true){
         this.form.headimg = res.data.src;
-        localStorage.setItem('headimg',res.data.src);
-        Bus.$emit('senduserinfo', true)//-------发送信息到头部
-        // api.request({
-        //     url:modifyUserInfo,
-        //     method:'post',
-        //     data:{
-        //       headimg:result.data.common.src
-        //     }
-        // }).then((res)=>{
-        //     localStorage.setItem('headimg',result.data.common.src);
-        //     Bus.$emit('senduserinfo', true)//-------发送信息到头部
-        //     this.$notify({
-        //        title: "成功",
-        //        message: "头像更换成功",
-        //        type: 'success'
-        //      });
-        // }).catch(err=>{
-        //     this.$notify.error({
-        //         title: "错误",
-        //         message: "头像上传失败"
-        //     });
-        // })
+      }
     },
 
     //上传之前检查文件
@@ -275,101 +163,61 @@ export default {
       return isJPG && isLt300K;
     },
 
-    //手机号，用户名更改
-    toServer(){
-
-        api.request({
-           url: modifyUserInfo,
-           method: "post", 
-           data:{
-              uname:this.send.uname,
-              mobile:this.send.mobile
-           }
-        }).then(res=>{
-            if(res.status == 200){
-               this.$notify({
-                  title: "成功",
-                  message: "更换成功",
-                  type: 'success'
-                });
-                this.initData()
-              }else {
-                this.$notify.error({
-                title: "错误",
-                message: "数据请求失败"
-                })
-             }
-        }).catch(err=>{
-            this.$notify.error({
-                title: "错误",
-                message: "数据请求失败"
-            })
-        }).finally(()=>{
-            this.dialogFormVisible=false
-        })
+    //点击修改
+    handleedit(){
+      this.editingstatus=false;
     },
 
-    //修改密码
-    submitForm(formName) {
+    //提交新的修改
+    submitedit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
-                if(this.ruleForm.Newpassword == this.ruleForm.Repeatpassword){
-                    api.request({
-                        url: 'dept/edit',
-                        method: "post",
-                        data:{
-                        "old_pwd":this.ruleForm.Oldpassword,
-                            "new_pwd":this.ruleForm.Newpassword,
-                            "new_pwd2":this.ruleForm.Repeatpassword,
-                        }
-                    })
-                    .then(
-                    res => {
-                        if (res.status == 200) {
-                            if(res.data.state == false){
-                                this.$notify.error({
-                                    title: "错误",
-                                    message: res.data.message
-                                });  
-                            }else{
-                                this.$notify({
-                                    title: '成功',
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
-                                this.editVisible = false;
-                            }
-                        }
-                    },
-                    res => {
-                        this.$notify.error({
-                            title: "错误",
-                            message: "数据请求失败2"
+                api.request({
+                    url: "editUserOwnerInfo",
+                    method: "POST",
+                    // data:this.form,
+                    data:{
+                      name:this.form.name,
+                      phone:this.form.phone,
+                      headimg:this.form.headimg,
+                      sex:this.form.sex,
+                      status:this.form.status,
+                    }
+                }).then(res=>{
+                    //console.log(res)
+                    if(res.data.state ==true){
+                        this.$notify({
+                          title: "成功",
+                          message: res.data.message,
+                          type: 'success'
                         });
-                    });
-
-                }else{
+                        localStorage.removeItem('headimg')
+                        localStorage.setItem('headimg',this.form.headimg);
+                        Bus.$emit('sendPersonal', true)
+                        this.getPersonal();
+                        this.editingstatus =true;
+                    }
+                },res => {
                     this.$notify.error({
-                        title: '错误',
-                        message: '密码输入不一致'
-                    });  
-                }
-            
+                    title: "错误",
+                    message: "数据请求失败"
+                    });
+                })
             } else {
-                //console.log('error submit!!');
-                this.$notify.error({
-                    title: '错误',
-                    message: '修改失败'
-                });
+                console.log('error submit!!');
                 return false;
             }
         });
-    }
-  },
-  mounted(){
-     this.initData()
+    },
 
-  }
+    //点击取消
+    handlecancel(){
+      this.getPersonal();
+      this.editingstatus =true;
+      this.$refs['form'].clearValidate()
+    },
+  },
+ 
 }
 </script>
 <style scoped>
@@ -452,7 +300,13 @@ export default {
   color:#fff;
   background:rgba(77,132,255,0.8);
 }
-
+.editPersonal{
+  padding: 20px 70px 20px;
+  text-align: center;
+}
+.personal-center .el-form .el-form-item{
+  margin-top:25px;
+}
 </style>
 
 

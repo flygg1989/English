@@ -1,7 +1,88 @@
 .heh-container{
-    height:100%;
-    background:#fff;
-    border-radius:8px;
-    box-sizing: border-box;
-    padding:8px 16px 0 16px;
+	height:100%;
+	background:#fff;
+	border-radius:8px;
+	box-sizing: border-box;
+	padding:8px 16px 0 16px;
+}
+.heh-container .avatar-uploader .el-upload {
+	border: 1px dashed #d9d9d9;
+	border-radius: 6px;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+.heh-container .avatar-uploader .el-upload:hover {
+	border-color: #409EFF;
+}
+.heh-container .avatar-uploader-icon {
+	font-size: 28px;
+	color: #8c939d;
+	width: 100px;
+	height: 100px;
+	line-height: 100px;
+	text-align: center;
+}
+.heh-container .avatar {
+	width: 100px;
+	height: 100px;
+	display: block;
+}
+.heh-container .avatar-img-icon {
+	font-size: 28px;
+	color: #8c939d;
+	width: 335px;
+	height: 188px;
+	line-height: 178px;
+	text-align: center;
+}
+.heh-container .img-avatar {
+	width: 335px;
+	height: 188px;
+	display: block;
+}
+.heh-container .border_b{
+	border: 1px solid #e5e5e5;
+	padding:20px 20px 0 0;
+	border-radius: 5px;
+	overflow: hidden;
+	margin-bottom: 10px;
+}
+.heh-container .border_both{
+	border: 1px solid #e5e5e5;
+	border-radius: 5px;
+	padding:20px 20px 0 20px;
+	margin-bottom: 10px;
+}
+.heh-container .bg-green .el-form-item__label{
+	color:#409EFF;
+}
+.heh-container .scenes_box{
+	border: 1px solid #e5e5e5;
+	border-radius: 5px;
+	padding:20px 20px 10px 0;
+	margin-bottom: 10px;
+}
+/* 音频播放插件样式修改 */
+.ar-player{
+	width: 274px!important;
+}
+.ar-player .ar-player-actions .ar-icon__lg{
+	width: 24px;
+	height: 24px;
+	line-height: 24px;
+}
+.ar-player .ar-player__time{
+	font-size: 12px;
+    width: 30px;
+}
+.ar-player > .ar-player-bar > .ar-player__progress{
+	width: 80px!important;
+}
+.ar-player .ar-volume__icon{
+	width: 16px;
+	height: 16px;
+}
+.ar-player .ar-volume-bar{
+	width: 32px;
 }

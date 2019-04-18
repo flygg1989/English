@@ -54,20 +54,22 @@
       </el-table>
       <!--创建 编辑弹窗--->
       <el-dialog :title="title" :visible.sync="editVisible" :close-on-click-modal="false" width="30%">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form ref="form" v-if="editVisible" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="部门名称"  prop="name">
               <el-input v-model.trim="form.name" placeholder="部门名称"></el-input>
           </el-form-item>
-          <el-form-item label="上级id"  prop="pid">
-              <el-input v-model.trim="form.pid" placeholder="部门的上级id，第一级部门默认为0"></el-input>
+          <el-form-item label="上级" prop="pid">
+              <el-select v-model="form.pid"  placeholder="请选择">
+                  <el-option v-for="item in tableList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
           </el-form-item>
           <el-form-item label="备注"  prop="remark">
               <el-input v-model.trim="form.remark" placeholder="该部门的备注"></el-input>
           </el-form-item>
          <el-form-item label="是否禁用" prop="status" v-if="submitstate==2">
             <el-select v-model="form.status"  placeholder="请选择">
-                <el-option key="1" label="是" value="1"></el-option>
-                <el-option key="2" label="否" value="2"></el-option>
+                <el-option :key="1" label="是" :value="1"></el-option>
+                <el-option :key="2" label="否" :value="2"></el-option>
             </el-select>
          </el-form-item>
         </el-form>
@@ -96,7 +98,7 @@ export default {
       form:{
         id:'',
         name:'',
-        pid:'',
+        pid:0,
         status:1,
         remark:'',
       },
@@ -151,7 +153,7 @@ export default {
         this.form={
           id:'',
           name:'',
-          pid:'',
+          pid:0,
           status:1,
           remark:'',
         }
@@ -162,15 +164,25 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+              var data
+              if(!this.form.remark){
+                data={
+                  name:this.form.name,
+                  pid:this.form.pid,
+                  status:this.form.status,
+                }
+              }else{
+                data={
+                  name:this.form.name,
+                  pid:this.form.pid,
+                  status:this.form.status,
+                  remark:this.form.remark
+                }
+              }
               api.request({
                   url: "createDepartment",
                   method: "POST",
-                  data:{
-                    name:this.form.name,
-                    pid:this.form.pid,
-                    status:this.form.status,
-                    remark:this.form.remark
-                  },
+                  data:data,
               }).then(res=>{
                   //console.log(res)
                   if(res.data.state ==true){
@@ -208,16 +220,27 @@ export default {
       submitedit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+              var data 
+              if(!this.form.remark){
+                data={
+                  department_id:this.form.id,
+                  name:this.form.name,
+                  pid:this.form.pid,
+                  status:this.form.status,
+                }
+              }else{
+                data={
+                  department_id:this.form.id,
+                  name:this.form.name,
+                  pid:this.form.pid,
+                  status:this.form.status,
+                  remark:this.form.remark
+                }
+              }
               api.request({
                   url: "editDepartment",
                   method: "POST",
-                  data:{
-                    department_id:this.form.id,
-                    name:this.form.name,
-                    pid:this.form.pid,
-                    status:this.form.status,
-                    remark:this.form.remark
-                  },
+                  data:data,
               }).then(res=>{
                   console.log(res)
                   if(res.data.state ==true){

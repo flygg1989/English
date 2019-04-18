@@ -19,22 +19,7 @@
                     </el-form-item>
 
                     <p class="login-tips"><router-link to="/Retrievepassword">忘记密码？</router-link></p>
-
-                    <drag-verify 
-                        :width="width" 
-                        :height="height" 
-                        :text="text" 
-                        :success-text="successText" 
-                        :background="background" 
-                        :progress-bar-bg="progressBarBg" 
-                        :completed-bg="completedBg" 
-                        :handler-bg="handlerBg" 
-                        :handler-icon="handlerIcon" 
-                        :text-size="textSize" 
-                        :success-icon="successIcon"
-                        ref="Verify"
-                    >     
-                    </drag-verify>
+                    <br/>
                     <div class="login-btn">
                         <el-button type="primary" @click="platsubmitForm('platForm')">确认登录</el-button>
                     </div>
@@ -70,21 +55,6 @@
                 { required: true, message: '请输入密码', trigger: 'blur' }
             ]
         },
-        //滑动
-        handlerIcon: "el-icon-lx-right",
-        successIcon: "el-icon-lx-roundcheck",
-        background: "#cccccc",
-        progressBarBg: "#F2F3F7",
-        completedBg: "#66cc66",
-        handlerBg: "#fff",
-        text: "请将滑块拖动到右侧",
-        successText: "验证成功",
-        width: 500,
-        height: 64,
-        textSize: "18px",
-        isCircle:'true'
-
-        
       };
     },
     methods: {
@@ -93,7 +63,7 @@
             let self = this;
             this.$refs[formName].validate((valid) => {
                
-                if (valid ==true && this.$refs.Verify.isPassing ==true ) {
+                if (valid) {
                     axios({
                         url: this.API +'login',
                         method: 'POST',
@@ -115,15 +85,17 @@
                             var n = token.split(".");
                             var m =window.atob(n[1])
                             var b =eval('(' + m + ')');;
-                            console.log(b);
+                            //console.log(b);
                             localStorage.setItem('user_id',b.sub.id);
                             localStorage.setItem('uname',b.sub.name);
+                            localStorage.setItem('headimg',b.sub.headimg);
+                            localStorage.setItem('expTime',b.exp);
                             self.$notify({
                                  title: '成功',
                                  message:res.data.message,
                                  type: 'success'
                             });
-                            self.$router.push('/platformUser'); 
+                            self.$router.push('/Welcome'); 
                         }
                         })
                         .catch(function (err) {
@@ -134,10 +106,7 @@
                          return false;
                         })
                 } else {
-                    this.$notify.error({
-                        title: '错误',
-                        message: '请将滑块拖动到右侧'
-                    });
+                    console.log('error submit!!');
                     return false;
                 }
             });

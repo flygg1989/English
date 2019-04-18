@@ -32,10 +32,12 @@
 <script>
    
     import bus from '../common/bus';
+    import api from '@/utils/api'
     export default {
         data() {
             return {
               collapse: false,
+              menus:[],
               //平台
                 items: [
                     {
@@ -44,11 +46,11 @@
                         subs: [
                             {
                                 index: 'platformUser',
-                                title: '平台用户管理',
+                                title: '平台用户',
                             },
                             {
                                 index: 'commonUser',
-                                title: '普通用户管理',
+                                title: '普通用户',
                             }
                         ]
                     },
@@ -58,7 +60,7 @@
                         subs: [
                             {
                                 index: 'Column',
-                                title: '学习栏目管理'
+                                title: '学习栏目'
                             }
                         ]
                     },
@@ -124,11 +126,11 @@
                         subs: [
                             {
                                 index: 'Sceneclassification',
-                                title: '场景分类列表'
+                                title: '场景分类'
                             },
                             {
                                 index: 'Scenedialogue',
-                                title: '场景对话管理'
+                                title: '场景对话'
                             }
                         ]
                     },
@@ -138,7 +140,7 @@
                         subs: [
                             {
                                 index: 'Organizationmanagement',
-                                title: '组织架构管理'
+                                title: '组织架构'
                             },
                             {
                                 index: 'UserRoles',
@@ -159,7 +161,26 @@
                 return this.$route.path.replace('/','');
             }
         },
+        created() {
+            this.getmenus(); // 获取菜单
+        },
         methods:{
+            getmenus(){
+                api.request({
+                    url: "getMenuList",
+                    method: "POST",
+                }).then(res=>{
+                    console.log(res.data.data)
+                    if(res.data.state ==true){
+                        this.menus =res.data.data
+                    }
+                },res => {
+                    this.$notify.error({
+                    title: "错误",
+                    message: "数据请求失败"
+                    });
+                })
+            },
             // 侧边栏折叠
             collapseChage(){
                 //console.log( this.collapse )
