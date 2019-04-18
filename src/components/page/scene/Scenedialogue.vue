@@ -345,7 +345,11 @@ export default {
 							message: res.data.message,
 							type: 'success'
 						});
-            this.handleCurrentChange(1)
+						if(this.tableList.length == 1){
+	              this.handleCurrentChange(this.apiRequest.page-1)
+	           }else{
+	              this.getTableList()
+             }
             this.isLoad = false
 					}
 				})

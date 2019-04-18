@@ -85,7 +85,7 @@
         </div>
       </div>
       <!--创建 编辑弹窗--->
-      <el-dialog :title="title" :visible.sync="editVisible" :close-on-click-modal="false" width="35%">
+      <el-dialog :title="title" :visible.sync="editVisible" :before-close="handleClose" :close-on-click-modal="false" width="35%">
         <el-form v-if="editVisible" ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="用户名称"  prop="name">
               <el-input v-model.trim="form.name" clearable @change="handlename"></el-input>
@@ -125,7 +125,7 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button type="" @click="editVisible = false">取消</el-button>
+            <el-button type="" @click="handleClose">取消</el-button>
             <el-button type="primary" v-if="submitstate==1" @click="submitForm('form')">创建</el-button>
             <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">编辑</el-button>
         </span>
@@ -297,256 +297,221 @@ export default {
       })
     },
 
-      //判断用户名是否重名
-      handlename(){
+    //判断用户名是否重名
+    handlename(){
+      api.request({
+          url: "checkUserName",
+          method: "POST",
+          data:{
+            user_type:1,
+            name:this.form.name,
+          }
+      }).then(res=>{
+          //console.log(res)
+          if(res.data.state ==false){
+            this.$notify.error({
+              title: "错误",
+              message: res.data.message
+            });
+          }else{
+            this.$notify({
+                title: "成功",
+                message:res.data.message,
+                type: 'success'
+            });
+          }
+      },res => {
+          this.$notify.error({
+          title: "错误",
+          message: "数据请求失败"
+          });
+      })
+    },
+
+    //图片上传前
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$notify.error({
+            title: "错误",
+            message: "上传头像图片大小不能超过 2MB!！"
+        })
+      }
+      return isLt2M;
+    },
+    
+    //上传成功
+    handleAvatarSuccess(res, file) {
+      // console.log(res)
+      this.form.headimg = res.data.src
+    },
+    
+
+    //打开创建窗口
+    handlefound(){
+      this.title="创建用户";
+      this.submitstate=1,
+      this.form={
+        headimg:"",
+        id:'',
+        user_id:'',
+        name:'',
+        password: '',
+        new_password:'',
+        status:null,
+        user_group_id:null,
+        department_id:null,
+      }
+      this.editVisible=true;
+    },
+
+    //创建提交
+    submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+            if (valid) {
+              this.loading=true;
+              var data
+              if(!this.form.headimg){
+                data={
+                  name:this.form.name,
+                  password: this.form.password,
+                  status:this.form.status,
+                  user_group_id:this.form.user_group_id,
+                  department_id:this.form.department_id
+                }
+              }else{
+                data={
+                  headimg:this.form.headimg,
+                  name:this.form.name,
+                  password: this.form.password,
+                  status:this.form.status,
+                  user_group_id:this.form.user_group_id,
+                  department_id:this.form.department_id
+                }
+              }
+                api.request({
+                    url: "createUser",
+                    method: "POST",
+                    data:data,
+                }).then(res=>{
+                    //console.log(res)
+                    if(res.data.state ==true){
+                        this.$notify({
+                          title: "成功",
+                          message: res.data.message,
+                          type: 'success'
+                        });
+                        this.loading=false;
+                        this.gettableList();
+                        this.editVisible =false;
+                    }
+                },res => {
+                    this.$notify.error({
+                    title: "错误",
+                    message: "数据请求失败"
+                    });
+                    this.loading=false;
+                })
+            } else {
+                console.log('error submit!!');
+                this.loading=false;
+                return false;
+            }
+        });
+    },
+
+    //打开编辑弹窗
+    handleedit(row){
+      this.title="编辑用户";
+      this.submitstate=2;
+      this.form=row;
+      this.form.user_id=row.id;
+      this.form.new_password =row.password;
+      this.editVisible=true;
+    },
+
+    //编辑
+    submitedit(formName){
+      this.$refs[formName].validate((valid) => {
+            if (valid) {
+              var data
+              if(!this.form.headimg){
+                data={
+                  name:this.form.name,
+                  password: this.form.password,
+                  status:this.form.status,
+                  user_group_id:this.form.user_group_id,
+                  department_id:this.form.department_id,
+                  user_id:this.form.user_id,
+                  new_password:this.form.new_password
+                }
+              }else{
+                data={
+                  headimg:this.form.headimg,
+                  name:this.form.name,
+                  password: this.form.password,
+                  status:this.form.status,
+                  user_group_id:this.form.user_group_id,
+                  department_id:this.form.department_id,
+                  user_id:this.form.user_id,
+                  new_password:this.form.new_password
+                }
+              }
+              this.form.new_password = this.form.password;
+                api.request({
+                    url: "editUserInfo",
+                    method: "POST",
+                    data:data,
+                }).then(res=>{
+                    //console.log(res)
+                    if(res.data.state ==true){
+                        this.$notify({
+                          title: "成功",
+                          message: res.data.message,
+                          type: 'success'
+                        });
+                        this.gettableList();
+                        this.editVisible =false;
+                    }
+                },res => {
+                    this.$notify.error({
+                    title: "错误",
+                    message: "数据请求失败"
+                    });
+                })
+            } else {
+                console.log('error submit!!');
+                return false;
+            }
+        });
+    },
+    
+    //删除
+    handleDelete(index,row){
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         api.request({
-            url: "checkUserName",
+            url: "deleteUser",
             method: "POST",
             data:{
-              user_type:1,
-              name:this.form.name,
+              user_id:row.id
             }
         }).then(res=>{
             //console.log(res)
-            if(res.data.state ==false){
-              this.$notify.error({
-                title: "错误",
-                message: res.data.message
-              });
-            }else{
-              this.$notify({
-                  title: "成功",
-                  message:res.data.message,
-                  type: 'success'
-              });
-            }
-        },res => {
-            this.$notify.error({
-            title: "错误",
-            message: "数据请求失败"
-            });
-        })
-      },
-
-      //图片上传前
-      beforeAvatarUpload(file) {
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-          this.$notify.error({
-              title: "错误",
-              message: "上传头像图片大小不能超过 2MB!！"
-          })
-        }
-        return isLt2M;
-      },
-      
-      //上传成功
-      handleAvatarSuccess(res, file) {
-       // console.log(res)
-        this.form.headimg = res.data.src
-      },
-      
-
-      //打开创建窗口
-      handlefound(){
-        this.title="创建用户";
-        this.submitstate=1,
-        this.form={
-          headimg:"",
-          id:'',
-          user_id:'',
-          name:'',
-          password: '',
-          new_password:'',
-          status:null,
-          user_group_id:null,
-          department_id:null,
-        }
-        this.editVisible=true;
-      },
-
-      //创建提交
-      submitForm(formName) {
-          this.$refs[formName].validate((valid) => {
-              if (valid) {
-                this.loading=true;
-                var data
-                if(!this.form.headimg){
-                  data={
-                    name:this.form.name,
-                    password: this.form.password,
-                    status:this.form.status,
-                    user_group_id:this.form.user_group_id,
-                    department_id:this.form.department_id
-                  }
-                }else{
-                  data={
-                    headimg:this.form.headimg,
-                    name:this.form.name,
-                    password: this.form.password,
-                    status:this.form.status,
-                    user_group_id:this.form.user_group_id,
-                    department_id:this.form.department_id
-                  }
-                }
-                  api.request({
-                      url: "createUser",
-                      method: "POST",
-                      data:data,
-                  }).then(res=>{
-                      //console.log(res)
-                      if(res.data.state ==true){
-                         this.$notify({
-                            title: "成功",
-                            message: res.data.message,
-                            type: 'success'
-                          });
-                          this.loading=false;
-                          this.gettableList();
-                          this.editVisible =false;
-                      }
-                  },res => {
-                      this.$notify.error({
-                      title: "错误",
-                      message: "数据请求失败"
-                      });
-                      this.loading=false;
-                  })
-              } else {
-                  console.log('error submit!!');
-                  this.loading=false;
-                  return false;
-              }
-          });
-      },
-
-      //打开编辑弹窗
-      handleedit(row){
-        this.title="编辑用户";
-        this.submitstate=2;
-        this.form=row;
-        this.form.user_id=row.id;
-        this.form.new_password =row.password;
-        this.editVisible=true;
-      },
-
-      //编辑
-      submitedit(formName){
-        this.$refs[formName].validate((valid) => {
-              if (valid) {
-                var data
-                if(!this.form.headimg){
-                  data={
-                    name:this.form.name,
-                    password: this.form.password,
-                    status:this.form.status,
-                    user_group_id:this.form.user_group_id,
-                    department_id:this.form.department_id,
-                    user_id:this.form.user_id,
-                    new_password:this.form.new_password
-                  }
-                }else{
-                  data={
-                    headimg:this.form.headimg,
-                    name:this.form.name,
-                    password: this.form.password,
-                    status:this.form.status,
-                    user_group_id:this.form.user_group_id,
-                    department_id:this.form.department_id,
-                    user_id:this.form.user_id,
-                    new_password:this.form.new_password
-                  }
-                }
-                this.form.new_password = this.form.password;
-                  api.request({
-                      url: "editUserInfo",
-                      method: "POST",
-                      data:data,
-                  }).then(res=>{
-                      //console.log(res)
-                      if(res.data.state ==true){
-                         this.$notify({
-                            title: "成功",
-                            message: res.data.message,
-                            type: 'success'
-                          });
-                          this.gettableList();
-                          this.editVisible =false;
-                      }
-                  },res => {
-                      this.$notify.error({
-                      title: "错误",
-                      message: "数据请求失败"
-                      });
-                  })
-              } else {
-                  console.log('error submit!!');
-                  return false;
-              }
-          });
-      },
-      
-      //删除
-      handleDelete(index,row){
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          api.request({
-              url: "deleteUser",
-              method: "POST",
-              data:{
-                user_id:row.id
-              }
-          }).then(res=>{
-              //console.log(res)
-              if(res.data.state ==true){
-                this.$notify({
-                  title: "成功",
-                  message: res.data.message,
-                  type: 'success'
-                });
-                this.handleCurrentChange(1);
-              }
-          },res => {
-              this.$notify.error({
-              title: "错误",
-              message: "数据请求失败"
-              });
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      },
-
-      //搜索
-      handleSreach(){
-        this.currentPage = 1;
-        if(this.searchValue !=null && this.searchValue !=''){
-        this.getSreach()
-        }else{
-          this.gettableList();
-        }
-      },
-
-      async getSreach(){
-        api.request({
-          url: "getUserList",
-          method: "POST",
-          data:{
-            page_size:this.pageSize,
-            page_num:this.currentPage,
-            name:this.searchValue,
-          }
-        }).then(res=>{
-            console.log(res)
             if(res.data.state ==true){
-              this.tableList =res.data.data.list;
-              this.total=res.data.data.all_data_num;
+              this.$notify({
+                title: "成功",
+                message: res.data.message,
+                type: 'success'
+              });
+              if(this.tableList.length == 1){
+                this.handleCurrentChange(this.currentPage-1)
+              }else{
+                this.gettableList()
+                }
             }
         },res => {
             this.$notify.error({
@@ -554,7 +519,52 @@ export default {
             message: "数据请求失败"
             });
         })
-      },
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
+    },
+
+    //弹窗取消 
+    handleClose(){
+      this.gettableList();
+      this.editVisible =false;
+    },
+
+    //搜索
+    handleSreach(){
+      this.currentPage = 1;
+      if(this.searchValue !=null && this.searchValue !=''){
+      this.getSreach()
+      }else{
+        this.gettableList();
+      }
+    },
+
+    async getSreach(){
+      api.request({
+        url: "getUserList",
+        method: "POST",
+        data:{
+          page_size:this.pageSize,
+          page_num:this.currentPage,
+          name:this.searchValue,
+        }
+      }).then(res=>{
+          console.log(res)
+          if(res.data.state ==true){
+            this.tableList =res.data.data.list;
+            this.total=res.data.data.all_data_num;
+          }
+      },res => {
+          this.$notify.error({
+          title: "错误",
+          message: "数据请求失败"
+          });
+      })
+    },
 
     //每页数量
     handleSizeChange(val) {

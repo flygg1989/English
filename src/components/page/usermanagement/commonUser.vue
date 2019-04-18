@@ -76,8 +76,8 @@
         </div>
       </div>
       <!--创建 编辑弹窗--->
-      <el-dialog :title="title" :visible.sync="editVisible" :close-on-click-modal="false" width="35%">
-        <el-form v-if="editVisible" ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-dialog :title="title" :visible.sync="editVisible" :before-close="handleClose" :close-on-click-modal="false"  width="35%">
+        <el-form v-loading="formLoad" v-if="editVisible" ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="用户名称"  prop="account">
               <el-input v-model.trim="form.account" clearable @change="handlename"></el-input>
           </el-form-item>
@@ -105,7 +105,7 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button type="" @click="editVisible = false">取消</el-button>
+            <el-button type="" @click="handleClose">取消</el-button>
             <el-button type="primary" v-if="submitstate==1" @click="submitForm('form')">创建</el-button>
             <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">编辑</el-button>
         </span>
@@ -119,6 +119,7 @@ export default {
   data(){
     return {
       searchValue:"",
+      formLoad:false,
       tableList:[],
       currentPage:1,
       total:0,
@@ -259,7 +260,11 @@ export default {
       //上传成功
       handleAvatarSuccess(res, file) {
        // console.log(res)
+       this.formLoad = true
+       if(res.state){
         this.form.headimg = res.data.src
+        this.formLoad = false
+       }
       },
 
       //打开创建窗口
@@ -313,6 +318,7 @@ export default {
       submitForm(formName) {
           this.$refs[formName].validate((valid) => {
               if (valid) {
+                this.formLoad = true;
                   api.request({
                       url: "createMember",
                       method: "POST",
@@ -332,6 +338,7 @@ export default {
                             type: 'success'
                           });
                           this.gettableList();
+                          this.formLoad = false;
                           this.editVisible =false;
                       }
                   },res => {
@@ -339,9 +346,11 @@ export default {
                       title: "错误",
                       message: "数据请求失败"
                       });
+                      this.formLoad = false
                   })
               } else {
                   console.log('error submit!!');
+                  this.formLoad = false
                   return false;
               }
           });
@@ -360,6 +369,7 @@ export default {
       submitedit(formName){
         this.$refs[formName].validate((valid) => {
               if (valid) {
+                this.formLoad = true;
                   api.request({
                       url: "editMember",
                       method: "POST",
@@ -381,6 +391,7 @@ export default {
                             type: 'success'
                           });
                           this.gettableList();
+                          this.formLoad = false;
                           this.editVisible =false;
                       }
                   },res => {
@@ -388,9 +399,11 @@ export default {
                       title: "错误",
                       message: "数据请求失败"
                       });
+                      this.formLoad = false
                   })
               } else {
                   console.log('error submit!!');
+                  this.formLoad = false
                   return false;
               }
           });
@@ -403,6 +416,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.formLoad = true;
           api.request({
               url: "deleteMember",
               method: "POST",
@@ -417,20 +431,33 @@ export default {
                   message: res.data.message,
                   type: 'success'
                 });
-                this.handleCurrentChange(1);
+                if(this.tableList.length == 1){
+                  this.handleCurrentChange(this.currentPage-1)
+                }else{
+                  this.gettableList()
+                }
+                this.formLoad = false
               }
           },res => {
               this.$notify.error({
               title: "错误",
               message: "数据请求失败"
               });
+              this.formLoad = false
           })
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });  
+          this.formLoad = false        
         });
+      },
+
+      //弹窗取消 
+      handleClose(){
+        this.gettableList();
+        this.editVisible =false;
       },
       //搜索
       handleSreach(){

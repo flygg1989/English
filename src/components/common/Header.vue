@@ -58,7 +58,7 @@
                 fullscreen: false,
                 username: '',
                 headimg:'static/img/headimg.png',  //头像
-                utype:'',    //判断 平台还是部门
+                expTime:localStorage.getItem('expTime'),
 
                 ruleForm: {
                     old_password: '',
@@ -93,9 +93,6 @@
                 if(data == true){
                   this.getuserinfo()  
                 }
-            });
-            Bus.$on('sendID',(data)=>{
-
             });
             this.getuserinfo() //判断用户信息
         },

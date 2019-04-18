@@ -378,7 +378,11 @@ export default {
                 message: res.data.message,
                 type: 'success'
               });
-              this.handleCurrentChange(1);
+              if(this.tableList.length == 1){
+                this.handleCurrentChange(this.page-1)
+              }else{
+                this.gettableList()
+               }
               this.isLoad = false
             }
         },res => {
