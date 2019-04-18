@@ -121,7 +121,7 @@ export default {
       //新建编辑
       form:{
         thumb: null,
-        sorts:'',
+        sorts:50,
         type_name:'',
         type_id:null,
       },
@@ -133,6 +133,9 @@ export default {
         type_name:[
           {required: true, message: '请输入场景名称', trigger: 'blur'},
           {min:2, max: 11, message: '名称长度为2-11位', trigger: 'blur'}
+        ],
+        thumb:[
+          {required: true, message: '请上传缩略图', trigger: 'blur'},
         ]
       },
     }
@@ -243,7 +246,7 @@ export default {
       this.submitstate=1,
       this.form={
         thumb: null,
-        sorts:'',
+        sorts:50,
         type_name:'',
       }
       this.editVisible=true;
@@ -375,7 +378,7 @@ export default {
                 message: res.data.message,
                 type: 'success'
               });
-              this.gettableList();
+              this.handleCurrentChange(1);
               this.isLoad = false
             }
         },res => {

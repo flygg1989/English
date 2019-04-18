@@ -78,6 +78,7 @@
             @current-change="handleCurrentChange"
             layout="sizes, prev, pager, next"
             :page-sizes="[5, 10, 15, 20]"
+            :current-page="currentPage"
             :page-size="pageSize"
             :total="total">
           </el-pagination>
@@ -506,7 +507,7 @@ export default {
                   message: res.data.message,
                   type: 'success'
                 });
-                this.gettableList();
+                this.handleCurrentChange(1);
               }
           },res => {
               this.$notify.error({

@@ -92,9 +92,9 @@
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item label="对话人数" prop="talk_num" :rules="rules.talk_num">
+          <!-- <el-form-item label="对话人数" prop="talk_num" :rules="rules.talk_num">
             <el-input v-model.trim="wordForm.talk_num"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="噪音链接" prop="noise" :rules="rules.noise">
 						<div style="width:100%;display:flex;">
 							<el-input v-show="false" v-model.trim="wordForm.noise"></el-input>
@@ -122,9 +122,9 @@
 								<el-form-item label="中文" :prop="'detail.' + j + '.cn'" :rules="rules.cn_explain">
 									<el-input v-model.trim="subitem.cn"></el-input>
 								</el-form-item>
-                <el-form-item label="提示" :prop="'detail.' + j + '.tips'" :rules="rules.tips">
+                <!-- <el-form-item label="提示" :prop="'detail.' + j + '.tips'" :rules="rules.tips">
 									<el-input type="textarea" autosize v-model.trim="subitem.tips"></el-input>
-								</el-form-item>
+								</el-form-item> -->
 								<el-form-item label="读音" :prop="'detail.' + j + '.voice'" :rules="rules.voice">
 									<el-input v-show="false" v-model.trim="subitem.voice"></el-input>
 									<audio-player style="margin-bottom:10px;" v-if="subitem.voice" :src="subitem.voice"/>
@@ -179,14 +179,14 @@ export default {
         title:'',
         type_id:'',
         picurl:'',
-        talk_num:null,
+        talk_num:2,
         noise:'',
         detail:[
           {
             cn:'',
             en:'',
             voice:'',
-            tips:'',
+            // tips:'',
           }
         ],
 			},
@@ -204,9 +204,9 @@ export default {
         title: [{ required: true, message: '请输入场景名称', trigger: ['blur', 'change'] }],
         type_id: [{ required: true, message: '请选择场景分类', trigger: ['blur', 'change'] }],
         voice: [{ required: true, message: '请上传读音', trigger: ['blur', 'change'] }],
-        tips: [{ required: true, message: '请输入提示', trigger: ['blur', 'change'] }],
+        // tips: [{ required: true, message: '请输入提示', trigger: ['blur', 'change'] }],
         picurl: [{ required: true, message: '请上传场景缩略图', trigger: ['blur', 'change'] }],
-        talk_num: [{ required: true, message: '请输入对话人数', trigger: ['blur', 'change'] }],
+        // talk_num: [{ required: true, message: '请输入对话人数', trigger: ['blur', 'change'] }],
         noise: [{ required: true, message: '请上传噪音', trigger: ['blur', 'change'] }],
 				en_explain: [{ required: true, message: '请输入英文', trigger: ['blur', 'change'] }],
 				cn_explain: [{ required: true, message: '请输入中文', trigger: ['blur', 'change'] }],
@@ -246,7 +246,6 @@ export default {
 			this.$api.request({
 				url: "sceneTypeList",
         method: "GET",
-        data:this.apiRequest
 			}).then(res => {
 				if(res.data.state){
 					res = res.data.data
@@ -368,7 +367,7 @@ export default {
           title:'',
           type_id:'',
           picurl:'',
-          talk_num:null,
+          talk_num:2,
           noise:'',
           detail:[
             {
@@ -406,7 +405,7 @@ export default {
 		
 		//添加对话
 		addExplain(){
-			this.wordForm.detail.push({cn:'',en:'',voice:'',tips:'',})
+			this.wordForm.detail.push({cn:'',en:'',voice:'',})
 		},
 		//删除对话
 		deleteExplain(j){
