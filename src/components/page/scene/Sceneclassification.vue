@@ -42,13 +42,13 @@
         <template slot-scope="scope">
           <el-button type="primary"  @click="handleedit(scope.row)">编辑</el-button>
           <el-button type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
-          <el-switch
+          <!-- <el-switch
             :value="scope.row.status==1?true:false"
             inactive-text="启用禁用"
             active-color="#3CD970"
             @change="switchList(scope.row)"
             inactive-color="#DFE5EB">
-          </el-switch>
+          </el-switch> -->
         </template>
       </el-table-column>
       </el-table>
@@ -384,11 +384,13 @@ export default {
                 this.gettableList()
                }
               this.isLoad = false
+            }else{
+              this.isLoad = false
             }
         },res => {
             this.$notify.error({
-            title: "错误",
-            message: "数据请求失败"
+              title: "错误",
+              message: "数据请求失败"
             });
             this.isLoad = false
         })

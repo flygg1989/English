@@ -12,7 +12,7 @@
                 <div class="qrcode" ref="qrCodeUrl"></div>
             </el-form-item>
             <el-form-item label="关于我们"  prop="ckey">
-                <el-input type="textarea" autosize v-model="form.ckey"></el-input>
+                <el-input type="textarea" :autosize="{ minRows:1, maxRows: 6}" v-model="form.ckey"></el-input>
             </el-form-item>
             </el-form>
             <span slot="footer"  style="display:block;text-align:center">
@@ -152,8 +152,12 @@ export default {
   border-radius:8px;
   box-sizing: border-box;
   padding:8px 16px 0 16px;
+  overflow: hidden;
 }
 .Global_both{
-    padding: 100px;
+    padding:10px 100px;
+    overflow-y: auto;
+    height: 90%;
+    overflow: hidden;
 }
 </style>

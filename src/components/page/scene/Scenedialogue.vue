@@ -7,6 +7,10 @@
 					<el-button type="primary" @click="openDialog('add')" class="creat-branch-btn">创建场景</el-button>
 				</div>
 				<div class="operation-right">
+					<el-select v-model="type_id"  placeholder="请选择" clearable @change="changecategory" @clear="clear">
+							<el-option v-for="item in sceneList" :key="item.id" :label="item.type_name" :value="item.id"></el-option>
+					</el-select>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<el-input
 						class="search-ipt"
 						placeholder="请输入要查询的内容"
@@ -41,14 +45,14 @@
 					<template slot-scope="scope">
 						<el-button type="primary"  @click="openDialog('update',scope.row.id)">编辑</el-button>
 						<el-button type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
-						<el-switch
+						<!-- <el-switch
 						 	style="margin-left:10px;"
 							:value="scope.row.status==1?true:false"
 							inactive-text="启用开关"
 							active-color="#3CD970"
 							@change="switchChange(scope.row)"
 							inactive-color="#DFE5EB">
-						</el-switch>
+						</el-switch> -->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -173,7 +177,8 @@ export default {
 			},
 			total:0,
       searchValue:'',
-      btn_state:true,
+			btn_state:true,
+			type_id:'',
 			//单词初始数据结构
 			wordForm:{
         title:'',
@@ -292,6 +297,7 @@ export default {
 		},
 		//搜索单词
 		handleSreach(){
+			this.clear();
 			if(this.searchValue){
 					this.apiRequest.title = this.searchValue
 					this.handleCurrentChange(1)
@@ -300,6 +306,43 @@ export default {
 				this.handleCurrentChange(1)
 			}
 		},
+
+		//通过分类获取场景对话
+		changecategory(val){
+			this.searchValue='';
+			var data
+			if(!val){
+				data=this.apiRequest
+			}else{
+				data={
+					type_id:val
+				}
+			}
+			this.isLoad = true
+			this.$api.request({
+				url: "sceneList",
+        method: "GET",
+        data:data
+			}).then(res => {
+				if(res.data.state){
+					res = res.data.data
+					//console.log(res)
+					this.tableList = res.list
+					this.total = res.total
+					this.isLoad = false
+				}else{
+					this.isLoad = false
+				}
+			}).catch(() => {
+				this.isLoad = false
+			});
+		},
+
+		//清空
+		clear(val){
+			this.type_id =null;
+		},
+
 		//启用||停用 单词
 		switchChange(row){
 			this.isLoad = true
@@ -351,6 +394,8 @@ export default {
 	              this.getTableList()
              }
             this.isLoad = false
+					}else{
+						this.isLoad = false
 					}
 				})
 			}).catch(() => {
