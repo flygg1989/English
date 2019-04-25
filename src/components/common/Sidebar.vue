@@ -80,43 +80,43 @@
                     },
                     {
                         index: '4',
-                        title: '口语管理',
+                        title: '语法管理',
                         subs: [
                             {
-                                index: 'colloquialism',
-                                title: '口语列表'
+                                index: 'Grammar',
+                                title: '语法列表'
                             },
                             {
-                                index: 'colloquialismpractice',
-                                title: '口语练习'
+                                index: 'GrammarPractice',
+                                title: '语法练习'
                             }
                         ]
                     },
                     {
                         index: '5',
-                        title: '听力管理',
+                        title: '口语管理',
                         subs: [
                             {
-                                index: 'hearing',
-                                title: '听力列表'
+                                index: 'Colloquialism',
+                                title: '口语列表'
                             },
-                            {
-                                index: 'hearingpractice',
-                                title: '听力练习'
-                            }
+                            // {
+                            //     index: 'colloquialismpractice',
+                            //     title: '口语练习'
+                            // }
                         ]
                     },
                     {
                         index: '6',
-                        title: '语法管理',
+                        title: '听力管理',
                         subs: [
                             {
-                                index: 'grammar',
-                                title: '语法列表'
+                                index: 'Hearing',
+                                title: '听力列表'
                             },
                             {
-                                index: 'grammarpractice',
-                                title: '语法练习'
+                                index: 'HearingPractice',
+                                title: '听力练习'
                             }
                         ]
                     },

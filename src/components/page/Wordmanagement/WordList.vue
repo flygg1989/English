@@ -41,14 +41,14 @@
 					<template slot-scope="scope">
 						<el-button type="primary"  @click="openDialog('update',scope.row.id)">编辑</el-button>
 						<el-button type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
-						<el-switch
+						<!-- <el-switch
 						 	style="margin-left:10px;"
 							:value="scope.row.status==1?true:false"
 							inactive-text="启用开关"
 							active-color="#3CD970"
 							@change="switchChange(scope.row)"
 							inactive-color="#DFE5EB">
-						</el-switch>
+						</el-switch> -->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -344,7 +344,13 @@ export default {
 							message: res.data.message,
 							type: 'success'
 						});
-						this.handleCurrentChange(1)
+						if(this.tableList.length == 1){
+							this.handleCurrentChange(this.apiRequest.page-1)
+						}else{
+							this.getTableList()
+						}
+					}else{
+						this.isLoad = false
 					}
 				})
 			}).catch(() => {
@@ -466,7 +472,7 @@ export default {
 
 		//录音上传前
 		beforeUpload(file) {
-			const isMP3 = file.type === 'audio/mp3';
+			const isMP3 = ['audio/mp3','audio/mpeg'].includes(file.type);
 			const isLt2M = file.size / 1024 / 1024 < 2;
 			if (!isMP3) {
 				this.$message.error('上传音频只能是 MP3 格式!');
@@ -558,7 +564,7 @@ export default {
 						data.id = this.wordForm.id
 						// data.details = newDetail
 					}
-					console.log(data)
+					// console.log(data)
 					this.$api.request({
 						url: "opWord",
 						method: "POST",

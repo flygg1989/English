@@ -4,7 +4,7 @@
 			<!-- 头部 -->
 			<div class="operation">
 				<div class="operation-left">
-					<el-button type="primary" @click="openDialog('add')" class="creat-branch-btn">添加单词练习题</el-button>
+					<el-button type="primary" @click="openDialog('add')" class="creat-branch-btn">添加语法练习题</el-button>
 				</div>
 				<div class="operation-right">
 					<el-input
@@ -233,7 +233,11 @@ export default {
 							message: res.data.message,
 							type: 'success'
 						});
-						this.handleCurrentChange(1)
+						if(this.tableList.length == 1){
+							this.handleCurrentChange(this.apiRequest.page-1)
+						}else{
+							this.getTableList()
+						}
 					}else{
 						this.isLoad = false
 					}
@@ -276,7 +280,7 @@ export default {
 						this.wordList = [{id:res.word_id,word:res.word}]
 						this.addForm = {
 							word_id:res.word_id,
-							option_arr:[res.options],
+							option_arr:[res.options?res.options:['null','null','null','null']],
 							answer_arr:[res.answer],
 							exer_type_arr:[res.exer_type]
 						}
@@ -307,29 +311,32 @@ export default {
           }
         }).then(res => {
           if(res.data.state){
-            res = res.data.data
-            let wordTotal = res.total
-            this.$api.request({
-              url: "wordsList",
-              method: "GET",
-              data:{
-                word:query,
-                page:1,
-                pageSize:wordTotal
-              }
-            }).then(res => {
-              if(res.data.state){
-                res = res.data.data
-                this.wordList = res.list
-                this.wordLoad = false
-              }else{
-								this.wordList = []
-                this.wordLoad = false
-              }
-            }).catch(() => {
-							this.wordList = []
-              this.wordLoad = false
-            });
+						res = res.data.data
+						this.wordList = res.list
+						this.wordLoad = false
+            // res = res.data.data
+            // let wordTotal = res.total
+            // this.$api.request({
+            //   url: "wordsList",
+            //   method: "GET",
+            //   data:{
+            //     word:query,
+            //     page:1,
+            //     pageSize:wordTotal
+            //   }
+            // }).then(res => {
+            //   if(res.data.state){
+            //     res = res.data.data
+            //     this.wordList = res.list
+            //     this.wordLoad = false
+            //   }else{
+						// 		this.wordList = []
+            //     this.wordLoad = false
+            //   }
+            // }).catch(() => {
+						// 	this.wordList = []
+            //   this.wordLoad = false
+            // });
           }else{
 						this.wordList = []
             this.wordLoad = false
@@ -395,14 +402,16 @@ export default {
 							data:this.addForm
 						}).then(res => {
 							if(res.data.state){
+								this.dialogVisible = false
+								this.getTableList()
 								this.$notify({
 									title: '成功',
 									message: res.data.message,
 									type: 'success'
 								});
+							}else{
+								this.formLoad = false
 							}
-							this.dialogVisible = false
-							this.getTableList()
 						}).catch(err => {
 							this.formLoad = false
 						})
@@ -414,20 +423,22 @@ export default {
 							method: "POST",
 							data:{
 								exercise_id:this.exercise_id,
-								options_arr:this.addForm.option_arr[0],
+								options:this.addForm.option_arr[0],
 								answer:this.addForm.answer_arr[0],
 								exer_type:this.addForm.exer_type_arr[0]
 							}
 						}).then(res => {
 							if(res.data.state){
+								this.dialogVisible = false
+								this.getTableList()
 								this.$notify({
 									title: '成功',
 									message: res.data.message,
 									type: 'success'
 								});
+							}else{
+								this.formLoad = false
 							}
-							this.dialogVisible = false
-							this.getTableList()
 						}).catch(err => {
 							this.formLoad = false
 						})

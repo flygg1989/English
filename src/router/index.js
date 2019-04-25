@@ -106,6 +106,39 @@ export default new Router({
                 component: resolve => require(['../components/page/Wordmanagement/Wordpractice'], resolve),
                 meta: { title: '单词练习' }
                 },
+                //语法管理
+                {
+                    //语法列表
+                    path: '/Grammar',
+                    component: resolve => require(['../components/page/GrammarManagement/Grammar'], resolve),
+                    meta: { title: '语法列表' }
+                },
+                {
+                    //语法练习
+                    path: '/GrammarPractice',
+                    component: resolve => require(['../components/page/GrammarManagement/GrammarPractice'], resolve),
+                    meta: { title: '语法练习' }
+                },
+                //口语管理
+                {
+                    //口语列表
+                    path: '/Colloquialism',
+                    component: resolve => require(['../components/page/Colloquialism/colloquialism'], resolve),
+                    meta: { title: '口语列表' }
+                },
+                //听力管理
+                {
+                    //听力列表
+                    path: '/Hearing',
+                    component: resolve => require(['../components/page/HearingManagement/Hearing'], resolve),
+                    meta: { title: '听力列表' }
+                },
+                {
+                    //听力练习
+                    path: '/HearingPractice',
+                    component: resolve => require(['../components/page/HearingManagement/HearingPractice'], resolve),
+                    meta: { title: '听力练习' }
+                },
 
             ]
         },
