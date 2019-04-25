@@ -31,5 +31,6 @@ export default {
 }
 .welcome div img{
     padding: 0;
+    max-height: 500px;;
 }
 </style>
