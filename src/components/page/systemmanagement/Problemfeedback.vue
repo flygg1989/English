@@ -3,11 +3,14 @@
 		<div v-loading="isLoad" class="notabs-content">
 			<!-- 头部 -->
 			<div class="operation">
+				<div class="operation-left">
+				</div>
 				<div class="operation-right">
 					<el-input
 						class="search-ipt"
 						placeholder="请输入要查询的内容"
 						prefix-icon="el-icon-search"
+                        @keyup.enter.native="handleSreach"
 						v-model="searchValue">
 					</el-input>
 					<el-button type="primary" @click="handleSreach" class="search-btn">查询</el-button>
@@ -60,7 +63,7 @@
 		    <el-dialog title="问题反馈详情" :visible.sync="dialogVisible" :close-on-click-modal="false" width="50%">
                 <el-form v-if="dialogVisible" ref="form" :model="Form" label-width="100px">
                     <el-form-item label="问题内容" prop="content">
-                        <el-input type="textarea" autosize readonly v-model="Form.content"></el-input>
+                        <el-input type="textarea" autosize readonly v-model="Form.content" placeholder=""></el-input>
                     </el-form-item>
                     <el-form-item label="问题图片" v-if="Form.pictures">
                         <ul class="el-upload-list el-upload-list--picture-card">
@@ -138,7 +141,6 @@ export default {
     
     //查看详情
     handleLook(row){
-        console.log(row)
         this.dialogVisible =true;
         this.Form =row;
     },
@@ -161,12 +163,11 @@ export default {
     },
     //搜索内容
     handleSreach(){
-        this.clear();
         if(this.searchValue){
-                this.apiRequest.title = this.searchValue
+                this.apiRequest.content = this.searchValue
                 this.handleCurrentChange(1)
         }else{
-            delete this.apiRequest.title
+            delete this.apiRequest.content
             this.handleCurrentChange(1)
         }
     },

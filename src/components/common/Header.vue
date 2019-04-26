@@ -102,7 +102,6 @@
                 let headimg = localStorage.getItem('headimg'); //判断用户头像
                 if(headimg != null){
                     this.headimg =headimg
-                    console.log(headimg)
                 }else{
                     this.headimg='static/img/headimg.png'
                 };

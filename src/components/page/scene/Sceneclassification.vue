@@ -10,6 +10,7 @@
             class="search-ipt"
             placeholder="请输入要查询的内容"
             prefix-icon="el-icon-search"
+            @keyup.enter.native="handleSreach"
             v-model="searchValue">
           </el-input>
           <el-button type="primary" @click="handleSreach" class="search-btn">查询</el-button>
