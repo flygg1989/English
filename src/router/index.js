@@ -73,6 +73,12 @@ export default new Router({
                     component: resolve => require(['../components/page/systemmanagement/GlobalManagement'], resolve),
                     meta: { title: '全局配置' }
                 },
+                {
+                    //问题反馈
+                    path: '/Problemfeedback',
+                    component: resolve => require(['../components/page/systemmanagement/Problemfeedback'], resolve),
+                    meta: { title: '问题反馈' }
+                },
                 //学习管理
                 {
                     //学习栏目管理

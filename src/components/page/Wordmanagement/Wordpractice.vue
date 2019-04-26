@@ -4,7 +4,7 @@
 			<!-- 头部 -->
 			<div class="operation">
 				<div class="operation-left">
-					<el-button type="primary" @click="openDialog('add')" class="creat-branch-btn">添加语法练习题</el-button>
+					<el-button type="primary" @click="openDialog('add')" class="creat-branch-btn">添加单词练习题</el-button>
 				</div>
 				<div class="operation-right">
 					<el-input

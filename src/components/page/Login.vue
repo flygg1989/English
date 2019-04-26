@@ -14,7 +14,7 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item prop="password">
-                        <el-input type="password" placeholder="密码" v-model.trim="platForm.password">
+                        <el-input type="password" placeholder="密码" v-model.trim="platForm.password" @keyup.enter.native="platsubmitForm('platForm')">
                         </el-input>
                     </el-form-item>
 

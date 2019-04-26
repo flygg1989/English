@@ -343,7 +343,10 @@ export default {
     //上传成功
     handleAvatarSuccess(res, file) {
       // console.log(res)
-      this.form.headimg = res.data.src
+      if(res.state){
+        this.form.headimg = res.data.src
+      }
+      
     },
     
 

@@ -29,6 +29,31 @@ const api = {
                 }else{
                     reject(err)
                 }
+                if(res.data.message =='Token过期' || res.data.message =='Token has expired'){
+                    api.request({
+                        url: "refreshToken",
+                        method: "POST",
+                    }).then(res=>{
+                        console.log(res)
+                        if(res.data.state ==true){
+                           var token =res.data.data;
+                            localStorage.setItem('sk',token);
+                            var n = token.split(".");
+                            var m =window.atob(n[1])
+                            var b =eval('(' + m + ')');;
+                            //console.log(b);
+                            localStorage.setItem('user_id',b.sub.id);
+                            localStorage.setItem('uname',b.sub.name);
+                            localStorage.setItem('headimg',b.sub.headimg);
+                            localStorage.setItem('expTime',b.exp);
+                        }
+                    },res => {
+                        this.$notify.error({
+                        title: "错误",
+                        message: "数据请求失败"
+                        });
+                    })
+                }
             })
             .catch(err => {
                 reject(err)

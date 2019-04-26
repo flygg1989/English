@@ -150,6 +150,10 @@
                                 index: 'GlobalManagement',
                                 title: '全局配置'
                             },
+                            {
+                                index: 'Problemfeedback',
+                                title: '问题反馈'
+                            },
                         ]
                     },
                 ],

@@ -1,6 +1,6 @@
 <template>
   <div class="personal-center">
-    <div class="box">
+    <div class="box" v-loading="isLoad">
       <div class="box-left">
         <div class="img-box">
           <img :src="form.headimg">
@@ -35,12 +35,12 @@
                   <el-option :key="2" label="女" :value="2"></el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="是否禁用"  prop="status">
+          <!-- <el-form-item label="是否禁用"  prop="status">
               <el-select v-model="form.status" :disabled="editingstatus" placeholder="请选择">
                   <el-option :key="1" label="否" :value="1"></el-option>
                   <el-option :key="2" label="是" :value="2"></el-option>
               </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
 
         <div class="el-dialog__footer editPersonal">
@@ -67,7 +67,7 @@ export default {
         return callback(new Error('手机号不能为空'));
       } else {
         const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
-        console.log(reg.test(value));
+        //console.log(reg.test(value));
         if (reg.test(value)) {
           callback();
         } else {
@@ -76,6 +76,7 @@ export default {
       }
     };
     return {
+      isLoad:false,
       imgUrl:'',
       base64:'',
       API:domain.testUrl, //全局接口
@@ -122,6 +123,7 @@ export default {
   methods: {
     // 获取个人数据
     getPersonal(){
+      this.isLoad = true
       api.request({
           url: "getUserDetail",
           method: "POST",
@@ -129,15 +131,17 @@ export default {
             user_id:localStorage.getItem('user_id'),
           }
       }).then(res=>{
-          console.log(res)
+          //console.log(res)
           if(res.data.state ==true){
             this.form=res.data.data
+            this.isLoad = false
           }
       },res => {
           this.$notify.error({
-          title: "错误",
-          message: "数据请求失败"
+            title: "错误",
+            message: "数据请求失败"
           });
+          this.isLoad = false
       })
     },
     
@@ -145,8 +149,15 @@ export default {
     //上传成功
     handleAvatarSuccess(res,file) {
       //console.log(res)
+      this.isLoad = true
       if(res.state ==true){
+        this.$notify({
+          title: "成功",
+          message: res.message,
+          type: 'success'
+        });
         this.form.headimg = res.data.src;
+        this.isLoad = false
       }
     },
 
@@ -172,6 +183,7 @@ export default {
     submitedit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+              this.isLoad = true
                 api.request({
                     url: "editUserOwnerInfo",
                     method: "POST",
@@ -191,6 +203,7 @@ export default {
                           message: res.data.message,
                           type: 'success'
                         });
+                        this.isLoad = false
                         localStorage.removeItem('headimg')
                         localStorage.setItem('headimg',this.form.headimg);
                         Bus.$emit('sendPersonal', true)
@@ -202,9 +215,11 @@ export default {
                     title: "错误",
                     message: "数据请求失败"
                     });
+                    this.isLoad = false
                 })
             } else {
                 console.log('error submit!!');
+                this.isLoad = false
                 return false;
             }
         });
