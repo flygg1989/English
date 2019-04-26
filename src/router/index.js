@@ -12,13 +12,8 @@ export default new Router({
         {
             path: '/home',
             component: resolve => require(['../components/common/Home.vue'], resolve),
-            meta: { title: '自述文件' },
+            meta: { title: '首页' },
             children: [
-                {
-                    path: '/icon',
-                    component: resolve => require(['../components/page/Icon.vue'], resolve),
-                    meta: { title: '自定义图标' }
-                },
                 {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
@@ -102,7 +97,7 @@ export default new Router({
                 //单词管理
                 {
                     //单词列表
-                    path: '/Word',
+                    path: '/WordList',
                     component: resolve => require(['../components/page/Wordmanagement/WordList'], resolve),
                     meta: { title: '单词列表' }
                 },

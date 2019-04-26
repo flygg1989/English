@@ -69,7 +69,7 @@
                         title: '单词管理',
                         subs: [
                             {
-                                index: 'Word',
+                                index: 'WordList',
                                 title: '单词列表'
                             },
                             {
