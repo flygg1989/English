@@ -777,7 +777,12 @@ export default {
 					}).then(res => {
 						if(res.data.state){
 							this.dialogVisible = false
-							this.getTableList()
+							if(this.dialogTitle == '创建语法'){
+								this.handleCurrentChange(1)
+							}
+							if(this.dialogTitle == '编辑语法'){
+								this.getTableList()
+							}
 							this.$notify({
 								title: '成功',
 								message: this.dialogTitle == '创建语法'?'语法创建成功':'语法信息已成功修改',

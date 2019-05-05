@@ -3,7 +3,7 @@
        <div class="login_left">
             <div>
                 <img src="static/img/icon-logo.png">
-                <p>荆楚问政</p>
+                <p>飞行英语</p>
             </div>
        </div>
        <div class="login_right">

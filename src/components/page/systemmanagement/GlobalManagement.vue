@@ -2,8 +2,8 @@
     <div class="Menumanagement">
         <div class="Global_both">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-            <el-form-item label="版本号"  prop="cname">
-                <el-input v-model.trim="form.cname" placeholder=""></el-input>
+            <el-form-item label="版本号"  prop="ckey">
+                <el-input v-model.trim="form.ckey" placeholder=""></el-input>
             </el-form-item>
             <el-form-item label="下载地址"  prop="cval">
                 <el-input v-model.trim="form.cval" placeholder="" @change="creatQrCode"></el-input>
@@ -11,8 +11,8 @@
             <el-form-item label="二维码"  prop="remark">
                 <div class="qrcode" ref="qrCodeUrl"></div>
             </el-form-item>
-            <el-form-item label="关于我们"  prop="ckey">
-                <el-input type="textarea" :autosize="{ minRows:1, maxRows: 6}" v-model="form.ckey"></el-input>
+            <el-form-item label="关于我们"  prop="cname">
+                <el-input type="textarea" :autosize="{ minRows:1, maxRows: 6}" v-model="form.cname"></el-input>
             </el-form-item>
             </el-form>
             <span slot="footer"  style="display:block;text-align:center">

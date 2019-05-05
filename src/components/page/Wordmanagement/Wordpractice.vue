@@ -70,7 +70,7 @@
 			</div>
 <!--添加单词练习题弹窗--->
 			<el-dialog :title="formState == 'add'?'添加单词练习题':'编辑单词练习题'" :visible.sync="dialogVisible" :before-close="handleClose" :close-on-click-modal="false" width="50%">
-        <el-form v-if="dialogVisible" ref="addform" :model="addForm" label-width="100px">
+        <el-form v-if="dialogVisible" v-loading="formLoad" ref="addform" :model="addForm" label-width="100px">
           <el-form-item label="关联单词" prop="word_id" :rules="rules.word">
             <el-select
 							style="width:100%;"
@@ -404,7 +404,7 @@ export default {
 						}).then(res => {
 							if(res.data.state){
 								this.dialogVisible = false
-								this.getTableList()
+								this.handleCurrentChange(1)
 								this.$notify({
 									title: '成功',
 									message: res.data.message,

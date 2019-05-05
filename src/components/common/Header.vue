@@ -1,10 +1,10 @@
 <template>
     <div class="header">
         <!-- 折叠按钮 -->
-        <div class="collapse-btn">
+        <!-- <div class="collapse-btn">
             <i class="el-icon-menu"></i>
-        </div>
-        <div class="logo">飞行英语</div>
+        </div> -->
+        <div class="logo" style="margin-left:60px;">飞行英语</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 用户头像 -->

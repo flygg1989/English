@@ -528,7 +528,12 @@ export default {
 					}).then(res => {
 						if(res.data.state){
 							this.dialogVisible = false
-							this.getTableList()
+							if(this.dialogTitle == '创建语法练习题'){
+								this.handleCurrentChange(1)
+							}
+							if(this.dialogTitle == '编辑语法练习题'){
+								this.getTableList()
+							}
 							this.$notify({
 								title: '成功',
 								message: this.dialogTitle == '创建语法练习题'?'语法练习题创建成功':'语法练习题已成功修改',

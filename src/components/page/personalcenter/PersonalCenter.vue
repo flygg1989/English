@@ -45,7 +45,7 @@
 
         <div class="el-dialog__footer editPersonal">
           <span slot="footer" class="dialog-footer">
-              <el-button type="" @click="handlecancel">取消</el-button>
+              <el-button type="" v-show="!editingstatus" @click="handlecancel">取消</el-button>
               <el-button type="primary" v-show="editingstatus" @click="handleedit">修改</el-button>
               <el-button type="primary" v-show="!editingstatus" @click="submitedit('form')">提交</el-button>
           </span>
@@ -244,12 +244,13 @@ export default {
 .personal-center{
   height:100%;
   box-sizing:border-box;
-  padding-top:24px;
+  /* padding-top:24px; */
   overflow:auto;
 }
 .box{
-  width:1136px;
-  height:464px;
+  /* width:1136px; */
+  width:100%;
+  height:100%;
   box-sizing:border-box;
   margin:0 auto;
   background:#fff;

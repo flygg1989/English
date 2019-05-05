@@ -573,7 +573,12 @@ export default {
 					}).then(res => {
 						if(res.data.state){
 							this.dialogVisible = false
-							this.getTableList()
+							if(op_type == 1){
+								this.handleCurrentChange(1)
+							}
+							if(op_type == 2){
+								this.getTableList()
+							}
 							this.$notify({
 								title: '成功',
 								message: res.data.message,
