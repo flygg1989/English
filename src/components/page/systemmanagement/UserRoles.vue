@@ -7,6 +7,7 @@
         </div>
       </div>
       <el-table
+        v-loading="loading"
         :data="tableList"
         height="100%"
         empty-text="没有更多数据了"
@@ -81,7 +82,7 @@
         <span slot="footer" class="dialog-footer">
             <el-button type="" @click="editVisible = false">取消</el-button>
             <el-button type="primary" v-if="submitstate==1" @click="submitForm('form')">创建</el-button>
-            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">编辑</el-button>
+            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">保存</el-button>
         </span>
       </el-dialog>
       <!-- 授权 弹出框 -->
@@ -111,6 +112,7 @@ import api from '@/utils/api'
 export default {
   data(){
     return {
+      loading:true,  //加载
       searchValue:"",
       tableList:[],
       functionlist:[], //权限列表
@@ -177,12 +179,14 @@ export default {
           //console.log(res.data.data)
           if(res.data.state ==true){
             this.tableList =res.data.data
+            this.loading=false;
           }
       },res => {
           this.$notify.error({
           title: "错误",
           message: "数据请求失败"
           });
+          this.loading=false;
       })
     },
 

@@ -54,19 +54,33 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="user_group"
+          label="启用禁用"
+          min-width="144">
+          <template slot-scope="scope">
+            <el-switch
+                :value="scope.row.status==1?true:false"
+                inactive-text=""
+                active-color="#3CD970"
+                @change="switchList(scope.row)"
+                inactive-color="#DFE5EB">
+              </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
         fixed="right"
         label="操作"
         min-width="220">
         <template slot-scope="scope">
           <el-button type="primary"  @click="handleedit(scope.row)">编辑</el-button>
           <el-button type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
-          <el-switch
+          <!-- <el-switch
               :value="scope.row.status==1?true:false"
               inactive-text="启用禁用"
               active-color="#3CD970"
               @change="switchList(scope.row)"
               inactive-color="#DFE5EB">
-            </el-switch>
+            </el-switch> -->
         </template>
       </el-table-column>
       </el-table>
@@ -87,12 +101,18 @@
       </div>
       <!--创建 编辑弹窗--->
       <el-dialog :title="title" :visible.sync="editVisible" :before-close="handleClose" :close-on-click-modal="false" width="35%">
-        <el-form v-if="editVisible" ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form v-if="editVisible" v-loading="formLoad" ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="用户名称"  prop="name">
               <el-input v-model.trim="form.name" clearable @change="handlename"></el-input>
           </el-form-item>
-          <el-form-item label="登录密码"  prop="password">
-              <el-input v-model.trim="form.password" clearable></el-input>
+          <el-form-item label="登录密码"  prop="password" v-if="passwordstate">
+              <el-input v-model.trim="form.password" type="password" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="登录密码" v-if="!passwordstate">
+              <el-input v-model.trim="form.new_password" type="password" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="手机号"  prop="phone">
+              <el-input v-model.trim="form.phone" clearable></el-input>
           </el-form-item>
           <el-form-item label="组织架构" prop="department_id">
               <el-select v-model="form.department_id"  placeholder="请选择">
@@ -128,7 +148,7 @@
         <span slot="footer" class="dialog-footer">
             <el-button type="" @click="handleClose">取消</el-button>
             <el-button type="primary" v-if="submitstate==1" @click="submitForm('form')">创建</el-button>
-            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">编辑</el-button>
+            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">保存</el-button>
         </span>
       </el-dialog>
     </div>
@@ -142,6 +162,7 @@ export default {
   data(){
     return {
       loading:true,  //加载
+      formLoad:false,
       searchValue:"",
       tableList:[],
       currentPage:1,
@@ -154,6 +175,7 @@ export default {
       editVisible:false,
       title:'',
       submitstate:1,
+      passwordstate:true,
       
       //新建
       form:{
@@ -161,6 +183,7 @@ export default {
         id:'',
         user_id:'',
         name:'',
+        phone:'',
         password: '',
         new_password:'',
         status: null,
@@ -179,6 +202,10 @@ export default {
         name:[
           {required: true, message: '请输入用户名称', trigger: 'blur'},
           {min:2, max: 11, message: '名称长度为2-11位', trigger: 'blur'}
+        ],
+        phone:[
+          {required: true, message: '请输入手机号', trigger: 'blur'},
+          {min:11, max: 11, message: '长度为11位', trigger: 'blur'}
         ],
         password:[
           {required: true, message: '请输入登录密码', trigger: 'blur'},
@@ -224,6 +251,7 @@ export default {
           title: "错误",
           message: "数据请求失败"
           });
+          this.loading=false;
       })
     },
 
@@ -355,11 +383,13 @@ export default {
     handlefound(){
       this.title="创建用户";
       this.submitstate=1,
+      this.passwordstate =true,
       this.form={
         headimg:"",
         id:'',
         user_id:'',
         name:'',
+        phone:'',
         password: '',
         new_password:'',
         status:null,
@@ -373,7 +403,7 @@ export default {
     submitForm(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
-              this.loading=true;
+              this.formLoad = true;
               var data
               if(!this.form.headimg){
                 data={
@@ -381,7 +411,8 @@ export default {
                   password: this.form.password,
                   status:this.form.status,
                   user_group_id:this.form.user_group_id,
-                  department_id:this.form.department_id
+                  department_id:this.form.department_id,
+                  phone:this.form.phone
                 }
               }else{
                 data={
@@ -390,7 +421,8 @@ export default {
                   password: this.form.password,
                   status:this.form.status,
                   user_group_id:this.form.user_group_id,
-                  department_id:this.form.department_id
+                  department_id:this.form.department_id,
+                  phone:this.form.phone
                 }
               }
                 api.request({
@@ -405,7 +437,7 @@ export default {
                           message: res.data.message,
                           type: 'success'
                         });
-                        this.loading=false;
+                        this.formLoad = false
                         this.gettableList();
                         this.editVisible =false;
                     }
@@ -414,11 +446,11 @@ export default {
                     title: "错误",
                     message: "数据请求失败"
                     });
-                    this.loading=false;
+                    this.formLoad = false
                 })
             } else {
                 console.log('error submit!!');
-                this.loading=false;
+                this.formLoad=false;
                 return false;
             }
         });
@@ -428,6 +460,7 @@ export default {
     handleedit(row){
       this.title="编辑用户";
       this.submitstate=2;
+      this.passwordstate=false,
       this.form=row;
       this.form.user_id=row.id;
       this.form.new_password =row.password;
@@ -447,7 +480,8 @@ export default {
                   user_group_id:this.form.user_group_id,
                   department_id:this.form.department_id,
                   user_id:this.form.user_id,
-                  new_password:this.form.new_password
+                  new_password:this.form.new_password,
+                  phone:this.form.phone
                 }
               }else{
                 data={
@@ -458,10 +492,18 @@ export default {
                   user_group_id:this.form.user_group_id,
                   department_id:this.form.department_id,
                   user_id:this.form.user_id,
-                  new_password:this.form.new_password
+                  new_password:this.form.new_password,
+                  phone:this.form.phone
                 }
               }
-              this.form.new_password = this.form.password;
+              if(!this.form.new_password){
+                delete data.new_password;
+                delete data.password;
+              }else{
+                delete data.password;
+              }
+             
+              this.formLoad = true
                 api.request({
                     url: "editUserInfo",
                     method: "POST",
@@ -476,15 +518,18 @@ export default {
                         });
                         this.gettableList();
                         this.editVisible =false;
+                        this.formLoad = false
                     }
                 },res => {
                     this.$notify.error({
                     title: "错误",
                     message: "数据请求失败"
                     });
+                    this.formLoad = false
                 })
             } else {
                 console.log('error submit!!');
+                this.formLoad = false
                 return false;
             }
         });

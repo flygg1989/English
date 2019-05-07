@@ -4,9 +4,11 @@
       <div class="operation">
         <div class="operation-left">
           <el-button type="primary" @click="handlefound" class="creat-branch-btn">新建部门</el-button>
+          <el-button type="primary" @click="handlelook" class="creat-branch-btn">树形结构图</el-button>
         </div>
       </div>
       <el-table
+        v-loading="loading"
         :data="tableList"
         height="100%"
         empty-text="没有更多数据了"
@@ -54,13 +56,13 @@
       </el-table>
       <!--创建 编辑弹窗--->
       <el-dialog :title="title" :visible.sync="editVisible" :close-on-click-modal="false" width="30%">
-        <el-form ref="form" v-if="editVisible" :model="form" :rules="rules" label-width="80px">
+        <el-form ref="form" v-if="editVisible" v-loading="formLoad" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="部门名称"  prop="name">
               <el-input v-model.trim="form.name" placeholder="部门名称"></el-input>
           </el-form-item>
           <el-form-item label="上级" prop="pid">
               <el-select v-model="form.pid"  placeholder="请选择">
-                  <el-option v-for="item in tableList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                  <el-option v-for="item in pidList" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
           </el-form-item>
           <el-form-item label="备注"  prop="remark">
@@ -68,15 +70,22 @@
           </el-form-item>
          <el-form-item label="是否禁用" prop="status" v-if="submitstate==2">
             <el-select v-model="form.status"  placeholder="请选择">
-                <el-option :key="1" label="是" :value="1"></el-option>
-                <el-option :key="2" label="否" :value="2"></el-option>
+                <el-option :key="1" label="否" :value="1"></el-option>
+                <el-option :key="2" label="是" :value="2"></el-option>
             </el-select>
          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button type="" @click="editVisible = false">取消</el-button>
             <el-button type="primary" v-if="submitstate==1" @click="submitForm('form')">创建</el-button>
-            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">编辑</el-button>
+            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">保存</el-button>
+        </span>
+      </el-dialog>
+      <!--树形结构-->
+      <el-dialog title="树形结构图" :visible.sync="lookVisible" :close-on-click-modal="false" width="30%">
+        <el-tree :data="lookList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="" @click="lookVisible = false">关闭</el-button>
         </span>
       </el-dialog>
     </div>
@@ -87,10 +96,20 @@ import api from '@/utils/api'
 export default {
   data(){
     return {
+      loading:true,  //加载
+      formLoad:false,
+      lookList:[], //树形结构
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      
       searchValue:"",
       tableList:[],
+      pidList:[],
 
       editVisible:false,
+      lookVisible:false,
       title:'',
       submitstate:1,
       
@@ -131,14 +150,47 @@ export default {
       }).then(res=>{
           //console.log(res.data.data)
           if(res.data.state ==true){
-            this.tableList =res.data.data
+            this.tableList =res.data.data,
+            this.pidList =res.data.data,
+            this.pidList.push({id:0,name:'默认第一级'})
+            this.loading=false;
           }
       },res => {
           this.$notify.error({
           title: "错误",
           message: "数据请求失败"
           });
+          this.loading=false;
       })
+    },
+
+    //树形结构图
+    handlelook(){
+      this.lookVisible=true
+      this.formLoad = true
+      api.request({
+          url: "getDepartmentInfo",
+          method: "POST",
+          data:{
+            dataType:1
+          }
+      }).then(res=>{
+          //console.log(res.data.data)
+          if(res.data.state ==true){
+            this.lookList =res.data.data,
+            this.formLoad = false
+          }
+      },res => {
+          this.$notify.error({
+          title: "错误",
+          message: "数据请求失败"
+          });
+          this.formLoad = false
+      })
+    },
+
+    handleNodeClick(data) {
+      console.log(data);
     },
 
     //判断状态
@@ -179,6 +231,7 @@ export default {
                   remark:this.form.remark
                 }
               }
+              this.formLoad = true
               api.request({
                   url: "createDepartment",
                   method: "POST",
@@ -192,12 +245,14 @@ export default {
                         type: 'success'
                     });
                     this.gettableList();
+                    this.formLoad = false
                   }
               },res => {
                   this.$notify.error({
                   title: "错误",
                   message: "数据请求失败"
                   });
+                  this.formLoad = false
               })
             this.editVisible =false;
             } else {
@@ -237,6 +292,7 @@ export default {
                   remark:this.form.remark
                 }
               }
+              this.formLoad = true
               api.request({
                   url: "editDepartment",
                   method: "POST",
@@ -250,16 +306,19 @@ export default {
                         type: 'success'
                     });
                     this.gettableList();
+                    this.formLoad = false
                   }
               },res => {
                   this.$notify.error({
                   title: "错误",
                   message: "数据请求失败"
                   });
+                  this.formLoad = false
               })
             this.editVisible =false;
             } else {
                 console.log('error submit!!');
+                this.formLoad = false
                 return false;
             }
         });

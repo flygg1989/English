@@ -17,6 +17,7 @@
         </div>
       </div>
       <el-table
+        v-loading="loading"
         :data="tableList"
         height="100%"
         empty-text="没有更多数据了"
@@ -45,19 +46,33 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="user_group"
+          label="启用禁用"
+          min-width="144">
+          <template slot-scope="scope">
+            <el-switch
+                :value="scope.row.status==1?true:false"
+                inactive-text=""
+                active-color="#3CD970"
+                @change="switchList(scope.row)"
+                inactive-color="#DFE5EB">
+              </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
         fixed="right"
         label="操作"
         min-width="220">
         <template slot-scope="scope">
           <el-button type="primary"  @click="handleedit(scope.row)">编辑</el-button>
           <el-button type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
-          <el-switch
+          <!-- <el-switch
             :value="scope.row.status==1?true:false"
             inactive-text="启用禁用"
             active-color="#3CD970"
             @change="switchList(scope.row)"
             inactive-color="#DFE5EB">
-          </el-switch>
+          </el-switch> -->
         </template>
       </el-table-column>
       </el-table>
@@ -82,8 +97,11 @@
           <el-form-item label="用户名称"  prop="account">
               <el-input v-model.trim="form.account" clearable @change="handlename"></el-input>
           </el-form-item>
-          <el-form-item label="登录密码"  prop="password">
-              <el-input v-model.trim="form.password" clearable></el-input>
+          <el-form-item label="登录密码"  prop="password" v-if="passwordstate">
+              <el-input v-model.trim="form.password" type="password" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="登录密码" v-if="!passwordstate">
+              <el-input v-model.trim="form.password" type="password" clearable></el-input>
           </el-form-item>
           <el-form-item label="组织架构" prop="department_id">
               <el-select v-model="form.department_id"  placeholder="请选择">
@@ -108,7 +126,7 @@
         <span slot="footer" class="dialog-footer">
             <el-button type="" @click="handleClose">取消</el-button>
             <el-button type="primary" v-if="submitstate==1" @click="submitForm('form')">创建</el-button>
-            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">编辑</el-button>
+            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">保存</el-button>
         </span>
       </el-dialog>
     </div>
@@ -119,8 +137,10 @@ import api from '@/utils/api'
 export default {
   data(){
     return {
+      loading:true,  //加载
       searchValue:"",
       formLoad:false,
+      passwordstate:true,
       tableList:[],
       currentPage:1,
       total:0,
@@ -188,12 +208,14 @@ export default {
           if(res.data.state ==true){
             this.tableList =res.data.data.list;
             this.total=res.data.data.all_data_num;
+            this.loading=false;
           }
       },res => {
           this.$notify.error({
           title: "错误",
           message: "数据请求失败"
           });
+          this.loading=false;
       })
     },
 
@@ -272,6 +294,7 @@ export default {
       handlefound(){
         this.title="创建用户";
         this.submitstate=1,
+        this.passwordstate=true,
         this.form={
           headimg: null,
           account:'',
@@ -364,25 +387,34 @@ export default {
         this.submitstate=2;
         this.form=row
         this.editVisible=true;
+        this.passwordstate=false;
+        this.formLoad = false;
       },
 
       //编辑
       submitedit(formName){
         this.$refs[formName].validate((valid) => {
               if (valid) {
+                var data
+                data={
+                  account:this.form.account,
+                  headimg:this.form.headimg,
+                  phone:this.form.phone,
+                  sex:this.form.sex,
+                  member_id:this.form.id,
+                  password:this.form.password,
+                  department_id:this.form.department_id
+                }
+                if(!this.form.password){
+                  delete data.password;
+                }else{
+                  data.password =this.form.password
+                }
                 this.formLoad = true;
                   api.request({
                       url: "editMember",
                       method: "POST",
-                      data:{
-                        account:this.form.account,
-                        headimg:this.form.headimg,
-                        phone:this.form.phone,
-                        sex:this.form.sex,
-                        member_id:this.form.id,
-                        password:this.form.password,
-                        department_id:this.form.department_id
-                      } 
+                      data:data
                   }).then(res=>{
                       //console.log(res)
                       if(res.data.state ==true){

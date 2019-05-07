@@ -78,7 +78,7 @@
         <span slot="footer" class="dialog-footer">
             <el-button type="" @click="editVisible = false">取消</el-button>
             <el-button type="primary" v-if="submitstate==1" @click="submitForm('form')">创建</el-button>
-            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">编辑</el-button>
+            <el-button type="primary" v-if="submitstate==2" @click="submitedit('form')">保存</el-button>
         </span>
       </el-dialog>
     </div>
