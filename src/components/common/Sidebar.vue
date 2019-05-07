@@ -36,7 +36,7 @@
     export default {
         data() {
             return {
-                loading:true,
+              loading:true,
               collapse: false,
               menus:[],
             }
