@@ -385,10 +385,28 @@ export default {
         //console.log(row)
         this.title="编辑用户";
         this.submitstate=2;
-        this.form=row
         this.editVisible=true;
         this.passwordstate=false;
-        this.formLoad = false;
+        this.formLoad = true;
+        api.request({
+            url: "getMemberDetail",
+            method: "POST",
+            data:{
+              member_id:row.id
+            }
+        }).then(res=>{
+            // console.log(res.data.data)
+            if(res.data.state ==true){
+              this.form =res.data.data
+              this.formLoad = false;
+            }
+        },res => {
+            this.$notify.error({
+            title: "错误",
+            message: "数据请求失败"
+            });
+            this.formLoad = false;
+        }) 
       },
 
       //编辑
