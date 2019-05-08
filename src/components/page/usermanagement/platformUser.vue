@@ -103,7 +103,7 @@
       <el-dialog :title="title" :visible.sync="editVisible" :before-close="handleClose" :close-on-click-modal="false" width="35%">
         <el-form v-if="editVisible" v-loading="formLoad" ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="用户名称"  prop="name">
-              <el-input v-model.trim="form.name" clearable @change="handlename"></el-input>
+              <el-input v-model.trim="form.name" clearable maxlength="12" @change="handlename"></el-input>
           </el-form-item>
           <el-form-item label="登录密码"  prop="password" v-if="passwordstate">
               <el-input v-model.trim="form.password" type="password" clearable></el-input>
@@ -201,7 +201,7 @@ export default {
       rules:{
         name:[
           {required: true, message: '请输入用户名称', trigger: 'blur'},
-          {min:2, max: 11, message: '名称长度为2-11位', trigger: 'blur'}
+          {min:2, max: 12, message: '名称长度为2-12位', trigger: 'blur'}
         ],
         phone:[
           {required: true, message: '请输入手机号', trigger: 'blur'},
@@ -461,10 +461,29 @@ export default {
       this.title="编辑用户";
       this.submitstate=2;
       this.passwordstate=false,
-      this.form=row;
-      this.form.user_id=row.id;
-      this.form.new_password =row.password;
       this.editVisible=true;
+      this.formLoad = true;
+      api.request({
+          url: "getUserDetail",
+          method: "POST",
+          data:{
+            user_id:row.id
+          }
+      }).then(res=>{
+          // console.log(res.data.data)
+          if(res.data.state ==true){
+            this.form =res.data.data
+            this.form.user_id=this.form.id;
+            this.form.new_password =this.form.password;
+            this.formLoad = false;
+          }
+      },res => {
+          this.$notify.error({
+          title: "错误",
+          message: "数据请求失败"
+          });
+          this.formLoad = false;
+      })      
     },
 
     //编辑

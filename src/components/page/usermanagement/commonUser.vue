@@ -95,7 +95,7 @@
       <el-dialog :title="title" :visible.sync="editVisible" :before-close="handleClose" :close-on-click-modal="false"  width="35%">
         <el-form v-loading="formLoad" v-if="editVisible" ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="用户名称"  prop="account">
-              <el-input v-model.trim="form.account" clearable @change="handlename"></el-input>
+              <el-input v-model.trim="form.account" clearable maxlength="12" @change="handlename"></el-input>
           </el-form-item>
           <el-form-item label="登录密码"  prop="password" v-if="passwordstate">
               <el-input v-model.trim="form.password" type="password" clearable></el-input>
@@ -168,7 +168,7 @@ export default {
       rules:{
         account:[
           {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min:2, max: 11, message: '名称长度为2-11位', trigger: 'blur'}
+          {min:2, max: 12, message: '名称长度为2-12位', trigger: 'blur'}
         ],
         password:[
           {required: true, message: '请输入登录密码', trigger: 'blur'},

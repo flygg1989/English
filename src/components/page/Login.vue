@@ -21,7 +21,7 @@
                     <p class="login-tips"><router-link to="/Retrievepassword">忘记密码？</router-link></p>
                     <br/>
                     <div class="login-btn">
-                        <el-button type="primary" @click="platsubmitForm('platForm')">确认登录</el-button>
+                        <el-button type="primary" :loading="loading" @click="platsubmitForm('platForm')">确认登录</el-button>
                     </div>
                 </el-form>
             </div>
@@ -40,6 +40,7 @@
         },
     data() {
       return {
+        loading:false,
         API:domain.testUrl,   //全局接口
         //平台 邮箱密码
         platForm: {
@@ -64,6 +65,7 @@
             this.$refs[formName].validate((valid) => {
                
                 if (valid) {
+                    self.loading =true,
                     axios({
                         url: this.API +'login',
                         method: 'POST',
@@ -79,6 +81,7 @@
                                  title: '错误',
                                  message: res.data.message,
                             });
+                            self.loading =false
                         }else{
                             var token =res.data.data.token;
                             localStorage.setItem('sk',token);
@@ -95,6 +98,7 @@
                                  message:res.data.message,
                                  type: 'success'
                             });
+                            self.loading =false,
                             self.$router.push('/Welcome'); 
                         }
                         })
@@ -103,6 +107,7 @@
                                 title: '错误',
                                 message: '数据请求失败',
                             });
+                            self.loading =false
                          return false;
                         })
                 } else {

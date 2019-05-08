@@ -41,7 +41,6 @@ const api = {
                             var n = token.split(".");
                             var m =window.atob(n[1])
                             var b =eval('(' + m + ')');;
-                            //console.log(b);
                             localStorage.setItem('user_id',b.sub.id);
                             localStorage.setItem('uname',b.sub.name);
                             localStorage.setItem('headimg',b.sub.headimg);
